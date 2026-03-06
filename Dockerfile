@@ -20,9 +20,9 @@ FROM nginx:stable-alpine AS runner
 # Copy built static files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Custom nginx config for SPA routing + port 3100
+# Custom nginx config for SPA routing + port 2999
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 3100
+EXPOSE 2999
 
 CMD ["nginx", "-g", "daemon off;"]

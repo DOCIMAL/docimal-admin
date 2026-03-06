@@ -33,7 +33,7 @@ jobs:
             echo "Creating initial HTTP-only nginx config (for certbot webroot)..."
             cat > /etc/nginx/sites-available/docimal-admin << 'EOF'
             upstream admin_upstream {
-                server 127.0.0.1:3100;
+                server 127.0.0.1:2999;
                 keepalive 32;
             }
             server {
@@ -64,7 +64,7 @@ jobs:
               echo "Configuring nginx with SSL..."
               cat > /etc/nginx/sites-available/docimal-admin << EOF
             upstream admin_upstream {
-                server 127.0.0.1:3100;
+                server 127.0.0.1:2999;
                 keepalive 32;
             }
 
@@ -159,7 +159,7 @@ jobs:
             IMAGE_TAR_PATH="$DEPLOY_DIR/image.tar"
             IMAGE_NAME="docimal-admin"
             CONTAINER_NAME="docimal-admin"
-            TARGET_PORT=3100
+            TARGET_PORT=2999
 
             echo "Deploy start: SHA=$SHA"
             mkdir -p "$DEPLOY_DIR"
