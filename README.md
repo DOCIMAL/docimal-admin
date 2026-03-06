@@ -1,6 +1,6 @@
-# Shadcn Admin Dashboard
+# Docimal Admin Dashboard
 
-Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind.
+Admin Dashboard for the Docimal AI Document Automation Platform. Built with Vite, React, and ShadcnUI.
 
 ![alt text](public/images/shadcn-admin.png)
 
