@@ -12,7 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Environment
 .env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +27,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Docker
+image.tar
+
+*.md
