@@ -44,7 +44,9 @@ export interface AdminProfileResponse {
 
 export const authApi = {
   login: (body: AdminLoginBody) =>
-    apiClient.post<AdminLoginResponse>('/auth/admin/login', body).then((r) => r.data),
+    apiClient
+      .post<AdminLoginResponse>('/auth/admin/login', body)
+      .then((r) => r.data),
 
   getProfile: () =>
     apiClient.get<AdminProfileResponse>('/auth/admin/me').then((r) => r.data),

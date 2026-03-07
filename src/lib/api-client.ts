@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
 
-const API_BASE = import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:3001/api/v1'
+const API_BASE =
+  import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:3001/api/v1'
 
 export const apiClient = axios.create({
   baseURL: API_BASE,
@@ -41,5 +42,5 @@ apiClient.interceptors.response.use(
       }
     }
     return Promise.reject(error)
-  },
+  }
 )

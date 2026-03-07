@@ -97,9 +97,17 @@ export const sidebarData: SidebarData = {
           icon: Settings,
           items: [
             { title: 'General', url: '/settings', icon: UserCog },
-            { title: 'Feature Flags', url: '/settings/feature-flags', icon: ToggleLeft },
+            {
+              title: 'Feature Flags',
+              url: '/settings/feature-flags',
+              icon: ToggleLeft,
+            },
             { title: 'Security', url: '/settings/security', icon: Shield },
-            { title: 'OAuth Providers', url: '/settings/oauth', icon: KeyRound },
+            {
+              title: 'OAuth Providers',
+              url: '/settings/oauth',
+              icon: KeyRound,
+            },
           ],
         },
         { title: 'System Health', url: '/health', icon: Activity },

@@ -6,13 +6,21 @@ import {
 } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
-import type { PaginatedResponse, MessageResponse, ListParams } from './common.types'
+import type {
+  PaginatedResponse,
+  MessageResponse,
+  ListParams,
+} from './common.types'
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type UserStatus = 'active' | 'inactive' | 'suspended' | 'pending_verification'
+export type UserStatus =
+  | 'active'
+  | 'inactive'
+  | 'suspended'
+  | 'pending_verification'
 export type UserRole = 'super_admin' | 'tenant_owner' | 'tenant_admin' | 'user'
 
 export interface AdminUser {
@@ -53,7 +61,9 @@ const BASE = '/admin/users'
 
 export const usersApi = {
   list: (params?: ListUsersParams) =>
-    apiClient.get<PaginatedResponse<AdminUser>>(BASE, { params }).then((r) => r.data),
+    apiClient
+      .get<PaginatedResponse<AdminUser>>(BASE, { params })
+      .then((r) => r.data),
 
   getById: (id: string) =>
     apiClient.get<AdminUser>(`${BASE}/${id}`).then((r) => r.data),
@@ -62,10 +72,14 @@ export const usersApi = {
     apiClient.patch<AdminUser>(`${BASE}/${id}`, body).then((r) => r.data),
 
   suspend: (id: string) =>
-    apiClient.post<MessageResponse>(`${BASE}/${id}/suspend`).then((r) => r.data),
+    apiClient
+      .post<MessageResponse>(`${BASE}/${id}/suspend`)
+      .then((r) => r.data),
 
   activate: (id: string) =>
-    apiClient.post<MessageResponse>(`${BASE}/${id}/activate`).then((r) => r.data),
+    apiClient
+      .post<MessageResponse>(`${BASE}/${id}/activate`)
+      .then((r) => r.data),
 
   delete: (id: string) =>
     apiClient.delete<MessageResponse>(`${BASE}/${id}`).then((r) => r.data),

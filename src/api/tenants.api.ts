@@ -6,7 +6,11 @@ import {
 } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
-import type { PaginatedResponse, MessageResponse, ListParams } from './common.types'
+import type {
+  PaginatedResponse,
+  MessageResponse,
+  ListParams,
+} from './common.types'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -57,7 +61,9 @@ const BASE = '/admin/tenants'
 
 export const tenantsApi = {
   list: (params?: ListTenantsParams) =>
-    apiClient.get<PaginatedResponse<Tenant>>(BASE, { params }).then((r) => r.data),
+    apiClient
+      .get<PaginatedResponse<Tenant>>(BASE, { params })
+      .then((r) => r.data),
 
   getById: (id: string) =>
     apiClient.get<Tenant>(`${BASE}/${id}`).then((r) => r.data),
@@ -69,10 +75,14 @@ export const tenantsApi = {
     apiClient.patch<Tenant>(`${BASE}/${id}`, body).then((r) => r.data),
 
   suspend: (id: string) =>
-    apiClient.post<MessageResponse>(`${BASE}/${id}/suspend`).then((r) => r.data),
+    apiClient
+      .post<MessageResponse>(`${BASE}/${id}/suspend`)
+      .then((r) => r.data),
 
   activate: (id: string) =>
-    apiClient.post<MessageResponse>(`${BASE}/${id}/activate`).then((r) => r.data),
+    apiClient
+      .post<MessageResponse>(`${BASE}/${id}/activate`)
+      .then((r) => r.data),
 
   delete: (id: string) =>
     apiClient.delete<MessageResponse>(`${BASE}/${id}`).then((r) => r.data),
@@ -85,7 +95,8 @@ export const tenantsApi = {
 export const tenantKeys = {
   all: ['tenants'] as const,
   lists: () => [...tenantKeys.all, 'list'] as const,
-  list: (params?: ListTenantsParams) => [...tenantKeys.lists(), params] as const,
+  list: (params?: ListTenantsParams) =>
+    [...tenantKeys.lists(), params] as const,
   details: () => [...tenantKeys.all, 'detail'] as const,
   detail: (id: string) => [...tenantKeys.details(), id] as const,
 }

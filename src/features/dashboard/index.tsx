@@ -1,4 +1,11 @@
-import { Building2, Users, UserCheck, DollarSign, Bot, FileText } from 'lucide-react'
+import {
+  Building2,
+  Users,
+  UserCheck,
+  DollarSign,
+  Bot,
+  FileText,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -123,9 +130,7 @@ export function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className='text-2xl font-bold'>487</div>
-                  <p className='text-xs text-muted-foreground'>
-                    312 published
-                  </p>
+                  <p className='text-xs text-muted-foreground'>312 published</p>
                 </CardContent>
               </Card>
               <Card>

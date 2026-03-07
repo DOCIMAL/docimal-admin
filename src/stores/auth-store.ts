@@ -52,7 +52,12 @@ export const useAuthStore = create<AuthState>()((set) => {
           removeCookie(REFRESH_TOKEN_KEY)
           return {
             ...state,
-            auth: { ...state.auth, user: null, accessToken: '', refreshToken: '' },
+            auth: {
+              ...state.auth,
+              user: null,
+              accessToken: '',
+              refreshToken: '',
+            },
           }
         }),
     },
