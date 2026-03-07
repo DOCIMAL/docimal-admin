@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { zodResolver } from '@hookform/resolvers/zod' 
 import { useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
-import { sleep, cn } from '@/lib/utils'
+import { authApi, type AdminLoginResponse } from '@/api'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -53,34 +54,29 @@ export function UserAuthForm({
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
-    toast.promise(sleep(2000), {
-      loading: 'Signing in...',
-      success: () => {
-        setIsLoading(false)
-
-        // Mock successful authentication with expiry computed at success time
-        const mockUser = {
-          id: 'admin-12345',
-          email: data.email,
-          firstName: 'System',
-          lastName: 'Admin',
-          role: 'super_admin' as const,
-          exp: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
-        }
-
-        // Set user and access token
-        auth.setUser(mockUser)
-        auth.setAccessToken('mock-admin-access-token')
-        auth.setRefreshToken('mock-admin-refresh-token')
-
-        // Redirect to the stored location or default to dashboard
+    authApi
+      .login({ email: data.email, password: data.password })
+      .then(({ user, tokens }: AdminLoginResponse) => {
+        auth.setUser({
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar,
+          role: user.role,
+          exp: tokens.expiresIn,
+        })
+        auth.setAccessToken(tokens.accessToken)
+        auth.setRefreshToken(tokens.refreshToken)
+        toast.success(`Welcome back, ${user.firstName}!`)
         const targetPath = redirectTo || '/'
         navigate({ to: targetPath, replace: true })
-
-        return `Welcome back, ${data.email}!`
-      },
-      error: 'Error',
-    })
+      })
+      .catch((err) => {
+        const message = err.response?.data?.message || 'Login failed'
+        toast.error(message)
+      })
+      .finally(() => setIsLoading(false))
   }
 
   return (
