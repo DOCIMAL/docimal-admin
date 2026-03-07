@@ -7,6 +7,6 @@ const searchSchema = z.object({
 })
 
 export const Route = createFileRoute('/(auth)/sign-in')({
+  validateSearch: (search) => searchSchema.parse(search),
   component: SignIn,
-  validateSearch: searchSchema,
 })

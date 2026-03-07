@@ -18,36 +18,103 @@ import {
   Users,
   MessagesSquare,
   ShieldCheck,
+  Building2,
+  CreditCard,
+  Bot,
+  Plug,
+  FileText,
+  ScrollText,
+  Activity,
+  Shield,
+  KeyRound,
+  ToggleLeft,
 } from 'lucide-react'
-import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: 'Admin',
+    email: 'admin@docimal.com',
     avatar: '/images/logo-sm.png',
   },
   teams: [
     {
       name: 'Docimal Admin',
       logo: '/images/logo.png', // Replace with your own logo image
-      plan: 'Admin Dashboard',
+      plan: 'Site Administration',
     },
-    // {
-    //   name: 'Acme Inc',
-    //   logo: '/images/logo-sm.png', // Replace with your own logo image
-    //   plan: 'Enterprise',
-    // },
-    // {
-    //   name: 'Acme Corp.',
-    //   logo: AudioWaveform,
-    //   plan: 'Startup',
-    // },
   ],
   navGroups: [
     {
-      title: 'General',
+      title: 'Overview',
+      items: [
+        {
+          title: 'Dashboard',
+          url: '/',
+          icon: LayoutDashboard,
+        },
+      ],
+    },
+    {
+      title: 'Management',
+      items: [
+        {
+          title: 'Tenants',
+          url: '/tenants',
+          icon: Building2,
+        },
+        {
+          title: 'Users',
+          url: '/users',
+          icon: Users,
+        },
+        {
+          title: 'Billing',
+          icon: CreditCard,
+          items: [
+            { title: 'Subscriptions', url: '/billing/subscriptions' },
+            { title: 'Invoices', url: '/billing/invoices' },
+            { title: 'Plans', url: '/billing/plans' },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'Platform',
+      items: [
+        { title: 'Chatbots', url: '/chatbots', icon: Bot },
+        { title: 'Integrations', url: '/integrations', icon: Plug },
+        { title: 'Documents', url: '/documents', icon: FileText },
+      ],
+    },
+    {
+      title: 'System',
+      items: [
+        { title: 'Audit Logs', url: '/audit-logs', icon: ScrollText },
+        { title: 'Notifications', url: '/notifications', icon: Bell },
+        {
+          title: 'Settings',
+          icon: Settings,
+          items: [
+            { title: 'General', url: '/settings', icon: UserCog },
+            {
+              title: 'Feature Flags',
+              url: '/settings/feature-flags',
+              icon: ToggleLeft,
+            },
+            { title: 'Security', url: '/settings/security', icon: Shield },
+            {
+              title: 'OAuth Providers',
+              url: '/settings/oauth',
+              icon: KeyRound,
+            },
+          ],
+        },
+        { title: 'System Health', url: '/health', icon: Activity },
+      ],
+    },
+    {
+      title: 'Template',
       items: [
         {
           title: 'Dashboard',
@@ -75,29 +142,6 @@ export const sidebarData: SidebarData = {
           url: '/users',
           icon: Users,
         },
-        {
-          title: 'Secured by Clerk',
-          icon: ClerkLogo,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/clerk/sign-in',
-            },
-            {
-              title: 'Sign Up',
-              url: '/clerk/sign-up',
-            },
-            {
-              title: 'User Management',
-              url: '/clerk/user-management',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: 'Pages',
-      items: [
         {
           title: 'Auth',
           icon: ShieldCheck,
@@ -155,11 +199,6 @@ export const sidebarData: SidebarData = {
             },
           ],
         },
-      ],
-    },
-    {
-      title: 'Other',
-      items: [
         {
           title: 'Settings',
           icon: Settings,
