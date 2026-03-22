@@ -5,7 +5,7 @@ import {
   useSuspendUser, 
   useDeleteUser 
 } from '../api/useAdminUsers';
-import { Search, MoreVertical, ShieldAlert, Trash2, UserCheck } from 'lucide-react';
+import { Search, ShieldAlert, Trash2 } from 'lucide-react';
 // Giả định thư viện UI của dự án:
 // import { Button } from '@/components/ui/button';
 // import { Input } from '@/components/ui/input';

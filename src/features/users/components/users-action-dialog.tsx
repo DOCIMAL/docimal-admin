@@ -92,6 +92,7 @@ const formSchema = z
     }
   )
 type UserForm = z.infer<typeof formSchema>
+type UserFormInput = z.input<typeof formSchema>
 
 type UserActionDialogProps = {
   currentRow?: User
@@ -105,11 +106,16 @@ export function UsersActionDialog({
   onOpenChange,
 }: UserActionDialogProps) {
   const isEdit = !!currentRow
-  const form = useForm<UserForm>({
+  const form = useForm<UserFormInput, unknown, UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
-          ...currentRow,
+          firstName: currentRow.firstName,
+          lastName: currentRow.lastName,
+          username: currentRow.email,
+          email: currentRow.email,
+          phoneNumber: currentRow.phone ?? '',
+          role: currentRow.role ?? '',
           password: '',
           confirmPassword: '',
           isEdit,
