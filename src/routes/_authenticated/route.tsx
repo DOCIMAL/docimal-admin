@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 
 export const Route = createFileRoute('/_authenticated')({
-  component: AuthenticatedLayout,
+  component: () => <AuthenticatedLayout />,
   beforeLoad: () => {
     const { accessToken } = useAuthStore.getState().auth
     if (!accessToken) {

@@ -9,7 +9,8 @@ type GeneralErrorProps = React.HTMLAttributes<HTMLDivElement> & {
 export function GeneralError({
   className,
   minimal = false,
-}: GeneralErrorProps) {
+  error,
+}: GeneralErrorProps & { error?: any }) {
   const navigate = useNavigate()
   const { history } = useRouter()
   return (
@@ -19,6 +20,13 @@ export function GeneralError({
           <h1 className='text-[7rem] leading-tight font-bold'>500</h1>
         )}
         <span className='font-medium'>Oops! Something went wrong {`:')`}</span>
+        {error && (
+          <div className='mt-2 max-w-lg rounded-md bg-destructive/10 p-4 text-destructive whitespace-pre-wrap text-left text-sm font-mono'>
+            {error?.message || String(error)}
+            <br/>
+            {error?.stack}
+          </div>
+        )}
         <p className='text-center text-muted-foreground'>
           We apologize for the inconvenience. <br /> Please try again later.
         </p>

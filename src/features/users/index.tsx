@@ -9,7 +9,6 @@ import { UsersDialogs } from './components/users-dialogs'
 import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersProvider } from './components/users-provider'
 import { UsersTable } from './components/users-table'
-import { users } from './data/users'
 
 const route = getRouteApi('/_authenticated/users/')
 
@@ -31,14 +30,14 @@ export function Users() {
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>User List</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>Users Management</h2>
             <p className='text-muted-foreground'>
-              Manage your users and their roles here.
+              Manage all platform users, roles and tenant memberships.
             </p>
           </div>
           <UsersPrimaryButtons />
         </div>
-        <UsersTable data={users} search={search} navigate={navigate} />
+        <UsersTable search={search} navigate={navigate} />
       </Main>
 
       <UsersDialogs />

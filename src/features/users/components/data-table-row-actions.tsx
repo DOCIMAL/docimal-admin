@@ -1,6 +1,7 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { type Row } from '@tanstack/react-table'
-import { Trash2, UserPen } from 'lucide-react'
+import { ShieldAlert, ShieldCheck, Trash2, Eye } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -19,6 +20,9 @@ type DataTableRowActionsProps = {
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useUsers()
+  const navigate = useNavigate()
+  const user = row.original
+
   return (
     <>
       <DropdownMenu modal={false}>
@@ -31,22 +35,45 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             <span className='sr-only'>Open menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end' className='w-[160px]'>
+        <DropdownMenuContent align='end' className='w-[170px]'>
           <DropdownMenuItem
-            onClick={() => {
-              setCurrentRow(row.original)
-              setOpen('edit')
-            }}
+            onClick={() => navigate({ to: '/users/$userId', params: { userId: user.id } })}
           >
-            Edit
+            View Details
             <DropdownMenuShortcut>
-              <UserPen size={16} />
+              <Eye size={16} />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+          {user.status !== 'suspended' ? (
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(user)
+                setOpen('suspend')
+              }}
+            >
+              Suspend
+              <DropdownMenuShortcut>
+                <ShieldAlert size={16} />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(user)
+                setOpen('reactivate')
+              }}
+            >
+              Reactivate
+              <DropdownMenuShortcut>
+                <ShieldCheck size={16} />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
-              setCurrentRow(row.original)
+              setCurrentRow(user)
               setOpen('delete')
             }}
             className='text-red-500!'
