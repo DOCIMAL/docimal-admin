@@ -15,7 +15,7 @@ import {
   Activity,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -194,9 +194,11 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
               {/* Left: Avatar + Info */}
               <div className='flex items-start gap-5'>
                 <Avatar className='h-16 w-16 text-xl shrink-0'>
-                  {user.avatar && (
-                    <img src={user.avatar} alt={initials} className='object-cover' />
-                  )}
+                  <AvatarImage
+                    src={user.avatar}
+                    alt={initials}
+                    className='object-cover'
+                  />
                   <AvatarFallback className='bg-primary/10 text-primary font-semibold'>
                     {initials}
                   </AvatarFallback>
@@ -249,36 +251,61 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
 
               {/* Right: Action buttons */}
               <div className='flex gap-2 shrink-0'> 
-                {user.status !== 'suspended' ? (
+                {user.status === 'inactive' ? (
                   <Button
                     variant='outline'
                     size='sm'
-                    className='text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20'
-                    onClick={() => setSuspendOpen(true)}
-                  >
-                    <ShieldAlert className='h-4 w-4 mr-1.5' />
-                    Suspend
-                  </Button>
-                ) : (
-                  <Button
-                    variant='outline'
-                    size='sm'
+                    className='text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/20'
                     onClick={async () => {
                       try {
                         await reactivateUser.mutateAsync({
                           userId,
                           data: { scope: 'global' },
                         })
-                        toast.success('User reactivated.')
+                        toast.success('User restored.')
                       } catch {
-                        toast.error('Failed to reactivate user.')
+                        toast.error('Failed to restore user.')
                       }
                     }}
                     disabled={reactivateUser.isPending}
                   >
                     <ShieldCheck className='h-4 w-4 mr-1.5' />
-                    {reactivateUser.isPending ? 'Reactivating...' : 'Reactivate'}
+                    {reactivateUser.isPending ? 'Restoring...' : 'Restore'}
                   </Button>
+                ) : (
+                  <>
+                    {user.status !== 'suspended' ? (
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                        onClick={() => setSuspendOpen(true)}
+                      >
+                        <ShieldAlert className='h-4 w-4 mr-1.5' />
+                        Suspend
+                      </Button>
+                    ) : (
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={async () => {
+                          try {
+                            await reactivateUser.mutateAsync({
+                              userId,
+                              data: { scope: 'global' },
+                            })
+                            toast.success('User reactivated.')
+                          } catch {
+                            toast.error('Failed to reactivate user.')
+                          }
+                        }}
+                        disabled={reactivateUser.isPending}
+                      >
+                        <ShieldCheck className='h-4 w-4 mr-1.5' />
+                        {reactivateUser.isPending ? 'Reactivating...' : 'Reactivate'}
+                      </Button>
+                    )}
+                  </>
                 )}
                 <Button
                   variant='outline'

@@ -62,12 +62,13 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UsersDelet
               </div>
               <AlertDialogDescription className='space-y-2'>
                 <p>
-                  You are about to permanently delete{' '}
+                  You are about to <strong>soft delete</strong>{' '}
                   <strong>{currentRow.firstName} {currentRow.lastName}</strong>{' '}
                   (<span className='font-mono text-xs'>{currentRow.email}</span>).
                 </p>
-                <p className='text-destructive font-medium'>
-                  This will remove them from all tenants and workspaces and cannot be undone.
+                <p className='text-muted-foreground'>
+                  This will disable their account and suspend all memberships. 
+                  You can <strong>restore</strong> them later from the user detail page.
                 </p>
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -86,7 +87,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UsersDelet
                 <AlertDialogTitle>Final Confirmation</AlertDialogTitle>
               </div>
               <AlertDialogDescription>
-                Type <span className='font-mono font-semibold text-foreground'>{currentRow.email}</span> to permanently delete this user.
+                Type <span className='font-mono font-semibold text-foreground'>{currentRow.email}</span> to confirm soft deletion.
               </AlertDialogDescription>
             </AlertDialogHeader>
 

@@ -2,7 +2,7 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { callTypes } from '../data/data'
 import { type User } from '../data/schema'
@@ -71,7 +71,7 @@ export const usersColumns: ColumnDef<User>[] = [
       return (
         <div className='flex items-center gap-3 ps-0.5'>
           <Avatar className='h-8 w-8'>
-            {avatar && <img src={avatar} alt={initials} />}
+            <AvatarImage src={avatar ?? undefined} alt={initials} />
             <AvatarFallback className='text-xs'>{initials}</AvatarFallback>
           </Avatar>
           <div>
