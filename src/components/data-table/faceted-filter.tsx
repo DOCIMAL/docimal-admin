@@ -37,7 +37,7 @@ export function DataTableFacetedFilter<TData, TValue>({
 }: DataTableFacetedFilterProps<TData, TValue>) {
   if (!column) return null
 
-  let facets: Map<any, number> | undefined
+  let facets: Map<string, number> | undefined
   try {
     facets = column.getFacetedUniqueValues()
   } catch {

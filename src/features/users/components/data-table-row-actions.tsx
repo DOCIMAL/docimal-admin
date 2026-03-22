@@ -1,7 +1,7 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { useNavigate } from '@tanstack/react-router'
 import { type Row } from '@tanstack/react-table'
 import { ShieldAlert, ShieldCheck, Trash2, Eye } from 'lucide-react'
-import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -37,7 +37,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[170px]'>
           <DropdownMenuItem
-            onClick={() => navigate({ to: '/users/$userId', params: { userId: user.id } })}
+            onClick={() =>
+              navigate({ to: '/users/$userId', params: { userId: user.id } })
+            }
           >
             View Details
             <DropdownMenuShortcut>

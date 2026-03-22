@@ -3,6 +3,17 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -25,22 +36,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { useUpdateUserTenantRole, useRemoveUserFromTenant } from '../api/useAdminUsers'
+  useUpdateUserTenantRole,
+  useRemoveUserFromTenant,
+} from '../api/useAdminUsers'
 
 // ── Change Role Dialog ──────────────────────────────────────────
 const changeRoleSchema = z.object({
-  role: z.union([z.literal('tenant_owner'), z.literal('tenant_admin'), z.literal('user')]),
+  role: z.union([
+    z.literal('tenant_owner'),
+    z.literal('tenant_admin'),
+    z.literal('user'),
+  ]),
 })
 type ChangeRoleForm = z.infer<typeof changeRoleSchema>
 
@@ -65,7 +72,9 @@ export function ChangeRoleDialog({
 
   const form = useForm<ChangeRoleForm>({
     resolver: zodResolver(changeRoleSchema),
-    defaultValues: { role: currentRole as any },
+    defaultValues: {
+      role: currentRole as 'tenant_owner' | 'tenant_admin' | 'user',
+    },
   })
 
   const onSubmit = async (data: ChangeRoleForm) => {
@@ -95,7 +104,10 @@ export function ChangeRoleDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>New Role</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
@@ -112,7 +124,11 @@ export function ChangeRoleDialog({
               )}
             />
             <DialogFooter>
-              <Button type='button' variant='outline' onClick={() => onOpenChange(false)}>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type='submit' disabled={updateRole.isPending}>
@@ -169,7 +185,7 @@ export function RemoveFromTenantDialog({
           <AlertDialogAction
             onClick={handleRemove}
             disabled={removeUser.isPending}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            className='text-destructive-foreground bg-destructive hover:bg-destructive/90'
           >
             {removeUser.isPending ? 'Removing...' : 'Remove from Tenant'}
           </AlertDialogAction>

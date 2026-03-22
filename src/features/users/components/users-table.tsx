@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -24,7 +25,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useAdminUsers } from '../api/useAdminUsers'
 import { type User } from '../data/schema'
 import { usersColumns as columns } from './users-columns'
@@ -62,7 +62,9 @@ export function UsersTable({ search, navigate }: DataTableProps) {
   })
 
   // Build API filter params from table state
-  const statusFilter = columnFilters.find((f) => f.id === 'status')?.value as string[] | undefined
+  const statusFilter = columnFilters.find((f) => f.id === 'status')?.value as
+    | string[]
+    | undefined
   const searchQuery = (search.search as string) ?? ''
   const apiFilters = {
     page: pagination.pageIndex + 1,
@@ -177,7 +179,10 @@ export function UsersTable({ search, navigate }: DataTableProps) {
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -210,14 +215,20 @@ export function UsersTable({ search, navigate }: DataTableProps) {
                         cell.column.columnDef.meta?.tdClassName
                       )}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'
+                >
                   No users found.
                 </TableCell>
               </TableRow>

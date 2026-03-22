@@ -25,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -34,22 +34,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
-import { ThemeSwitch } from '@/components/theme-switch'
 import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
 import {
   useAdminUserDetail,
   useReactivateUser,
   useAdminUserWorkspaces,
   useAdminUserActivity,
+  type WorkspaceMembership,
+  type ActivityItem,
 } from '../api/useAdminUsers'
+import { type UserStatus } from '../data/schema'
 import { ChangeRoleDialog, RemoveFromTenantDialog } from './change-role-dialog'
+import { RoleLabel } from './role-label'
 import { SuspendUserDialog } from './suspend-user-dialog'
 import { UsersDeleteDialog } from './users-delete-dialog'
-import { RoleLabel } from './role-label'
 
 type TenantDialogState = {
   type: 'changeRole' | 'remove'
@@ -84,15 +87,17 @@ function formatRelative(dateStr?: string | null): string {
 }
 
 const statusColors: Record<string, string> = {
-  active: 'bg-teal-100/30 text-teal-800 dark:text-teal-400 border-teal-200 dark:border-teal-800',
-  suspended:
-    'bg-destructive/10 text-destructive border-destructive/20',
+  active:
+    'bg-teal-100/30 text-teal-800 dark:text-teal-400 border-teal-200 dark:border-teal-800',
+  suspended: 'bg-destructive/10 text-destructive border-destructive/20',
   inactive: 'bg-muted text-muted-foreground border-muted-foreground/20',
 }
 
 const tenantStatusColors: Record<string, string> = {
-  active: 'bg-teal-100/30 text-teal-800 dark:text-teal-400 border-teal-200 dark:border-teal-800',
-  suspended: 'bg-orange-100/30 text-orange-800 dark:text-orange-400 border-orange-200 dark:border-orange-800',
+  active:
+    'bg-teal-100/30 text-teal-800 dark:text-teal-400 border-teal-200 dark:border-teal-800',
+  suspended:
+    'bg-orange-100/30 text-orange-800 dark:text-orange-400 border-orange-200 dark:border-orange-800',
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -139,11 +144,11 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
             <ProfileDropdown />
           </div>
         </Header>
-        <Main className='flex flex-col items-center justify-center h-64 gap-4'>
-          <p className='text-muted-foreground text-lg'>User not found.</p>
+        <Main className='flex h-64 flex-col items-center justify-center gap-4'>
+          <p className='text-lg text-muted-foreground'>User not found.</p>
           <Link to='/users'>
             <Button variant='outline'>
-              <ArrowLeft className='h-4 w-4 mr-2' />
+              <ArrowLeft className='mr-2 h-4 w-4' />
               Back to Users
             </Button>
           </Link>
@@ -158,13 +163,14 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
 
   const userForDialog = {
     ...user,
-    status: user.status as any,
+    status: user.status as UserStatus,
     createdAt: new Date(user.createdAt),
     lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt) : null,
   }
 
-  const workspaces = (workspacesData as any)?.data ?? user.workspaceMemberships ?? []
-  const activities = (activityData as any)?.data ?? []
+  const workspaces: WorkspaceMembership[] =
+    workspacesData?.data ?? user.workspaceMemberships ?? []
+  const activities: ActivityItem[] = activityData?.data ?? []
 
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -181,7 +187,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
         {/* Breadcrumb */}
         <Link
           to='/users'
-          className='inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors'
+          className='inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
         >
           <ArrowLeft className='h-4 w-4' />
           Back to Users
@@ -190,23 +196,23 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
         {/* ── Profile Card ─────────────────────────────────────────── */}
         <Card>
           <CardContent className='pt-6 pb-6'>
-            <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-6'>
+            <div className='flex flex-col gap-6 md:flex-row md:items-start md:justify-between'>
               {/* Left: Avatar + Info */}
               <div className='flex items-start gap-5'>
-                <Avatar className='h-16 w-16 text-xl shrink-0'>
+                <Avatar className='h-16 w-16 shrink-0 text-xl'>
                   <AvatarImage
                     src={user.avatar}
                     alt={initials}
                     className='object-cover'
                   />
-                  <AvatarFallback className='bg-primary/10 text-primary font-semibold'>
+                  <AvatarFallback className='bg-primary/10 font-semibold text-primary'>
                     {initials}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className='space-y-2'>
                   {/* Name + Status badges */}
-                  <div className='flex items-center gap-2 flex-wrap'>
+                  <div className='flex flex-wrap items-center gap-2'>
                     <h1 className='text-2xl font-bold tracking-tight'>
                       {user.firstName} {user.lastName}
                     </h1>
@@ -219,9 +225,9 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                     {user.emailVerified && (
                       <Badge
                         variant='outline'
-                        className='bg-sky-100/30 text-sky-700 dark:text-sky-400 border-sky-200 dark:border-sky-800'
+                        className='border-sky-200 bg-sky-100/30 text-sky-700 dark:border-sky-800 dark:text-sky-400'
                       >
-                        <ShieldCheck className='h-3 w-3 mr-1' />
+                        <ShieldCheck className='mr-1 h-3 w-3' />
                         Verified
                       </Badge>
                     )}
@@ -250,12 +256,12 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
               </div>
 
               {/* Right: Action buttons */}
-              <div className='flex gap-2 shrink-0'> 
+              <div className='flex shrink-0 gap-2'>
                 {user.status === 'inactive' ? (
                   <Button
                     variant='outline'
                     size='sm'
-                    className='text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/20'
+                    className='border-teal-200 text-teal-600 hover:bg-teal-50 dark:border-teal-800 dark:text-teal-400 dark:hover:bg-teal-900/20'
                     onClick={async () => {
                       try {
                         await reactivateUser.mutateAsync({
@@ -269,7 +275,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                     }}
                     disabled={reactivateUser.isPending}
                   >
-                    <ShieldCheck className='h-4 w-4 mr-1.5' />
+                    <ShieldCheck className='mr-1.5 h-4 w-4' />
                     {reactivateUser.isPending ? 'Restoring...' : 'Restore'}
                   </Button>
                 ) : (
@@ -278,10 +284,10 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                       <Button
                         variant='outline'
                         size='sm'
-                        className='text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                        className='border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-800 dark:text-orange-400 dark:hover:bg-orange-900/20'
                         onClick={() => setSuspendOpen(true)}
                       >
-                        <ShieldAlert className='h-4 w-4 mr-1.5' />
+                        <ShieldAlert className='mr-1.5 h-4 w-4' />
                         Suspend
                       </Button>
                     ) : (
@@ -301,8 +307,10 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                         }}
                         disabled={reactivateUser.isPending}
                       >
-                        <ShieldCheck className='h-4 w-4 mr-1.5' />
-                        {reactivateUser.isPending ? 'Reactivating...' : 'Reactivate'}
+                        <ShieldCheck className='mr-1.5 h-4 w-4' />
+                        {reactivateUser.isPending
+                          ? 'Reactivating...'
+                          : 'Reactivate'}
                       </Button>
                     )}
                   </>
@@ -310,10 +318,10 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                 <Button
                   variant='outline'
                   size='sm'
-                  className='text-destructive border-destructive/30 hover:bg-destructive/10'
+                  className='border-destructive/30 text-destructive hover:bg-destructive/10'
                   onClick={() => setDeleteOpen(true)}
                 >
-                  <Trash2 className='h-4 w-4 mr-1.5' />
+                  <Trash2 className='mr-1.5 h-4 w-4' />
                   Delete
                 </Button>
               </div>
@@ -322,15 +330,17 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
         </Card>
 
         {/* ── Stats Cards ──────────────────────────────────────────── */}
-        <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+        <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
           <Card>
             <CardContent className='px-5 py-3'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                  <div className='p-1.5 rounded-md bg-primary/10'>
+                  <div className='rounded-md bg-primary/10 p-1.5'>
                     <Building2 className='h-3.5 w-3.5 text-primary' />
                   </div>
-                  <p className='text-sm font-medium text-muted-foreground'>Tenants</p>
+                  <p className='text-sm font-medium text-muted-foreground'>
+                    Tenants
+                  </p>
                 </div>
                 <p className='text-xl font-bold'>
                   {user.tenantMemberships?.length ?? 0}
@@ -342,10 +352,12 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
             <CardContent className='px-5 py-3'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                  <div className='p-1.5 rounded-md bg-blue-500/10'>
+                  <div className='rounded-md bg-blue-500/10 p-1.5'>
                     <Briefcase className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' />
                   </div>
-                  <p className='text-sm font-medium text-muted-foreground'>Workspaces</p>
+                  <p className='text-sm font-medium text-muted-foreground'>
+                    Workspaces
+                  </p>
                 </div>
                 <p className='text-xl font-bold'>{workspaces.length}</p>
               </div>
@@ -355,10 +367,12 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
             <CardContent className='px-5 py-3'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                  <div className='p-1.5 rounded-md bg-teal-500/10'>
+                  <div className='rounded-md bg-teal-500/10 p-1.5'>
                     <Activity className='h-3.5 w-3.5 text-teal-600 dark:text-teal-400' />
                   </div>
-                  <p className='text-sm font-medium text-muted-foreground'>Conversations</p>
+                  <p className='text-sm font-medium text-muted-foreground'>
+                    Conversations
+                  </p>
                 </div>
                 <p className='text-xl font-bold'>
                   {user.stats?.totalConversations ?? 0}
@@ -370,10 +384,12 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
             <CardContent className='px-5 py-3'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                  <div className='p-1.5 rounded-md bg-violet-500/10'>
+                  <div className='rounded-md bg-violet-500/10 p-1.5'>
                     <Globe className='h-3.5 w-3.5 text-violet-600 dark:text-violet-400' />
                   </div>
-                  <p className='text-sm font-medium text-muted-foreground'>Documents</p>
+                  <p className='text-sm font-medium text-muted-foreground'>
+                    Documents
+                  </p>
                 </div>
                 <p className='text-xl font-bold'>
                   {user.stats?.totalDocumentsUploaded ?? 0}
@@ -417,7 +433,9 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                       <TableHead className='text-center'>Role</TableHead>
                       <TableHead className='text-center'>Status</TableHead>
                       <TableHead className='text-center'>Joined</TableHead>
-                      <TableHead className='text-center pr-0 w-[180px]'>Actions</TableHead>
+                      <TableHead className='w-[180px] pr-0 text-center'>
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -432,7 +450,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                               {m.isDefault && (
                                 <Badge
                                   variant='outline'
-                                  className='text-[10px] px-1.5 py-0'
+                                  className='px-1.5 py-0 text-[10px]'
                                 >
                                   Primary
                                 </Badge>
@@ -480,7 +498,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                               <Button
                                 size='sm'
                                 variant='outline'
-                                className='h-7 text-xs text-destructive border-destructive/30 hover:bg-destructive/10'
+                                className='h-7 border-destructive/30 text-xs text-destructive hover:bg-destructive/10'
                                 onClick={() =>
                                   setTenantDialog({
                                     type: 'remove',
@@ -533,9 +551,9 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {workspaces.map((w: any, i: number) => (
+                      {workspaces.map((w: WorkspaceMembership, i: number) => (
                         <TableRow key={i}>
-                          <TableCell className='font-medium pl-0'>
+                          <TableCell className='pl-0 font-medium'>
                             {w.workspace?.name ?? w.name ?? '—'}
                           </TableCell>
                           <TableCell className='text-muted-foreground'>
@@ -546,7 +564,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                               <RoleLabel role={w.role} />
                             </div>
                           </TableCell>
-                          <TableCell className='text-xs text-muted-foreground max-w-[200px] truncate'>
+                          <TableCell className='max-w-[200px] truncate text-xs text-muted-foreground'>
                             {w.permissions?.join(', ') ?? '—'}
                           </TableCell>
                         </TableRow>
@@ -554,7 +572,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                     </TableBody>
                   </Table>
                 ) : (
-                  <div className='flex flex-col items-center justify-center py-16 text-muted-foreground gap-2'>
+                  <div className='flex flex-col items-center justify-center gap-2 py-16 text-muted-foreground'>
                     <Briefcase className='h-10 w-10 opacity-20' />
                     <p>No workspace memberships found.</p>
                   </div>
@@ -575,26 +593,26 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
               <CardContent>
                 {activities.length ? (
                   <div className='space-y-0'>
-                    {activities.map((item: any, i: number) => (
+                    {activities.map((item: ActivityItem, i: number) => (
                       <div key={i} className='flex gap-4 py-3'>
                         <div className='flex flex-col items-center'>
-                          <div className='h-2 w-2 rounded-full bg-primary mt-2' />
+                          <div className='mt-2 h-2 w-2 rounded-full bg-primary' />
                           {i < activities.length - 1 && (
-                            <div className='flex-1 w-px bg-border mt-1' />
+                            <div className='mt-1 w-px flex-1 bg-border' />
                           )}
                         </div>
                         <div className='flex-1 pb-2'>
                           <p className='text-sm'>
                             {item.description ?? item.action ?? 'Activity'}
                           </p>
-                          <div className='flex items-center gap-2 mt-1'>
+                          <div className='mt-1 flex items-center gap-2'>
                             <span className='text-xs text-muted-foreground'>
                               {formatRelative(item.createdAt ?? item.timestamp)}
                             </span>
                             {item.tenantName && (
                               <Badge
                                 variant='outline'
-                                className='text-[10px] px-1.5 py-0'
+                                className='px-1.5 py-0 text-[10px]'
                               >
                                 {item.tenantName}
                               </Badge>
@@ -605,7 +623,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                     ))}
                   </div>
                 ) : (
-                  <div className='flex flex-col items-center justify-center py-16 text-muted-foreground gap-2'>
+                  <div className='flex flex-col items-center justify-center gap-2 py-16 text-muted-foreground'>
                     <Activity className='h-10 w-10 opacity-20' />
                     <p>No activity recorded yet.</p>
                   </div>

@@ -25,12 +25,14 @@ export const userSchema = z.object({
     .object({ id: z.string(), name: z.string(), role: z.string() })
     .optional()
     .nullable(),
-  tenantMemberships: z.array(
-    z.object({
-      tenant: z.object({ id: z.string(), name: z.string() }),
-      role: z.string(),
-    })
-  ).optional(),
+  tenantMemberships: z
+    .array(
+      z.object({
+        tenant: z.object({ id: z.string(), name: z.string() }),
+        role: z.string(),
+      })
+    )
+    .optional(),
   createdAt: z.coerce.date(),
   lastLoginAt: z.coerce.date().optional().nullable(),
 })

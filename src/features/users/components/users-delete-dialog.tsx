@@ -23,7 +23,11 @@ interface UsersDeleteDialogProps {
   currentRow: User
 }
 
-export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UsersDeleteDialogProps) {
+export function UsersDeleteDialog({
+  open,
+  onOpenChange,
+  currentRow,
+}: UsersDeleteDialogProps) {
   const deleteUser = useDeleteUser()
   // Step 1 = warning, Step 2 = type email to confirm
   const [step, setStep] = useState<1 | 2>(1)
@@ -63,12 +67,16 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UsersDelet
               <AlertDialogDescription className='space-y-2'>
                 <p>
                   You are about to <strong>soft delete</strong>{' '}
-                  <strong>{currentRow.firstName} {currentRow.lastName}</strong>{' '}
-                  (<span className='font-mono text-xs'>{currentRow.email}</span>).
+                  <strong>
+                    {currentRow.firstName} {currentRow.lastName}
+                  </strong>{' '}
+                  (<span className='font-mono text-xs'>{currentRow.email}</span>
+                  ).
                 </p>
                 <p className='text-muted-foreground'>
-                  This will disable their account and suspend all memberships. 
-                  You can <strong>restore</strong> them later from the user detail page.
+                  This will disable their account and suspend all memberships.
+                  You can <strong>restore</strong> them later from the user
+                  detail page.
                 </p>
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -87,11 +95,15 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UsersDelet
                 <AlertDialogTitle>Final Confirmation</AlertDialogTitle>
               </div>
               <AlertDialogDescription>
-                Type <span className='font-mono font-semibold text-foreground'>{currentRow.email}</span> to confirm soft deletion.
+                Type{' '}
+                <span className='font-mono font-semibold text-foreground'>
+                  {currentRow.email}
+                </span>{' '}
+                to confirm soft deletion.
               </AlertDialogDescription>
             </AlertDialogHeader>
 
-            <div className='space-y-2 my-1'>
+            <div className='my-1 space-y-2'>
               <Label htmlFor='confirm-email' className='text-sm font-medium'>
                 Confirm email address
               </Label>
@@ -112,7 +124,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UsersDelet
               <AlertDialogAction
                 onClick={handleDelete}
                 disabled={!isConfirmed || deleteUser.isPending}
-                className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                className='text-destructive-foreground bg-destructive hover:bg-destructive/90'
               >
                 {deleteUser.isPending ? 'Deleting...' : 'Delete User'}
               </AlertDialogAction>

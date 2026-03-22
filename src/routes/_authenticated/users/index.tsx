@@ -16,7 +16,13 @@ const usersSearchSchema = z.object({
     .optional()
     .catch([]),
   role: z
-    .array(z.union([z.literal('tenant_owner'), z.literal('tenant_admin'), z.literal('user')]))
+    .array(
+      z.union([
+        z.literal('tenant_owner'),
+        z.literal('tenant_admin'),
+        z.literal('user'),
+      ])
+    )
     .optional()
     .catch([]),
   search: z.string().optional().catch(''),

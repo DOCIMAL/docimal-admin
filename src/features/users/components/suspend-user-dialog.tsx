@@ -1,8 +1,9 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
 import { ShieldAlert } from 'lucide-react'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -19,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -44,7 +44,11 @@ interface SuspendUserDialogProps {
   currentRow: User
 }
 
-export function SuspendUserDialog({ open, onOpenChange, currentRow }: SuspendUserDialogProps) {
+export function SuspendUserDialog({
+  open,
+  onOpenChange,
+  currentRow,
+}: SuspendUserDialogProps) {
   const suspendUser = useSuspendUser()
 
   const form = useForm<SuspendFormValues>({
@@ -75,7 +79,8 @@ export function SuspendUserDialog({ open, onOpenChange, currentRow }: SuspendUse
             <DialogTitle>Suspend User</DialogTitle>
           </div>
           <DialogDescription>
-            Suspending <strong>{currentRow.email}</strong> will block their access.
+            Suspending <strong>{currentRow.email}</strong> will block their
+            access.
           </DialogDescription>
         </DialogHeader>
 
@@ -87,15 +92,22 @@ export function SuspendUserDialog({ open, onOpenChange, currentRow }: SuspendUse
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Suspension Scope</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder='Select scope' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='global'>Global – All tenants</SelectItem>
-                      <SelectItem value='tenant'>Specific tenant only</SelectItem>
+                      <SelectItem value='global'>
+                        Global – All tenants
+                      </SelectItem>
+                      <SelectItem value='tenant'>
+                        Specific tenant only
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -110,7 +122,10 @@ export function SuspendUserDialog({ open, onOpenChange, currentRow }: SuspendUse
                 <FormItem>
                   <FormLabel>Reason</FormLabel>
                   <FormControl>
-                    <Input placeholder='Enter suspension reason...' {...field} />
+                    <Input
+                      placeholder='Enter suspension reason...'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,7 +133,11 @@ export function SuspendUserDialog({ open, onOpenChange, currentRow }: SuspendUse
             />
 
             <DialogFooter>
-              <Button type='button' variant='outline' onClick={() => onOpenChange(false)}>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button
@@ -144,7 +163,11 @@ interface ReactivateUserDialogProps {
   currentRow: User
 }
 
-export function ReactivateUserDialog({ open, onOpenChange, currentRow }: ReactivateUserDialogProps) {
+export function ReactivateUserDialog({
+  open,
+  onOpenChange,
+  currentRow,
+}: ReactivateUserDialogProps) {
   const reactivateUser = useReactivateUser()
 
   const handleReactivate = async () => {
@@ -166,12 +189,19 @@ export function ReactivateUserDialog({ open, onOpenChange, currentRow }: Reactiv
         <DialogHeader>
           <DialogTitle>Reactivate User</DialogTitle>
           <DialogDescription>
-            Are you sure you want to reactivate <strong>{currentRow.email}</strong>? They will regain access to all their tenants.
+            Are you sure you want to reactivate{' '}
+            <strong>{currentRow.email}</strong>? They will regain access to all
+            their tenants.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant='outline' onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleReactivate} disabled={reactivateUser.isPending}>
+          <Button variant='outline' onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleReactivate}
+            disabled={reactivateUser.isPending}
+          >
             {reactivateUser.isPending ? 'Reactivating...' : 'Reactivate'}
           </Button>
         </DialogFooter>

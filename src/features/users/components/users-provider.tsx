@@ -21,14 +21,26 @@ export function UsersProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useDialogState<UsersDialogType>(null)
   const [currentRow, setCurrentRow] = useState<User | null>(null)
   const tableRef = useRef<Table<User> | null>(null)
-  const [selectedTenants, setSelectedTenants] = useState<Record<string, string>>({})
+  const [selectedTenants, setSelectedTenants] = useState<
+    Record<string, string>
+  >({})
 
   const setSelectedTenant = (userId: string, tenantId: string) => {
     setSelectedTenants((prev) => ({ ...prev, [userId]: tenantId }))
   }
 
   return (
-    <UsersContext value={{ open, setOpen, currentRow, setCurrentRow, tableRef, selectedTenants, setSelectedTenant }}>
+    <UsersContext
+      value={{
+        open,
+        setOpen,
+        currentRow,
+        setCurrentRow,
+        tableRef,
+        selectedTenants,
+        setSelectedTenant,
+      }}
+    >
       {children}
     </UsersContext>
   )

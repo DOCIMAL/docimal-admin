@@ -1,18 +1,18 @@
 import { type ColumnDef } from '@tanstack/react-table'
+import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { DataTableColumnHeader } from '@/components/data-table'
-import { callTypes } from '../data/data'
-import { type User } from '../data/schema'
-import { ChevronDown } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { DataTableColumnHeader } from '@/components/data-table'
+import { callTypes } from '../data/data'
+import { type User } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 import { RoleLabel } from './role-label'
 
@@ -75,10 +75,10 @@ export const usersColumns: ColumnDef<User>[] = [
             <AvatarFallback className='text-xs'>{initials}</AvatarFallback>
           </Avatar>
           <div>
-            <div className='font-medium leading-none'>
+            <div className='leading-none font-medium'>
               {firstName} {lastName}
             </div>
-            <div className='text-xs text-muted-foreground mt-0.5'>{email}</div>
+            <div className='mt-0.5 text-xs text-muted-foreground'>{email}</div>
           </div>
         </div>
       )
@@ -96,9 +96,7 @@ export const usersColumns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Email' />
     ),
-    cell: ({ row }) => (
-      <span className='text-sm'>{row.getValue('email')}</span>
-    ),
+    cell: ({ row }) => <span className='text-sm'>{row.getValue('email')}</span>,
     enableSorting: true,
   },
   {
@@ -116,7 +114,12 @@ export const usersColumns: ColumnDef<User>[] = [
     header: 'Tenants',
     cell: ({ row, table }) => {
       const { tenantCount, primaryTenant, tenantMemberships, id } = row.original
-      const meta = table.options.meta as any
+      const meta = table.options.meta as
+        | {
+            selectedTenants?: Record<string, string>
+            setSelectedTenant?: (userId: string, tenantId: string) => void
+          }
+        | undefined
       const selectedTenantId = meta?.selectedTenants?.[id] || primaryTenant?.id
 
       const effectiveMemberships =
@@ -139,23 +142,30 @@ export const usersColumns: ColumnDef<User>[] = [
         <div className='flex flex-col'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={cn(
-                'flex items-center gap-1.5 font-medium transition-colors outline-none text-sm w-fit group',
-                effectiveMemberships.length > 0 ? 'hover:text-primary cursor-pointer' : 'cursor-default'
-              )}>
-                <span className='group-hover:underline underline-offset-4'>
+              <button
+                className={cn(
+                  'group flex w-fit items-center gap-1.5 text-sm font-medium transition-colors outline-none',
+                  effectiveMemberships.length > 0
+                    ? 'cursor-pointer hover:text-primary'
+                    : 'cursor-default'
+                )}
+              >
+                <span className='underline-offset-4 group-hover:underline'>
                   {tenantCount} org{tenantCount !== 1 ? 's' : ''}
                 </span>
-                <ChevronDown className='h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors' />
+                <ChevronDown className='h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-primary' />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='start' className='w-56 overflow-y-auto max-h-72'>
+            <DropdownMenuContent
+              align='start'
+              className='max-h-72 w-56 overflow-y-auto'
+            >
               {effectiveMemberships.map((m, idx) => (
                 <DropdownMenuItem
                   key={`${m.tenant.id}-${idx}`}
-                  onClick={() => meta?.setSelectedTenant(id, m.tenant.id)}
+                  onClick={() => meta?.setSelectedTenant?.(id, m.tenant.id)}
                   className={cn(
-                    'flex flex-col items-start gap-1 py-2 cursor-pointer',
+                    'flex cursor-pointer flex-col items-start gap-1 py-2',
                     m.tenant.id === selectedTenantId ? 'bg-muted' : ''
                   )}
                 >
@@ -167,9 +177,11 @@ export const usersColumns: ColumnDef<User>[] = [
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <div className='text-[11px] text-muted-foreground mt-1 flex items-center gap-1.5 px-0.5 max-w-[180px]'>
-             <span className='opacity-50 font-mono'>▸</span> 
-             <span className='truncate font-medium text-foreground/70'>{selectedMembership.tenant.name}</span>
+          <div className='mt-1 flex max-w-[180px] items-center gap-1.5 px-0.5 text-[11px] text-muted-foreground'>
+            <span className='font-mono opacity-50'>▸</span>
+            <span className='truncate font-medium text-foreground/70'>
+              {selectedMembership.tenant.name}
+            </span>
           </div>
         </div>
       )
@@ -179,7 +191,11 @@ export const usersColumns: ColumnDef<User>[] = [
   {
     accessorKey: 'status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Status' className='justify-center text-center' />
+      <DataTableColumnHeader
+        column={column}
+        title='Status'
+        className='justify-center text-center'
+      />
     ),
     cell: ({ row }) => {
       const { status } = row.original
@@ -202,11 +218,20 @@ export const usersColumns: ColumnDef<User>[] = [
     accessorFn: (row) => row.primaryTenant?.role ?? row.role ?? 'user',
     cell: ({ row, table }) => {
       const { tenantMemberships, primaryTenant, role, id } = row.original
-      const selectedTenantId = (table.options.meta as any)?.selectedTenants?.[id]
-      
+      const selectedTenantId = (
+        table.options.meta as
+          | {
+              selectedTenants?: Record<string, string>
+              setSelectedTenant?: (userId: string, tenantId: string) => void
+            }
+          | undefined
+      )?.selectedTenants?.[id]
+
       let displayRole = primaryTenant?.role ?? role ?? ''
       if (selectedTenantId && tenantMemberships) {
-        const m = tenantMemberships.find((m) => m.tenant.id === selectedTenantId)
+        const m = tenantMemberships.find(
+          (m) => m.tenant.id === selectedTenantId
+        )
         if (m) displayRole = m.role
       }
       return (
@@ -223,7 +248,7 @@ export const usersColumns: ColumnDef<User>[] = [
     header: () => <div className='text-center'>Auth Provider</div>,
     cell: ({ row }) => (
       <div className='text-center'>
-        <span className='capitalize text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground font-medium'>
+        <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground capitalize'>
           {row.original.authProvider}
         </span>
       </div>
@@ -235,7 +260,11 @@ export const usersColumns: ColumnDef<User>[] = [
   {
     accessorKey: 'lastLoginAt',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Last Login' className='justify-center text-center' />
+      <DataTableColumnHeader
+        column={column}
+        title='Last Login'
+        className='justify-center text-center'
+      />
     ),
     cell: ({ row }) => (
       <div className='text-center text-sm text-muted-foreground'>

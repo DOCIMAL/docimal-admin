@@ -10,7 +10,7 @@ export function GeneralError({
   className,
   minimal = false,
   error,
-}: GeneralErrorProps & { error?: any }) {
+}: GeneralErrorProps & { error?: Error | null }) {
   const navigate = useNavigate()
   const { history } = useRouter()
   return (
@@ -21,9 +21,9 @@ export function GeneralError({
         )}
         <span className='font-medium'>Oops! Something went wrong {`:')`}</span>
         {error && (
-          <div className='mt-2 max-w-lg rounded-md bg-destructive/10 p-4 text-destructive whitespace-pre-wrap text-left text-sm font-mono'>
+          <div className='mt-2 max-w-lg rounded-md bg-destructive/10 p-4 text-left font-mono text-sm whitespace-pre-wrap text-destructive'>
             {error?.message || String(error)}
-            <br/>
+            <br />
             {error?.stack}
           </div>
         )}

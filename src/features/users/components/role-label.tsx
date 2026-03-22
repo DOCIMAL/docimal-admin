@@ -1,12 +1,12 @@
 import { Crown, ShieldCheck, User as UserIcon } from 'lucide-react'
 
 export function RoleLabel({ role }: { role: string | undefined | null }) {
-  if (!role) return <span className='text-muted-foreground text-sm'>—</span>
+  if (!role) return <span className='text-sm text-muted-foreground'>—</span>
 
   const normalizedRole = role.toLowerCase()
   let icon = <UserIcon className='h-3.5 w-3.5 text-slate-500' />
   let colorClass = 'text-slate-700 dark:text-slate-300'
-  let label = normalizedRole.replace('tenant_', '').replace(/_/g, ' ')
+  const label = normalizedRole.replace('tenant_', '').replace(/_/g, ' ')
 
   if (normalizedRole.includes('owner')) {
     icon = <Crown className='h-3.5 w-3.5 text-orange-500' />
@@ -20,7 +20,9 @@ export function RoleLabel({ role }: { role: string | undefined | null }) {
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 capitalize ${colorClass}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 capitalize ${colorClass}`}
+    >
       {icon}
       {label}
     </span>
