@@ -315,15 +315,17 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                     )}
                   </>
                 )}
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='border-destructive/30 text-destructive hover:bg-destructive/10'
-                  onClick={() => setDeleteOpen(true)}
-                >
-                  <Trash2 className='mr-1.5 h-4 w-4' />
-                  Delete
-                </Button>
+                {user.status !== 'inactive' && (
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='border-destructive/30 text-destructive hover:bg-destructive/10'
+                    onClick={() => setDeleteOpen(true)}
+                  >
+                    <Trash2 className='mr-1.5 h-4 w-4' />
+                    Delete
+                  </Button>
+                )}
               </div>
             </div>
           </CardContent>

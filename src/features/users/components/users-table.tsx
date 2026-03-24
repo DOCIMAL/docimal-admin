@@ -118,8 +118,11 @@ export function UsersTable({ search, navigate }: DataTableProps) {
   })
 
   useEffect(() => {
-    ensurePageInRange(table.getPageCount())
-  }, [table, ensurePageInRange])
+    const totalPages = apiData?.meta?.totalPages
+    if (!isLoading && typeof totalPages === 'number' && totalPages > 0) {
+      ensurePageInRange(totalPages)
+    }
+  }, [apiData?.meta?.totalPages, isLoading, ensurePageInRange])
 
   return (
     <div
