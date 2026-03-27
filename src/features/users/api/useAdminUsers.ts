@@ -3,6 +3,7 @@ import {
   useMutation,
   useQueryClient,
   useInfiniteQuery,
+  keepPreviousData,
 } from '@tanstack/react-query'
 import { apiClient as api } from '@/lib/api-client'
 
@@ -101,6 +102,7 @@ export const useAdminUsers = (
       const { data } = await api.get('/admin/users', { params: filters })
       return data as { data: UserOverview[]; meta: PaginationMeta }
     },
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -201,6 +203,14 @@ export const useReactivateUser = () => {
       return response.data
     },
     onSuccess: (_, variables) => {
+      // Reflect status change instantly on detail page (no manual reload needed)
+      if (variables.data.scope === 'global') {
+        queryClient.setQueryData(
+          adminUserKeys.detail(variables.userId),
+          (prev: UserFullDetail | undefined) =>
+            prev ? { ...prev, status: 'active' } : prev
+        )
+      }
       queryClient.invalidateQueries({
         queryKey: adminUserKeys.detail(variables.userId),
       })
@@ -265,7 +275,16 @@ export const useDeleteUser = () => {
       const response = await api.delete(`/admin/users/${userId}`)
       return response.data
     },
-    onSuccess: () => {
+    onSuccess: (_, userId) => {
+      // Soft delete maps to inactive status; update detail cache immediately
+      queryClient.setQueryData(
+        adminUserKeys.detail(userId),
+        (prev: UserFullDetail | undefined) =>
+          prev ? { ...prev, status: 'inactive' } : prev
+      )
+      queryClient.invalidateQueries({
+        queryKey: adminUserKeys.detail(userId),
+      })
       queryClient.invalidateQueries({ queryKey: adminUserKeys.lists() })
     },
   })
