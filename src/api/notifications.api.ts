@@ -23,7 +23,7 @@ export interface Notification {
   type: 'invitation' | 'document_processed' | 'workflow_completed' | 'mention' | 'system'
   title: string
   message: string
-  data?: Record<string, any>
+  data?: Record<string, unknown>
   read: boolean
   readAt?: string
   actionUrl?: string

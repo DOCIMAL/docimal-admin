@@ -19,7 +19,7 @@ import {
   useNotifications,
   useUnreadCount,
 } from '@/api/useAdminNotifications'
-import { Notification } from '@/api/notifications.api'
+import type { Notification } from '@/api/notifications.api'
 
 export function NotificationPopover() {
   const [open, setOpen] = useState(false)

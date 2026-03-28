@@ -19,9 +19,9 @@ import {
   useMarkAllAsRead,
   useNotifications,
   useUnreadCount,
+  notificationKeys,
 } from '@/api/useAdminNotifications'
 import { useQueryClient } from '@tanstack/react-query'
-import { notificationKeys } from '@/api/useAdminNotifications'
 import { NotificationPopover } from './components/notification-popover'
 import { NotificationItem } from './components/notification-item'
 import { Header } from '@/components/layout/header'
@@ -54,29 +54,32 @@ export default function Notifications() {
     }
 
     // 1. Update the list cache for the Popover (which uses limit 10, page 1)
-    queryClient.setQueryData(notificationKeys.list({ limit: 10, page: 1 }), (old: any) => {
-      const data = old?.data || []
+    queryClient.setQueryData(notificationKeys.list({ limit: 10, page: 1 }), (old: unknown) => {
+      const oldData = old as { data: any[]; total?: number }
+      const data = oldData?.data || []
       return {
-        ...old,
+        ...oldData,
         data: [newNotif, ...data].slice(0, 10),
-        total: (old?.total || 0) + 1,
+        total: (oldData?.total || 0) + 1,
       }
     })
 
     // 2. Update the current page's list cache (might be different due to filters/pagination)
-    queryClient.setQueryData(notificationKeys.list({ ...filter, page, limit }), (old: any) => {
-      if (!old) return { data: [newNotif], total: 1, page: 1, limit: 20, totalPages: 1 }
+    queryClient.setQueryData(notificationKeys.list({ ...filter, page, limit }), (old: unknown) => {
+      const oldData = old as { data: any[]; total: number; page: number; limit: number; totalPages: number } | undefined
+      if (!oldData) return { data: [newNotif], total: 1, page: 1, limit: 20, totalPages: 1 }
       return {
-        ...old,
-        data: [newNotif, ...old.data],
-        total: old.total + 1,
+        ...oldData,
+        data: [newNotif, ...oldData.data],
+        total: oldData.total + 1,
       }
     })
 
     // 3. Update unread count cache
-    queryClient.setQueryData(notificationKeys.unreadCount(), (old: any) => {
-      if (!old) return { count: 1 }
-      return { count: (old.count || 0) + 1 }
+    queryClient.setQueryData(notificationKeys.unreadCount(), (old: unknown) => {
+      const oldData = old as { count: number } | undefined
+      if (!oldData) return { count: 1 }
+      return { count: (oldData.count || 0) + 1 }
     })
   }
 

@@ -12,7 +12,7 @@ import {
   Trash2,
 } from 'lucide-react'
 
-import { Notification } from '@/api/notifications.api'
+import type { Notification } from '@/api/notifications.api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
