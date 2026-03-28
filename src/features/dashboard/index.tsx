@@ -22,6 +22,7 @@ import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { NotificationPopover } from '@/features/notifications/components/notification-popover'
 import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentActivity } from './components/recent-activity'
@@ -36,6 +37,7 @@ export function Dashboard() {
           <Search />
           <ThemeSwitch />
           <ConfigDrawer />
+          <NotificationPopover />
           <ProfileDropdown />
         </div>
       </Header>
