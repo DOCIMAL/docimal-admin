@@ -55,6 +55,48 @@ export interface NotificationPreference {
   timezone?: string
 }
 
+export type BroadcastAudienceType = 'all_tenants' | 'selected_tenants'
+export type BroadcastStatus = 'queued' | 'processing' | 'completed' | 'failed'
+
+export interface CreateBroadcastNotificationPayload {
+  title: string
+  message: string
+  audienceType: BroadcastAudienceType
+  tenantIds?: string[]
+}
+
+export interface BroadcastNotificationSummary {
+  id: string
+  title: string
+  audienceType: BroadcastAudienceType
+  recipientCount: number
+  status: BroadcastStatus
+  createdAt: string
+}
+
+export interface BroadcastNotificationDetail extends BroadcastNotificationSummary {
+  message: string
+  tenantIds?: string[]
+  senderUserId: string
+  completedAt?: string | null
+  failureReason?: string | null
+}
+
+export interface BroadcastHistoryQuery {
+  page?: number
+  limit?: number
+  audienceType?: BroadcastAudienceType
+}
+
+export interface PaginatedBroadcasts {
+  data: BroadcastNotificationSummary[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+  hasMore: boolean
+}
+
 export const notificationsApi = {
   getNotifications: (params?: NotificationQuery) =>
     notifClient.get<PaginatedNotifications>('/notifications', { params }).then((r) => r.data),
@@ -79,4 +121,15 @@ export const notificationsApi = {
 
   updatePreferences: (data: Partial<NotificationPreference>) =>
     notifClient.patch<NotificationPreference>('/notifications/preferences', data).then((r) => r.data),
+
+  createBroadcast: (payload: CreateBroadcastNotificationPayload) =>
+    notifClient.post<BroadcastNotificationDetail>('/notifications/admin/broadcasts', payload).then((r) => r.data),
+
+  listBroadcasts: (params?: BroadcastHistoryQuery) =>
+    notifClient
+      .get<PaginatedBroadcasts>('/notifications/admin/broadcasts', { params })
+      .then((r) => r.data),
+
+  getBroadcastById: (id: string) =>
+    notifClient.get<BroadcastNotificationDetail>(`/notifications/admin/broadcasts/${id}`).then((r) => r.data),
 }

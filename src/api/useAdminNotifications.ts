@@ -6,6 +6,9 @@ export const notificationKeys = {
   lists: () => [...notificationKeys.all, 'list'] as const,
   list: (params?: object) => [...notificationKeys.lists(), params] as const,
   unreadCount: () => [...notificationKeys.all, 'unread-count'] as const,
+  broadcasts: () => [...notificationKeys.all, 'broadcasts'] as const,
+  broadcastList: (params?: object) => [...notificationKeys.broadcasts(), 'list', params] as const,
+  broadcastDetail: (id: string) => [...notificationKeys.broadcasts(), 'detail', id] as const,
 }
 
 export function useNotifications(params?: { page?: number; limit?: number; read?: boolean; type?: string }) {
@@ -76,6 +79,31 @@ export function useMarkAllAsRead() {
     onSettled: () => {
       qc.invalidateQueries({ queryKey: notificationKeys.lists() })
       qc.invalidateQueries({ queryKey: notificationKeys.unreadCount() })
+    },
+  })
+}
+
+export function useBroadcasts(params?: { page?: number; limit?: number; audienceType?: 'all_tenants' | 'selected_tenants' }) {
+  return useQuery({
+    queryKey: notificationKeys.broadcastList(params),
+    queryFn: () => notificationsApi.listBroadcasts(params),
+  })
+}
+
+export function useBroadcastDetail(id: string) {
+  return useQuery({
+    queryKey: notificationKeys.broadcastDetail(id),
+    queryFn: () => notificationsApi.getBroadcastById(id),
+    enabled: Boolean(id),
+  })
+}
+
+export function useCreateBroadcast() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: notificationsApi.createBroadcast,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: notificationKeys.broadcasts() })
     },
   })
 }

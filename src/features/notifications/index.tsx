@@ -256,4 +256,14 @@ const notificationsNav = [
     href: '/notifications',
     isActive: true,
   },
+  {
+    title: 'Broadcast',
+    href: '/notifications/broadcast',
+    isActive: false,
+  },
+  {
+    title: 'History',
+    href: '/notifications/broadcast-history',
+    isActive: false,
+  },
 ]

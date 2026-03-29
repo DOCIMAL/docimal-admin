@@ -41,6 +41,8 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
+import { Route as AuthenticatedNotificationsBroadcastHistoryRouteImport } from './routes/_authenticated/notifications/broadcast-history'
+import { Route as AuthenticatedNotificationsBroadcastRouteImport } from './routes/_authenticated/notifications/broadcast'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 import { Route as AuthenticatedBillingSubscriptionsRouteImport } from './routes/_authenticated/billing/subscriptions'
 import { Route as AuthenticatedBillingPlansRouteImport } from './routes/_authenticated/billing/plans'
@@ -222,6 +224,18 @@ const AuthenticatedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedNotificationsBroadcastHistoryRoute =
+  AuthenticatedNotificationsBroadcastHistoryRouteImport.update({
+    id: '/notifications/broadcast-history',
+    path: '/notifications/broadcast-history',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedNotificationsBroadcastRoute =
+  AuthenticatedNotificationsBroadcastRouteImport.update({
+    id: '/notifications/broadcast',
+    path: '/notifications/broadcast',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
     id: '/errors/$error',
@@ -275,6 +289,8 @@ export interface FileRoutesByFullPath {
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/notifications/broadcast': typeof AuthenticatedNotificationsBroadcastRoute
+  '/notifications/broadcast-history': typeof AuthenticatedNotificationsBroadcastHistoryRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -312,6 +328,8 @@ export interface FileRoutesByTo {
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/notifications/broadcast': typeof AuthenticatedNotificationsBroadcastRoute
+  '/notifications/broadcast-history': typeof AuthenticatedNotificationsBroadcastHistoryRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -353,6 +371,8 @@ export interface FileRoutesById {
   '/_authenticated/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/_authenticated/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/_authenticated/notifications/broadcast': typeof AuthenticatedNotificationsBroadcastRoute
+  '/_authenticated/notifications/broadcast-history': typeof AuthenticatedNotificationsBroadcastHistoryRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -393,6 +413,8 @@ export interface FileRouteTypes {
     | '/billing/plans'
     | '/billing/subscriptions'
     | '/errors/$error'
+    | '/notifications/broadcast'
+    | '/notifications/broadcast-history'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -430,6 +452,8 @@ export interface FileRouteTypes {
     | '/billing/plans'
     | '/billing/subscriptions'
     | '/errors/$error'
+    | '/notifications/broadcast'
+    | '/notifications/broadcast-history'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -470,6 +494,8 @@ export interface FileRouteTypes {
     | '/_authenticated/billing/plans'
     | '/_authenticated/billing/subscriptions'
     | '/_authenticated/errors/$error'
+    | '/_authenticated/notifications/broadcast'
+    | '/_authenticated/notifications/broadcast-history'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
@@ -729,6 +755,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/notifications/broadcast-history': {
+      id: '/_authenticated/notifications/broadcast-history'
+      path: '/notifications/broadcast-history'
+      fullPath: '/notifications/broadcast-history'
+      preLoaderRoute: typeof AuthenticatedNotificationsBroadcastHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications/broadcast': {
+      id: '/_authenticated/notifications/broadcast'
+      path: '/notifications/broadcast'
+      fullPath: '/notifications/broadcast'
+      preLoaderRoute: typeof AuthenticatedNotificationsBroadcastRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/errors/$error': {
       id: '/_authenticated/errors/$error'
       path: '/errors/$error'
@@ -822,6 +862,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBillingPlansRoute: typeof AuthenticatedBillingPlansRoute
   AuthenticatedBillingSubscriptionsRoute: typeof AuthenticatedBillingSubscriptionsRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
+  AuthenticatedNotificationsBroadcastRoute: typeof AuthenticatedNotificationsBroadcastRoute
+  AuthenticatedNotificationsBroadcastHistoryRoute: typeof AuthenticatedNotificationsBroadcastHistoryRoute
   AuthenticatedTenantsTenantIdRoute: typeof AuthenticatedTenantsTenantIdRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
@@ -848,6 +890,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBillingSubscriptionsRoute:
     AuthenticatedBillingSubscriptionsRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
+  AuthenticatedNotificationsBroadcastRoute:
+    AuthenticatedNotificationsBroadcastRoute,
+  AuthenticatedNotificationsBroadcastHistoryRoute:
+    AuthenticatedNotificationsBroadcastHistoryRoute,
   AuthenticatedTenantsTenantIdRoute: AuthenticatedTenantsTenantIdRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
