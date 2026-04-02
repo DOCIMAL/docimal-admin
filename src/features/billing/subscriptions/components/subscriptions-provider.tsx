@@ -6,9 +6,9 @@ interface SubscriptionsContextType {
   tableRef: React.MutableRefObject<Table<AdminSubscription> | null>
 }
 
-const SubscriptionsContext = createContext<SubscriptionsContextType | undefined>(
-  undefined
-)
+const SubscriptionsContext = createContext<
+  SubscriptionsContextType | undefined
+>(undefined)
 
 export function SubscriptionsProvider({
   children,
@@ -31,7 +31,9 @@ export function SubscriptionsProvider({
 export function useSubscriptions() {
   const context = useContext(SubscriptionsContext)
   if (!context) {
-    throw new Error('useSubscriptions must be used within SubscriptionsProvider')
+    throw new Error(
+      'useSubscriptions must be used within SubscriptionsProvider'
+    )
   }
   return context
 }

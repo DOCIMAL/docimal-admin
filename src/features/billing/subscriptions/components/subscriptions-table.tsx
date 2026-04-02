@@ -11,6 +11,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import {
+  useAdminSubscriptions,
+  type AdminSubscription,
+  type SubscriptionPlan,
+  type SubscriptionStatus,
+} from '@/api/billing.api'
 import { cn } from '@/lib/utils'
 import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -23,12 +29,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import {
-  useAdminSubscriptions,
-  type AdminSubscription,
-  type SubscriptionPlan,
-  type SubscriptionStatus,
-} from '@/api/billing.api'
 import { subscriptionsColumns as columns } from './subscriptions-columns'
 import { useSubscriptions } from './subscriptions-provider'
 
@@ -61,27 +61,43 @@ export function SubscriptionsTable({ search, navigate }: DataTableProps) {
   })
 
   // Build API filter params from table state
-  const planFilter = columnFilters.find((f) => f.id === 'plan')
-    ?.value as string[] | undefined
-  const statusFilter = columnFilters.find((f) => f.id === 'status')
-    ?.value as string[] | undefined
-  const tenantFilter = columnFilters.find((f) => f.id === 'tenant')
-    ?.value as string | undefined
+  const planFilter = columnFilters.find((f) => f.id === 'plan')?.value as
+    | string[]
+    | undefined
+  const statusFilter = columnFilters.find((f) => f.id === 'status')?.value as
+    | string[]
+    | undefined
+  const tenantFilter = columnFilters.find((f) => f.id === 'tenant')?.value as
+    | string
+    | undefined
 
   const apiFilters = useMemo(
     () => ({
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       search: tenantFilter || undefined,
-      plan: planFilter && planFilter.length > 0 ? (planFilter as SubscriptionPlan[]) : undefined,
-      status: statusFilter && statusFilter.length > 0 ? (statusFilter as SubscriptionStatus[]) : undefined,
+      plan:
+        planFilter && planFilter.length > 0
+          ? (planFilter as SubscriptionPlan[])
+          : undefined,
+      status:
+        statusFilter && statusFilter.length > 0
+          ? (statusFilter as SubscriptionStatus[])
+          : undefined,
     }),
-    [pagination.pageIndex, pagination.pageSize, tenantFilter, planFilter, statusFilter]
+    [
+      pagination.pageIndex,
+      pagination.pageSize,
+      tenantFilter,
+      planFilter,
+      statusFilter,
+    ]
   )
 
   const { data: apiData, isLoading } = useAdminSubscriptions(apiFilters)
 
-  const tableData: AdminSubscription[] = (apiData?.data ?? []) as AdminSubscription[]
+  const tableData: AdminSubscription[] = (apiData?.data ??
+    []) as AdminSubscription[]
   const pageCount = apiData?.meta?.totalPages ?? 1
 
   const table = useReactTable({
@@ -205,9 +221,7 @@ export function SubscriptionsTable({ search, navigate }: DataTableProps) {
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        className={cn(
-                          cell.column.columnDef.meta?.className
-                        )}
+                        className={cn(cell.column.columnDef.meta?.className)}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

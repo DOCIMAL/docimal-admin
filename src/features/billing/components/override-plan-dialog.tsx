@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { AlertCircle } from 'lucide-react'
-
+import { useOverridePlan, type SubscriptionPlan } from '@/api/billing.api'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -27,9 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { useOverridePlan, type SubscriptionPlan } from '@/api/billing.api'
 
 const formSchema = z.object({
   plan: z.enum(['free', 'starter', 'professional', 'enterprise'], {
@@ -91,33 +90,46 @@ export function OverridePlanDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-900">
-            <AlertCircle className="h-4 w-4" />
+        <div className='space-y-4 py-4'>
+          <Alert
+            variant='destructive'
+            className='border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200'
+          >
+            <AlertCircle className='h-4 w-4' />
             <AlertDescription>
-              This action changes the plan directly, bypassing Stripe. Quotas will be updated based on the new plan.
+              This action changes the plan directly, bypassing Stripe. Quotas
+              will be updated based on the new plan.
             </AlertDescription>
           </Alert>
 
           <Form {...form}>
-            <form id="override-plan-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              id='override-plan-form'
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-4'
+            >
               <FormField
                 control={form.control}
-                name="plan"
+                name='plan'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>New Plan</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <SelectTrigger className="capitalize">
-                          <SelectValue placeholder="Select a plan" />
+                        <SelectTrigger className='capitalize'>
+                          <SelectValue placeholder='Select a plan' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="free">Free</SelectItem>
-                        <SelectItem value="starter">Starter</SelectItem>
-                        <SelectItem value="professional">Professional</SelectItem>
-                        <SelectItem value="enterprise">Enterprise</SelectItem>
+                        <SelectItem value='free'>Free</SelectItem>
+                        <SelectItem value='starter'>Starter</SelectItem>
+                        <SelectItem value='professional'>
+                          Professional
+                        </SelectItem>
+                        <SelectItem value='enterprise'>Enterprise</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -129,10 +141,14 @@ export function OverridePlanDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+          <Button
+            variant='outline'
+            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+          >
             Cancel
           </Button>
-          <Button type="submit" form="override-plan-form" disabled={isPending}>
+          <Button type='submit' form='override-plan-form' disabled={isPending}>
             {isPending ? 'Saving...' : 'Confirm'}
           </Button>
         </DialogFooter>

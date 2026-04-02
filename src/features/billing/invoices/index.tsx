@@ -1,18 +1,18 @@
 import { getRouteApi } from '@tanstack/react-router'
+import { Download } from 'lucide-react'
+import { toast } from 'sonner'
+import type { AdminInvoice } from '@/api/billing.api'
+import type { NavigateFn } from '@/hooks/use-table-url-state'
+import { Button } from '@/components/ui/button'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Button } from '@/components/ui/button'
-import { Download } from 'lucide-react'
 import { InvoicesProvider, useInvoices } from './components/invoices-provider'
 import { InvoicesStats } from './components/invoices-stats'
 import { InvoicesTable } from './components/invoices-table'
-import type { AdminInvoice } from '@/api/billing.api'
-import { toast } from 'sonner'
-import type { NavigateFn } from '@/hooks/use-table-url-state'
 
 const route = getRouteApi('/_authenticated/billing/invoices')
 
@@ -28,7 +28,7 @@ function InvoicesContent({ search, navigate }: InvoicesContentProps) {
     if (!tableRef.current) return
 
     const rows = tableRef.current.getFilteredRowModel().rows
-    
+
     if (rows.length === 0) {
       toast.error('No data available to export')
       return
@@ -43,17 +43,17 @@ function InvoicesContent({ search, navigate }: InvoicesContentProps) {
       'Period Start',
       'Period End',
       'Due Date',
-      'Paid At'
+      'Paid At',
     ]
 
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => {
+      ...rows.map((row) => {
         const inv = row.original as AdminInvoice
         const amountPaid = inv.amountPaid
-        
+
         return [
-          `"${inv.tenantName}"`, 
+          `"${inv.tenantName}"`,
           inv.id,
           inv.stripeInvoiceId,
           amountPaid,
@@ -61,9 +61,9 @@ function InvoicesContent({ search, navigate }: InvoicesContentProps) {
           inv.periodStart || '',
           inv.periodEnd || '',
           inv.dueDate || '',
-          inv.paidAt || ''
+          inv.paidAt || '',
         ].join(',')
-      })
+      }),
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
@@ -90,14 +90,18 @@ function InvoicesContent({ search, navigate }: InvoicesContentProps) {
       </Header>
 
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
-        <div className='flex flex-col sm:flex-row items-baseline sm:items-center justify-between gap-4'>
+        <div className='flex flex-col items-baseline justify-between gap-4 sm:flex-row sm:items-center'>
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>Invoices</h2>
             <p className='text-muted-foreground'>
               Manage billing invoices and export records.
             </p>
           </div>
-          <Button onClick={handleExportCSV} variant='outline' className='shrink-0'>
+          <Button
+            onClick={handleExportCSV}
+            variant='outline'
+            className='shrink-0'
+          >
             <Download className='mr-2 h-4 w-4' />
             Export CSV
           </Button>

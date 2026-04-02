@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Main } from '@/components/layout/main'
+import { useTenant } from '@/api/tenants.api'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { ConfigDrawer } from '@/components/config-drawer'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useTenant } from '@/api/tenants.api'
 import { TenantBillingTab } from '@/features/billing/components/tenant-billing-tab'
 
 export const Route = createFileRoute('/_authenticated/tenants/$tenantId')({
@@ -37,8 +37,12 @@ function TenantDetail() {
           <>
             <div className='mb-6 flex flex-col space-y-4'>
               <div>
-                <h1 className='text-3xl font-bold tracking-tight'>Tenant: {tenant.name}</h1>
-                <p className='text-muted-foreground'>Manage tenant details, settings, and billing.</p>
+                <h1 className='text-3xl font-bold tracking-tight'>
+                  Tenant: {tenant.name}
+                </h1>
+                <p className='text-muted-foreground'>
+                  Manage tenant details, settings, and billing.
+                </p>
               </div>
             </div>
 
@@ -49,13 +53,17 @@ function TenantDetail() {
                 <TabsTrigger value='billing'>Billing</TabsTrigger>
                 <TabsTrigger value='settings'>Settings</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value='overview'>
-                <div className='p-4 border rounded-md'>Overview placeholder (Coming soon)</div>
+                <div className='rounded-md border p-4'>
+                  Overview placeholder (Coming soon)
+                </div>
               </TabsContent>
 
               <TabsContent value='users'>
-                <div className='p-4 border rounded-md'>Users placeholder (Coming soon)</div>
+                <div className='rounded-md border p-4'>
+                  Users placeholder (Coming soon)
+                </div>
               </TabsContent>
 
               <TabsContent value='billing'>
@@ -63,7 +71,9 @@ function TenantDetail() {
               </TabsContent>
 
               <TabsContent value='settings'>
-                <div className='p-4 border rounded-md'>Settings placeholder (Coming soon)</div>
+                <div className='rounded-md border p-4'>
+                  Settings placeholder (Coming soon)
+                </div>
               </TabsContent>
             </Tabs>
           </>
@@ -72,4 +82,3 @@ function TenantDetail() {
     </>
   )
 }
-

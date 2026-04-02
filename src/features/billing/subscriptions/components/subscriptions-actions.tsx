@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { MoreHorizontal } from 'lucide-react'
-
+import type { AdminSubscription } from '@/api/billing.api'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -8,8 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { AdminSubscription } from '@/api/billing.api'
-
 import { ExtendTrialDialog } from '../../components/extend-trial-dialog'
 import { OverridePlanDialog } from '../../components/override-plan-dialog'
 

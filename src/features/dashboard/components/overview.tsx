@@ -9,14 +9,15 @@ export function Overview() {
     return <Skeleton className='h-[350px] w-full' />
   }
 
-  const data = response?.data.map((item) => {
-    const [year, month] = item.month.split('-')
-    const date = new Date(parseInt(year), parseInt(month) - 1)
-    return {
-      name: date.toLocaleString('en-US', { month: 'short' }),
-      total: item.revenue,
-    }
-  }) || []
+  const data =
+    response?.data.map((item) => {
+      const [year, month] = item.month.split('-')
+      const date = new Date(parseInt(year), parseInt(month) - 1)
+      return {
+        name: date.toLocaleString('en-US', { month: 'short' }),
+        total: item.revenue,
+      }
+    }) || []
   return (
     <ResponsiveContainer width='100%' height={350}>
       <BarChart data={data}>

@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { useForm, type Resolver } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { formatDistanceToNow } from 'date-fns'
-
+import { useForm, type Resolver } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useExtendTrial } from '@/api/billing.api'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -21,11 +22,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useExtendTrial } from '@/api/billing.api'
 
 const formSchema = z.object({
-  days: z.coerce.number().min(1, 'Must be at least 1 day').max(90, 'Cannot exceed 90 days'),
+  days: z.coerce
+    .number()
+    .min(1, 'Must be at least 1 day')
+    .max(90, 'Cannot exceed 90 days'),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -67,7 +69,7 @@ export function ExtendTrialDialog({
   const today = new Date()
   const endDate = currentPeriodEnd ? new Date(currentPeriodEnd) : null
   const isExpired = endDate ? endDate < today : false
-  
+
   let remainingText = 'No active trial'
   if (isTrial && endDate && !isNaN(endDate.getTime())) {
     if (isExpired) {
@@ -104,28 +106,32 @@ export function ExtendTrialDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className='space-y-4 py-4'>
+          <div className='grid grid-cols-2 gap-4 text-sm'>
             <div>
-              <span className="text-muted-foreground mr-2">Status:</span>
-              <span className="capitalize font-medium">{status}</span>
+              <span className='mr-2 text-muted-foreground'>Status:</span>
+              <span className='font-medium capitalize'>{status}</span>
             </div>
             <div>
-              <span className="text-muted-foreground mr-2">Trial valid:</span>
-              <span className="font-medium">{remainingText}</span>
+              <span className='mr-2 text-muted-foreground'>Trial valid:</span>
+              <span className='font-medium'>{remainingText}</span>
             </div>
           </div>
 
           <Form {...form}>
-            <form id="extend-trial-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              id='extend-trial-form'
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-4'
+            >
               <FormField
                 control={form.control}
-                name="days"
+                name='days'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Days to extend</FormLabel>
                     <FormControl>
-                      <Input type="number" min={1} max={90} {...field} />
+                      <Input type='number' min={1} max={90} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -136,10 +142,14 @@ export function ExtendTrialDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+          <Button
+            variant='outline'
+            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+          >
             Cancel
           </Button>
-          <Button type="submit" form="extend-trial-form" disabled={isPending}>
+          <Button type='submit' form='extend-trial-form' disabled={isPending}>
             {isPending ? 'Extending...' : 'Confirm'}
           </Button>
         </DialogFooter>

@@ -1,6 +1,6 @@
+import { RefreshCw } from 'lucide-react'
 import { useSyncPlans } from '@/api/billing.api'
 import { Button } from '@/components/ui/button'
-import { RefreshCw } from 'lucide-react'
 
 export function PlanSyncButton() {
   const { mutate: syncPlans, isPending } = useSyncPlans()
@@ -13,7 +13,9 @@ export function PlanSyncButton() {
       onClick={() => syncPlans()}
       disabled={isPending}
     >
-      <RefreshCw className={`mr-2 h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+      <RefreshCw
+        className={`mr-2 h-4 w-4 ${isPending ? 'animate-spin' : ''}`}
+      />
       {isPending ? 'Syncing...' : 'Sync from Stripe'}
     </Button>
   )

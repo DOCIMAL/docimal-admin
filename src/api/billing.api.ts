@@ -17,7 +17,11 @@ import type {
 // ---------------------------------------------------------------------------
 
 export type SubscriptionStatus = 'active' | 'trialing' | 'canceled' | 'past_due'
-export type SubscriptionPlan = 'free' | 'starter' | 'professional' | 'enterprise'
+export type SubscriptionPlan =
+  | 'free'
+  | 'starter'
+  | 'professional'
+  | 'enterprise'
 export type InvoiceStatus = 'paid' | 'open' | 'void' | 'uncollectible'
 
 export interface BillingOverview {
@@ -185,10 +189,9 @@ export const billingApi = {
 
   extendTrial: (tenantId: string, days: number) =>
     apiClient
-      .post<MessageResponse>(
-        `${BASE}/tenants/${tenantId}/extend-trial`,
-        { days }
-      )
+      .post<MessageResponse>(`${BASE}/tenants/${tenantId}/extend-trial`, {
+        days,
+      })
       .then((r) => r.data),
 
   overridePlan: (tenantId: string, plan: SubscriptionPlan) =>
@@ -207,8 +210,7 @@ export const billingKeys = {
   all: ['billing'] as const,
   overview: () => [...billingKeys.all, 'overview'] as const,
   subscriptions: () => [...billingKeys.all, 'subscriptions'] as const,
-  subscriptionLists: () =>
-    [...billingKeys.subscriptions(), 'list'] as const,
+  subscriptionLists: () => [...billingKeys.subscriptions(), 'list'] as const,
   subscriptionList: (params?: ListSubscriptionsParams) =>
     [...billingKeys.subscriptionLists(), params] as const,
   invoices: () => [...billingKeys.all, 'invoices'] as const,
@@ -302,8 +304,13 @@ export function useExtendTrial() {
 export function useOverridePlan() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ tenantId, plan }: { tenantId: string; plan: SubscriptionPlan }) =>
-      billingApi.overridePlan(tenantId, plan),
+    mutationFn: ({
+      tenantId,
+      plan,
+    }: {
+      tenantId: string
+      plan: SubscriptionPlan
+    }) => billingApi.overridePlan(tenantId, plan),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: billingKeys.subscriptionLists() })
       toast.success('Plan overridden successfully')

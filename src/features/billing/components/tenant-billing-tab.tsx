@@ -1,14 +1,27 @@
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { ExtendTrialDialog } from './extend-trial-dialog'
-import { OverridePlanDialog } from './override-plan-dialog'
+import { Download, History } from 'lucide-react'
 import { useAdminSubscriptions, useAdminInvoices } from '@/api/billing.api'
 import type { Tenant } from '@/api/tenants.api'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Download, History } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { ExtendTrialDialog } from './extend-trial-dialog'
+import { OverridePlanDialog } from './override-plan-dialog'
 
 // Local formatters
 function formatCurrency(amount: number, currency: string = 'USD'): string {
@@ -31,15 +44,19 @@ function formatDate(dateString: string): string {
 const planColors: Record<string, string> = {
   free: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
   starter: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-  professional: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-  enterprise: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
+  professional:
+    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+  enterprise:
+    'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
 }
 
 const statusColors: Record<string, string> = {
-  active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300',
+  active:
+    'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300',
   trialing: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
   canceled: 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300',
-  past_due: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
+  past_due:
+    'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
 }
 
 interface TenantBillingTabProps {
@@ -87,7 +104,9 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
       <Card className='col-span-1'>
         <CardHeader>
           <CardTitle>Current Subscription</CardTitle>
-          <CardDescription>Overview of the tenant's active plan</CardDescription>
+          <CardDescription>
+            Overview of the tenant's active plan
+          </CardDescription>
         </CardHeader>
         <CardContent className='space-y-6'>
           {isLoadingSub ? (
@@ -99,45 +118,71 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
             <>
               <div className='grid grid-cols-2 gap-4'>
                 <div className='space-y-1'>
-                  <div className='text-sm font-medium text-muted-foreground'>Plan</div>
-                  <Badge className={planColors[currentSub.plan] || 'bg-slate-100 text-slate-800'}>
-                    {currentSub.plan.charAt(0).toUpperCase() + currentSub.plan.slice(1)}
+                  <div className='text-sm font-medium text-muted-foreground'>
+                    Plan
+                  </div>
+                  <Badge
+                    className={
+                      planColors[currentSub.plan] ||
+                      'bg-slate-100 text-slate-800'
+                    }
+                  >
+                    {currentSub.plan.charAt(0).toUpperCase() +
+                      currentSub.plan.slice(1)}
                   </Badge>
                 </div>
                 <div className='space-y-1'>
-                  <div className='text-sm font-medium text-muted-foreground'>Status</div>
+                  <div className='text-sm font-medium text-muted-foreground'>
+                    Status
+                  </div>
                   <Badge className={statusColors[currentSub.status] || ''}>
-                    {currentSub.status === 'past_due' ? 'Past Due' : currentSub.status}
+                    {currentSub.status === 'past_due'
+                      ? 'Past Due'
+                      : currentSub.status}
                   </Badge>
                 </div>
                 <div className='space-y-1'>
-                  <div className='text-sm font-medium text-muted-foreground'>Amount</div>
+                  <div className='text-sm font-medium text-muted-foreground'>
+                    Amount
+                  </div>
                   <div className='font-medium'>
-                    {formatCurrency(currentSub.amount, currentSub.currency)} / {currentSub.interval || 'month'}
+                    {formatCurrency(currentSub.amount, currentSub.currency)} /{' '}
+                    {currentSub.interval || 'month'}
                   </div>
                 </div>
                 <div className='space-y-1'>
-                  <div className='text-sm font-medium text-muted-foreground'>Billing Period</div>
+                  <div className='text-sm font-medium text-muted-foreground'>
+                    Billing Period
+                  </div>
                   <div className='text-sm'>
-                    {formatDate(currentSub.currentPeriodStart)} - {formatDate(currentSub.currentPeriodEnd)}
+                    {formatDate(currentSub.currentPeriodStart)} -{' '}
+                    {formatDate(currentSub.currentPeriodEnd)}
                   </div>
                 </div>
                 {isTrial && currentSub.trialEndsAt && (
-                  <div className='space-y-1 col-span-2'>
-                    <div className='text-sm font-medium text-muted-foreground'>Trial Ends</div>
-                    <div className='text-sm text-amber-600 font-medium'>
+                  <div className='col-span-2 space-y-1'>
+                    <div className='text-sm font-medium text-muted-foreground'>
+                      Trial Ends
+                    </div>
+                    <div className='text-sm font-medium text-amber-600'>
                       {formatDate(currentSub.trialEndsAt)}
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className='flex items-center gap-3 pt-4 border-t'>
-                <Button variant='outline' onClick={() => setShowOverridePlan(true)}>
+              <div className='flex items-center gap-3 border-t pt-4'>
+                <Button
+                  variant='outline'
+                  onClick={() => setShowOverridePlan(true)}
+                >
                   Override Plan
                 </Button>
                 {isTrial && (
-                  <Button variant='outline' onClick={() => setShowExtendTrial(true)}>
+                  <Button
+                    variant='outline'
+                    onClick={() => setShowExtendTrial(true)}
+                  >
                     Extend Trial
                   </Button>
                 )}
@@ -149,7 +194,13 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
                   onOpenChange={setShowOverridePlan}
                   tenantId={tenantId}
                   tenantName={tenant.name}
-                  currentPlan={currentSub.plan as 'free' | 'starter' | 'professional' | 'enterprise'}
+                  currentPlan={
+                    currentSub.plan as
+                      | 'free'
+                      | 'starter'
+                      | 'professional'
+                      | 'enterprise'
+                  }
                 />
               )}
               {showExtendTrial && (
@@ -159,12 +210,20 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
                   tenantId={tenantId}
                   tenantName={tenant.name}
                   currentPeriodEnd={currentSub.currentPeriodEnd}
-                  status={currentSub.status as 'active' | 'trialing' | 'canceled' | 'past_due'}
+                  status={
+                    currentSub.status as
+                      | 'active'
+                      | 'trialing'
+                      | 'canceled'
+                      | 'past_due'
+                  }
                 />
               )}
             </>
           ) : (
-            <div className='text-sm text-muted-foreground'>No active subscription</div>
+            <div className='text-sm text-muted-foreground'>
+              No active subscription
+            </div>
           )}
         </CardContent>
       </Card>
@@ -173,37 +232,65 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
       <Card className='col-span-1'>
         <CardHeader>
           <CardTitle>Quota Usage</CardTitle>
-          <CardDescription>Tenant's resource limits and utilization</CardDescription>
+          <CardDescription>
+            Tenant's resource limits and utilization
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className='space-y-6'>
             <div className='space-y-2'>
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Workspaces</span>
-                <span className='text-muted-foreground'>{quotas.workspaces.used} / {quotas.workspaces.limit}</span>
+                <span className='text-muted-foreground'>
+                  {quotas.workspaces.used} / {quotas.workspaces.limit}
+                </span>
               </div>
-              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
-                <div className='h-full bg-primary' style={{ width: (quotas.workspaces.used / quotas.workspaces.limit) * 100 + '%' }} />
+              <div className='h-2 overflow-hidden rounded-full bg-secondary'>
+                <div
+                  className='h-full bg-primary'
+                  style={{
+                    width:
+                      (quotas.workspaces.used / quotas.workspaces.limit) * 100 +
+                      '%',
+                  }}
+                />
               </div>
             </div>
 
             <div className='space-y-2'>
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Members</span>
-                <span className='text-muted-foreground'>{quotas.members.used} / {quotas.members.limit}</span>
+                <span className='text-muted-foreground'>
+                  {quotas.members.used} / {quotas.members.limit}
+                </span>
               </div>
-              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
-                <div className='h-full bg-blue-500' style={{ width: (quotas.members.used / quotas.members.limit) * 100 + '%' }} />
+              <div className='h-2 overflow-hidden rounded-full bg-secondary'>
+                <div
+                  className='h-full bg-blue-500'
+                  style={{
+                    width:
+                      (quotas.members.used / quotas.members.limit) * 100 + '%',
+                  }}
+                />
               </div>
             </div>
 
             <div className='space-y-2'>
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Documents</span>
-                <span className='text-muted-foreground'>{quotas.documents.used} / {quotas.documents.limit}</span>
+                <span className='text-muted-foreground'>
+                  {quotas.documents.used} / {quotas.documents.limit}
+                </span>
               </div>
-              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
-                <div className='h-full bg-purple-500' style={{ width: (quotas.documents.used / quotas.documents.limit) * 100 + '%' }} />
+              <div className='h-2 overflow-hidden rounded-full bg-secondary'>
+                <div
+                  className='h-full bg-purple-500'
+                  style={{
+                    width:
+                      (quotas.documents.used / quotas.documents.limit) * 100 +
+                      '%',
+                  }}
+                />
               </div>
             </div>
 
@@ -211,11 +298,20 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Storage</span>
                 <span className='text-muted-foreground'>
-                  {quotas.storage.used} {quotas.storage.unit} / {quotas.storage.limit >= 1024 ? (quotas.storage.limit / 1024) + ' GB' : quotas.storage.limit + ' MB'}
+                  {quotas.storage.used} {quotas.storage.unit} /{' '}
+                  {quotas.storage.limit >= 1024
+                    ? quotas.storage.limit / 1024 + ' GB'
+                    : quotas.storage.limit + ' MB'}
                 </span>
               </div>
-              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
-                <div className='h-full bg-amber-500' style={{ width: (quotas.storage.used / quotas.storage.limit) * 100 + '%' }} />
+              <div className='h-2 overflow-hidden rounded-full bg-secondary'>
+                <div
+                  className='h-full bg-amber-500'
+                  style={{
+                    width:
+                      (quotas.storage.used / quotas.storage.limit) * 100 + '%',
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -226,7 +322,9 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
       <Card className='col-span-1 lg:col-span-2'>
         <CardHeader>
           <CardTitle>Recent Invoices</CardTitle>
-          <CardDescription>Past billing periods and payment history</CardDescription>
+          <CardDescription>
+            Past billing periods and payment history
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -242,12 +340,15 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
               {isLoadingInv ? (
                 <TableRow>
                   <TableCell colSpan={4} className='h-24 text-center'>
-                    <Skeleton className='h-4 w-32 mx-auto' />
+                    <Skeleton className='mx-auto h-4 w-32' />
                   </TableCell>
                 </TableRow>
               ) : invoices.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className='h-24 text-center text-muted-foreground'>
+                  <TableCell
+                    colSpan={4}
+                    className='h-24 text-center text-muted-foreground'
+                  >
                     No invoices found.
                   </TableCell>
                 </TableRow>
@@ -255,16 +356,33 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
                 invoices.map((inv) => (
                   <TableRow key={inv.id}>
                     <TableCell>{formatDate(inv.createdAt)}</TableCell>
-                    <TableCell className='font-medium'>{formatCurrency(inv.amountPaid, inv.currency)}</TableCell>
+                    <TableCell className='font-medium'>
+                      {formatCurrency(inv.amountPaid, inv.currency)}
+                    </TableCell>
                     <TableCell>
-                      <Badge variant={inv.status === 'paid' ? 'default' : 'secondary'} className='capitalize'>
+                      <Badge
+                        variant={
+                          inv.status === 'paid' ? 'default' : 'secondary'
+                        }
+                        className='capitalize'
+                      >
                         {inv.status}
                       </Badge>
                     </TableCell>
                     <TableCell className='text-right'>
                       {inv.invoicePdf ? (
-                        <Button variant='ghost' size='icon' className='h-8 w-8' title='Download PDF' asChild>
-                          <a href={inv.invoicePdf} target='_blank' rel='noreferrer'>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='h-8 w-8'
+                          title='Download PDF'
+                          asChild
+                        >
+                          <a
+                            href={inv.invoicePdf}
+                            target='_blank'
+                            rel='noreferrer'
+                          >
                             <Download className='h-4 w-4' />
                           </a>
                         </Button>
@@ -284,17 +402,19 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
       <Card className='col-span-1 lg:col-span-2'>
         <CardHeader>
           <CardTitle>Plan History</CardTitle>
-          <CardDescription>Timeline of tenant subscription changes</CardDescription>
+          <CardDescription>
+            Timeline of tenant subscription changes
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='relative pl-4 border-l border-muted-foreground/20 space-y-6 pb-2 ml-4'>
+          <div className='relative ml-4 space-y-6 border-l border-muted-foreground/20 pb-2 pl-4'>
             {planHistory.map((item, idx) => (
               <div key={idx} className='relative'>
-                <div className='absolute -left-[25px] flex items-center justify-center h-6 w-6 rounded-full bg-background border border-muted-foreground/30'>
+                <div className='absolute -left-[25px] flex h-6 w-6 items-center justify-center rounded-full border border-muted-foreground/30 bg-background'>
                   <History className='h-3 w-3 text-muted-foreground' />
                 </div>
                 <div className='space-y-1 pl-4'>
-                  <p className='text-sm font-medium leading-none'>
+                  <p className='text-sm leading-none font-medium'>
                     {item.event}
                   </p>
                   <p className='text-xs text-muted-foreground'>

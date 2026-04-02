@@ -6,6 +6,8 @@ import {
   Bot,
   FileText,
 } from 'lucide-react'
+import { usePlanDistribution, useBillingOverview } from '@/api/billing.api'
+import { useUsers } from '@/api/users.api'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
@@ -25,17 +28,20 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentActivity } from './components/recent-activity'
-import { Skeleton } from '@/components/ui/skeleton'
-import { usePlanDistribution, useBillingOverview } from '@/api/billing.api'
-import { useUsers } from '@/api/users.api'
 
 export function Dashboard() {
   const { data: usersData, isLoading: isLoadingUsers } = useUsers({ limit: 1 })
-  const { data: activeUsersData, isLoading: isLoadingActiveUsers } = useUsers({ status: 'active', limit: 1 })
+  const { data: activeUsersData, isLoading: isLoadingActiveUsers } = useUsers({
+    status: 'active',
+    limit: 1,
+  })
   const { data: overview, isLoading: isLoadingOverview } = useBillingOverview()
-  const { data: distributionData, isLoading: isLoadingTenants } = usePlanDistribution()
+  const { data: distributionData, isLoading: isLoadingTenants } =
+    usePlanDistribution()
 
-  const totalTenants = distributionData ? distributionData.reduce((sum, d) => sum + d.tenantCount, 0) : 0
+  const totalTenants = distributionData
+    ? distributionData.reduce((sum, d) => sum + d.tenantCount, 0)
+    : 0
 
   const formatPercentage = (val?: number) => {
     if (val === undefined) return '0%'
@@ -94,7 +100,7 @@ export function Dashboard() {
                   ) : (
                     <div className='text-2xl font-bold'>{totalTenants}</div>
                   )}
-                  <p className='text-xs text-muted-foreground mt-1'>
+                  <p className='mt-1 text-xs text-muted-foreground'>
                     Platform-wide tenants
                   </p>
                 </CardContent>
@@ -110,9 +116,11 @@ export function Dashboard() {
                   {isLoadingUsers ? (
                     <Skeleton className='h-8 w-16' />
                   ) : (
-                    <div className='text-2xl font-bold'>{usersData?.meta.total || 0}</div>
+                    <div className='text-2xl font-bold'>
+                      {usersData?.meta.total || 0}
+                    </div>
                   )}
-                  <p className='text-xs text-muted-foreground mt-1'>
+                  <p className='mt-1 text-xs text-muted-foreground'>
                     Registered users
                   </p>
                 </CardContent>
@@ -128,9 +136,11 @@ export function Dashboard() {
                   {isLoadingActiveUsers ? (
                     <Skeleton className='h-8 w-16' />
                   ) : (
-                    <div className='text-2xl font-bold'>{activeUsersData?.meta.total || 0}</div>
+                    <div className='text-2xl font-bold'>
+                      {activeUsersData?.meta.total || 0}
+                    </div>
                   )}
-                  <p className='text-xs text-muted-foreground mt-1'>
+                  <p className='mt-1 text-xs text-muted-foreground'>
                     Users with active status
                   </p>
                 </CardContent>
@@ -145,11 +155,19 @@ export function Dashboard() {
                     <Skeleton className='h-8 w-24' />
                   ) : (
                     <div className='text-2xl font-bold'>
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(overview?.mrr || 0)}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        maximumFractionDigits: 0,
+                      }).format(overview?.mrr || 0)}
                     </div>
                   )}
-                  <p className={`text-xs mt-1 ${overview && overview.revenueGrowthPercent > 0 ? 'text-green-500' : overview && overview.revenueGrowthPercent < 0 ? 'text-red-500' : 'text-muted-foreground'}`}>
-                    {overview ? `${formatPercentage(overview.revenueGrowthPercent)} from last month` : 'Calculating...'}
+                  <p
+                    className={`mt-1 text-xs ${overview && overview.revenueGrowthPercent > 0 ? 'text-green-500' : overview && overview.revenueGrowthPercent < 0 ? 'text-red-500' : 'text-muted-foreground'}`}
+                  >
+                    {overview
+                      ? `${formatPercentage(overview.revenueGrowthPercent)} from last month`
+                      : 'Calculating...'}
                   </p>
                 </CardContent>
               </Card>
@@ -161,8 +179,12 @@ export function Dashboard() {
                   <Bot className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold text-muted-foreground'>N/A</div>
-                  <p className='text-xs text-muted-foreground mt-1'>Data pipeline pending</p>
+                  <div className='text-2xl font-bold text-muted-foreground'>
+                    N/A
+                  </div>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Data pipeline pending
+                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -173,8 +195,12 @@ export function Dashboard() {
                   <FileText className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold text-muted-foreground'>N/A</div>
-                  <p className='text-xs text-muted-foreground mt-1'>Data pipeline pending</p>
+                  <div className='text-2xl font-bold text-muted-foreground'>
+                    N/A
+                  </div>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Data pipeline pending
+                  </p>
                 </CardContent>
               </Card>
             </div>

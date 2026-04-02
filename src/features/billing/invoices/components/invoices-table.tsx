@@ -11,16 +11,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { cn } from '@/lib/utils'
-import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
-import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import {
   useAdminInvoices,
   type AdminInvoice,
   type InvoiceStatus,
 } from '@/api/billing.api'
-import { invoicesColumns as columns } from './invoices-columns'
-import { useInvoices } from './invoices-provider'
+import { cn } from '@/lib/utils'
+import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -29,7 +27,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Skeleton } from '@/components/ui/skeleton'
+import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
+import { invoicesColumns as columns } from './invoices-columns'
+import { useInvoices } from './invoices-provider'
 
 type DataTableProps = {
   search: Record<string, unknown>
@@ -59,17 +59,22 @@ export function InvoicesTable({ search, navigate }: DataTableProps) {
   })
 
   // Build API filter params from table state
-  const statusFilter = columnFilters.find((f) => f.id === 'status')
-    ?.value as string[] | undefined
-  const tenantFilter = columnFilters.find((f) => f.id === 'tenant')
-    ?.value as string | undefined
+  const statusFilter = columnFilters.find((f) => f.id === 'status')?.value as
+    | string[]
+    | undefined
+  const tenantFilter = columnFilters.find((f) => f.id === 'tenant')?.value as
+    | string
+    | undefined
 
   const apiFilters = useMemo(
     () => ({
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       search: tenantFilter || undefined,
-      status: statusFilter && statusFilter.length > 0 ? (statusFilter as InvoiceStatus[]) : undefined,
+      status:
+        statusFilter && statusFilter.length > 0
+          ? (statusFilter as InvoiceStatus[])
+          : undefined,
     }),
     [pagination.pageIndex, pagination.pageSize, tenantFilter, statusFilter]
   )
@@ -150,7 +155,9 @@ export function InvoicesTable({ search, navigate }: DataTableProps) {
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className={cn(header.getContext().column.columnDef.meta?.className)}
+                    className={cn(
+                      header.getContext().column.columnDef.meta?.className
+                    )}
                     style={{
                       width: header.column.getSize(),
                     }}
@@ -171,7 +178,10 @@ export function InvoicesTable({ search, navigate }: DataTableProps) {
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
                   {columns.map((_, colIdx) => (
-                    <TableCell key={colIdx} className={cn(columns[colIdx]?.meta?.className)}>
+                    <TableCell
+                      key={colIdx}
+                      className={cn(columns[colIdx]?.meta?.className)}
+                    >
                       <Skeleton className='h-4 w-full' />
                     </TableCell>
                   ))}
@@ -184,7 +194,10 @@ export function InvoicesTable({ search, navigate }: DataTableProps) {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={cn(cell.column.columnDef.meta?.className)}>
+                    <TableCell
+                      key={cell.id}
+                      className={cn(cell.column.columnDef.meta?.className)}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

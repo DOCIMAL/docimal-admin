@@ -1,12 +1,12 @@
 import { type ColumnDef } from '@tanstack/react-table'
 import { ExternalLink, Download } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import type { AdminInvoice, InvoiceStatus } from '@/api/billing.api'
 import { apiClient } from '@/lib/api-client'
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTableColumnHeader } from '@/components/data-table'
-import { toast } from 'sonner'
-import type { AdminInvoice, InvoiceStatus } from '@/api/billing.api'
 
 // Status badge colors
 const statusColors: Record<InvoiceStatus, string> = {
@@ -33,34 +33,41 @@ function formatDate(dateString?: string): string {
   })
 }
 
-const InvoiceDownloadButton = ({ stripeInvoiceId }: { stripeInvoiceId: string }) => {
+const InvoiceDownloadButton = ({
+  stripeInvoiceId,
+}: {
+  stripeInvoiceId: string
+}) => {
   const handleDownload = async () => {
     try {
-      const response = await apiClient.get(`/admin/billing/invoices/${stripeInvoiceId}/render`, {
-        responseType: 'blob',
-      });
-      
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      const response = await apiClient.get(
+        `/admin/billing/invoices/${stripeInvoiceId}/render`,
+        {
+          responseType: 'blob',
+        }
+      )
+
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      window.open(url, '_blank')
       // Note: We don't revoke immediately so the new tab can load the blob.
     } catch (_error) {
       toast.error('Failed to open invoice PDF')
     }
-  };
+  }
 
   return (
     <Button
       variant='ghost'
       size='sm'
       onClick={handleDownload}
-      className='h-8 w-8 p-0 text-muted-foreground hover:text-primary transition-colors'
+      className='h-8 w-8 p-0 text-muted-foreground transition-colors hover:text-primary'
       title='View PDF'
     >
       <Download className='h-4 w-4' />
     </Button>
-  );
-};
+  )
+}
 
 export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
   {
@@ -77,11 +84,11 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
           href={`/tenants/${tenantId}`}
           target='_blank'
           rel='noreferrer'
-          className='group flex items-center gap-1 font-medium hover:text-primary max-w-[200px] truncate block'
+          className='group block flex max-w-[200px] items-center gap-1 truncate font-medium hover:text-primary'
           title={displayName}
         >
           {displayName}
-          <ExternalLink className='inline-block mb-1 h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100' />
+          <ExternalLink className='mb-1 inline-block h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100' />
         </a>
       )
     },
@@ -101,7 +108,11 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
     ),
     cell: ({ row }) => {
       const id = row.getValue('stripeInvoiceId') as string
-      return <div className='text-xs font-mono text-muted-foreground uppercase'>{id}</div>
+      return (
+        <div className='font-mono text-xs text-muted-foreground uppercase'>
+          {id}
+        </div>
+      )
     },
     meta: {
       className: 'w-[18%] min-w-[170px] px-4',
@@ -142,7 +153,12 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
       const status = row.getValue('status') as InvoiceStatus
       return (
         <div className='flex justify-center'>
-          <Badge className={cn('capitalize', statusColors[status] || statusColors.void)}>
+          <Badge
+            className={cn(
+              'capitalize',
+              statusColors[status] || statusColors.void
+            )}
+          >
             {status}
           </Badge>
         </div>
@@ -168,7 +184,11 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
       if (!start || !end) return <div className='text-center text-sm'>-</div>
       const startStr = formatDate(start)
       const endStr = formatDate(end)
-      return <div className='text-center text-sm'>{startStr} - {endStr}</div>
+      return (
+        <div className='text-center text-sm'>
+          {startStr} - {endStr}
+        </div>
+      )
     },
     meta: {
       className: 'w-[18%] min-w-[180px] px-4',
@@ -181,7 +201,7 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
       <DataTableColumnHeader
         column={column}
         title='Due Date'
-        className='justify-end text-right -mr-3'
+        className='-mr-3 justify-end text-right'
       />
     ),
     cell: ({ row }) => {
@@ -199,7 +219,7 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
       <DataTableColumnHeader
         column={column}
         title='Paid Date'
-        className='justify-end text-right -mr-3'
+        className='-mr-3 justify-end text-right'
       />
     ),
     cell: ({ row }) => {
@@ -223,11 +243,18 @@ export const invoicesColumns: ColumnDef<AdminInvoice>[] = [
     cell: ({ row }) => {
       const pdfUrl = row.original.invoicePdf
 
-      if (!pdfUrl) return <div className='flex justify-center items-center h-8'><span className='text-xs text-muted-foreground'>N/A</span></div>
+      if (!pdfUrl)
+        return (
+          <div className='flex h-8 items-center justify-center'>
+            <span className='text-xs text-muted-foreground'>N/A</span>
+          </div>
+        )
 
       return (
         <div className='flex justify-center'>
-          <InvoiceDownloadButton stripeInvoiceId={row.original.stripeInvoiceId} />
+          <InvoiceDownloadButton
+            stripeInvoiceId={row.original.stripeInvoiceId}
+          />
         </div>
       )
     },

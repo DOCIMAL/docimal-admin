@@ -1,19 +1,23 @@
 import { type ColumnDef } from '@tanstack/react-table'
 import { ExternalLink } from 'lucide-react'
-
+import type {
+  AdminSubscription,
+  SubscriptionStatus,
+  SubscriptionPlan,
+} from '@/api/billing.api'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { DataTableColumnHeader } from '@/components/data-table'
-import type { AdminSubscription, SubscriptionStatus, SubscriptionPlan } from '@/api/billing.api'
-
 import { ActionsCell } from './subscriptions-actions'
 
 // Plan badge colors
 const planColors: Record<SubscriptionPlan, string> = {
   free: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100',
   starter: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
-  professional: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
-  enterprise: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100',
+  professional:
+    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
+  enterprise:
+    'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100',
 }
 
 // Status badge colors
@@ -21,7 +25,8 @@ const statusColors: Record<SubscriptionStatus, string> = {
   active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
   trialing: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100',
   canceled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
-  past_due: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
+  past_due:
+    'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
 }
 
 function formatCurrency(amount: number, currency: string = 'USD'): string {
@@ -87,7 +92,12 @@ export const subscriptionsColumns: ColumnDef<AdminSubscription>[] = [
       const plan = row.getValue('plan') as SubscriptionPlan
       return (
         <div className='flex justify-center'>
-          <Badge className={cn('capitalize', planColors[plan] || 'bg-slate-100 text-slate-800')}>
+          <Badge
+            className={cn(
+              'capitalize',
+              planColors[plan] || 'bg-slate-100 text-slate-800'
+            )}
+          >
             {plan || '—'}
           </Badge>
         </div>

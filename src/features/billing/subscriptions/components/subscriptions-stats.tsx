@@ -1,18 +1,8 @@
 import { useMemo } from 'react'
+import { CheckCircle2, Clock, AlertCircle, XCircle } from 'lucide-react'
 import { useAdminSubscriptions } from '@/api/billing.api'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  XCircle,
-} from 'lucide-react'
 
 export function SubscriptionsStats() {
   // Fetch all subscriptions (with high limit) to calculate stats
@@ -36,7 +26,7 @@ export function SubscriptionsStats() {
     return (
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
         {[...Array(4)].map((_, idx) => (
-          <Card key={idx} className='py-4 gap-2'>
+          <Card key={idx} className='gap-2 py-4'>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-0'>
               <CardTitle className='text-sm font-medium'>
                 <Skeleton className='h-4 w-20' />
@@ -55,21 +45,19 @@ export function SubscriptionsStats() {
   return (
     <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
       {/* Active Subscriptions */}
-      <Card className='py-4 gap-2'>
+      <Card className='gap-2 py-4'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-0'>
           <CardTitle className='text-sm font-medium'>Active</CardTitle>
           <CheckCircle2 className='h-4 w-4 text-green-600 dark:text-green-400' />
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>{stats.active}</div>
-          <p className='text-xs text-muted-foreground'>
-            Active subscriptions
-          </p>
+          <p className='text-xs text-muted-foreground'>Active subscriptions</p>
         </CardContent>
       </Card>
 
       {/* Trialing Subscriptions */}
-      <Card className='py-4 gap-2'>
+      <Card className='gap-2 py-4'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-0'>
           <CardTitle className='text-sm font-medium'>Trialing</CardTitle>
           <Clock className='h-4 w-4 text-amber-600 dark:text-amber-400' />
@@ -81,7 +69,7 @@ export function SubscriptionsStats() {
       </Card>
 
       {/* Canceled Subscriptions */}
-      <Card className='py-4 gap-2'>
+      <Card className='gap-2 py-4'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-0'>
           <CardTitle className='text-sm font-medium'>Canceled</CardTitle>
           <XCircle className='h-4 w-4 text-red-600 dark:text-red-400' />
@@ -95,16 +83,14 @@ export function SubscriptionsStats() {
       </Card>
 
       {/* Past Due Subscriptions */}
-      <Card className='py-4 gap-2'>
+      <Card className='gap-2 py-4'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-0'>
           <CardTitle className='text-sm font-medium'>Past Due</CardTitle>
           <AlertCircle className='h-4 w-4 text-orange-600 dark:text-orange-400' />
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>{stats.pastDue}</div>
-          <p className='text-xs text-muted-foreground'>
-            Overdue subscriptions
-          </p>
+          <p className='text-xs text-muted-foreground'>Overdue subscriptions</p>
         </CardContent>
       </Card>
     </div>

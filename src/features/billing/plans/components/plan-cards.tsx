@@ -1,6 +1,6 @@
+import { AlertCircle } from 'lucide-react'
 import { useAdminPlans } from '@/api/billing.api'
 import { PlanCard, PlanCardSkeleton } from './plan-card'
-import { AlertCircle } from 'lucide-react'
 
 export function PlanCards() {
   const { data: plans, isLoading, isError } = useAdminPlans()
