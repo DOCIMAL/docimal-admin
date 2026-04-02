@@ -1,0 +1,311 @@
+import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ExtendTrialDialog } from './extend-trial-dialog'
+import { OverridePlanDialog } from './override-plan-dialog'
+import { useAdminSubscriptions, useAdminInvoices } from '@/api/billing.api'
+import type { Tenant } from '@/api/tenants.api'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Download, History } from 'lucide-react'
+
+// Local formatters
+function formatCurrency(amount: number, currency: string = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
+  }).format(amount)
+}
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+// Reuse standard labels from your column definitions if needed
+const planColors: Record<string, string> = {
+  free: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
+  starter: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+  professional: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+  enterprise: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
+}
+
+const statusColors: Record<string, string> = {
+  active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300',
+  trialing: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
+  canceled: 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300',
+  past_due: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
+}
+
+interface TenantBillingTabProps {
+  tenantId: string
+  tenant: Tenant
+}
+
+export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
+  const [showOverridePlan, setShowOverridePlan] = useState(false)
+  const [showExtendTrial, setShowExtendTrial] = useState(false)
+
+  const { data: subData, isLoading: isLoadingSub } = useAdminSubscriptions({
+    tenantId,
+    limit: 1,
+  })
+
+  const { data: invData, isLoading: isLoadingInv } = useAdminInvoices({
+    tenantId,
+    limit: 5,
+  })
+
+  const currentSub = subData?.data?.[0]
+  const invoices = invData?.data || []
+
+  const isTrial = currentSub?.status === 'trialing'
+
+  // Dummy Quota Usage for now (usually from tenant.settings or quotas api)
+  const quotas = {
+    workspaces: { used: 2, limit: 5 },
+    members: { used: 7, limit: 10 },
+    documents: { used: 342, limit: 500 },
+    storage: { used: 45, limit: 1024, unit: 'MB' }, // 1024MB = 1GB
+  }
+
+  // Dummy Plan History
+  const planHistory = [
+    { date: '2025-12-10T10:00:00Z', event: 'Registered Free Plan' },
+    { date: '2026-01-15T14:30:00Z', event: 'Upgraded to Starter' },
+    { date: '2026-03-01T09:15:00Z', event: 'Upgraded to Professional' },
+  ]
+
+  return (
+    <div className='flex flex-col gap-4 lg:grid lg:grid-cols-2'>
+      {/* 1. Subscription Info */}
+      <Card className='col-span-1'>
+        <CardHeader>
+          <CardTitle>Current Subscription</CardTitle>
+          <CardDescription>Overview of the tenant's active plan</CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-6'>
+          {isLoadingSub ? (
+            <div className='space-y-4'>
+              <Skeleton className='h-4 w-1/2' />
+              <Skeleton className='h-4 w-1/3' />
+            </div>
+          ) : currentSub ? (
+            <>
+              <div className='grid grid-cols-2 gap-4'>
+                <div className='space-y-1'>
+                  <div className='text-sm font-medium text-muted-foreground'>Plan</div>
+                  <Badge className={planColors[currentSub.plan] || 'bg-slate-100 text-slate-800'}>
+                    {currentSub.plan.charAt(0).toUpperCase() + currentSub.plan.slice(1)}
+                  </Badge>
+                </div>
+                <div className='space-y-1'>
+                  <div className='text-sm font-medium text-muted-foreground'>Status</div>
+                  <Badge className={statusColors[currentSub.status] || ''}>
+                    {currentSub.status === 'past_due' ? 'Past Due' : currentSub.status}
+                  </Badge>
+                </div>
+                <div className='space-y-1'>
+                  <div className='text-sm font-medium text-muted-foreground'>Amount</div>
+                  <div className='font-medium'>
+                    {formatCurrency(currentSub.amount, currentSub.currency)} / {currentSub.interval || 'month'}
+                  </div>
+                </div>
+                <div className='space-y-1'>
+                  <div className='text-sm font-medium text-muted-foreground'>Billing Period</div>
+                  <div className='text-sm'>
+                    {formatDate(currentSub.currentPeriodStart)} - {formatDate(currentSub.currentPeriodEnd)}
+                  </div>
+                </div>
+                {isTrial && currentSub.trialEndsAt && (
+                  <div className='space-y-1 col-span-2'>
+                    <div className='text-sm font-medium text-muted-foreground'>Trial Ends</div>
+                    <div className='text-sm text-amber-600 font-medium'>
+                      {formatDate(currentSub.trialEndsAt)}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className='flex items-center gap-3 pt-4 border-t'>
+                <Button variant='outline' onClick={() => setShowOverridePlan(true)}>
+                  Override Plan
+                </Button>
+                {isTrial && (
+                  <Button variant='outline' onClick={() => setShowExtendTrial(true)}>
+                    Extend Trial
+                  </Button>
+                )}
+              </div>
+
+              {showOverridePlan && (
+                <OverridePlanDialog
+                  open={showOverridePlan}
+                  onOpenChange={setShowOverridePlan}
+                  tenantId={tenantId}
+                  tenantName={tenant.name}
+                  currentPlan={currentSub.plan as 'free' | 'starter' | 'professional' | 'enterprise'}
+                />
+              )}
+              {showExtendTrial && (
+                <ExtendTrialDialog
+                  open={showExtendTrial}
+                  onOpenChange={setShowExtendTrial}
+                  tenantId={tenantId}
+                  tenantName={tenant.name}
+                  currentPeriodEnd={currentSub.currentPeriodEnd}
+                  status={currentSub.status as 'active' | 'trialing' | 'canceled' | 'past_due'}
+                />
+              )}
+            </>
+          ) : (
+            <div className='text-sm text-muted-foreground'>No active subscription</div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 2. Quota Usage */}
+      <Card className='col-span-1'>
+        <CardHeader>
+          <CardTitle>Quota Usage</CardTitle>
+          <CardDescription>Tenant's resource limits and utilization</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-6'>
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='font-medium'>Workspaces</span>
+                <span className='text-muted-foreground'>{quotas.workspaces.used} / {quotas.workspaces.limit}</span>
+              </div>
+              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
+                <div className='h-full bg-primary' style={{ width: (quotas.workspaces.used / quotas.workspaces.limit) * 100 + '%' }} />
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='font-medium'>Members</span>
+                <span className='text-muted-foreground'>{quotas.members.used} / {quotas.members.limit}</span>
+              </div>
+              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
+                <div className='h-full bg-blue-500' style={{ width: (quotas.members.used / quotas.members.limit) * 100 + '%' }} />
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='font-medium'>Documents</span>
+                <span className='text-muted-foreground'>{quotas.documents.used} / {quotas.documents.limit}</span>
+              </div>
+              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
+                <div className='h-full bg-purple-500' style={{ width: (quotas.documents.used / quotas.documents.limit) * 100 + '%' }} />
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='font-medium'>Storage</span>
+                <span className='text-muted-foreground'>
+                  {quotas.storage.used} {quotas.storage.unit} / {quotas.storage.limit >= 1024 ? (quotas.storage.limit / 1024) + ' GB' : quotas.storage.limit + ' MB'}
+                </span>
+              </div>
+              <div className='h-2 bg-secondary rounded-full overflow-hidden'>
+                <div className='h-full bg-amber-500' style={{ width: (quotas.storage.used / quotas.storage.limit) * 100 + '%' }} />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 3. Invoices */}
+      <Card className='col-span-1 lg:col-span-2'>
+        <CardHeader>
+          <CardTitle>Recent Invoices</CardTitle>
+          <CardDescription>Past billing periods and payment history</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className='w-[100px] text-right'>PDF</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoadingInv ? (
+                <TableRow>
+                  <TableCell colSpan={4} className='h-24 text-center'>
+                    <Skeleton className='h-4 w-32 mx-auto' />
+                  </TableCell>
+                </TableRow>
+              ) : invoices.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className='h-24 text-center text-muted-foreground'>
+                    No invoices found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                invoices.map((inv) => (
+                  <TableRow key={inv.id}>
+                    <TableCell>{formatDate(inv.createdAt)}</TableCell>
+                    <TableCell className='font-medium'>{formatCurrency(inv.amountPaid, inv.currency)}</TableCell>
+                    <TableCell>
+                      <Badge variant={inv.status === 'paid' ? 'default' : 'secondary'} className='capitalize'>
+                        {inv.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      {inv.invoicePdf ? (
+                        <Button variant='ghost' size='icon' className='h-8 w-8' title='Download PDF' asChild>
+                          <a href={inv.invoicePdf} target='_blank' rel='noreferrer'>
+                            <Download className='h-4 w-4' />
+                          </a>
+                        </Button>
+                      ) : (
+                        <span className='px-3 py-1'>-</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* 4. Plan Change History */}
+      <Card className='col-span-1 lg:col-span-2'>
+        <CardHeader>
+          <CardTitle>Plan History</CardTitle>
+          <CardDescription>Timeline of tenant subscription changes</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='relative pl-4 border-l border-muted-foreground/20 space-y-6 pb-2 ml-4'>
+            {planHistory.map((item, idx) => (
+              <div key={idx} className='relative'>
+                <div className='absolute -left-[25px] flex items-center justify-center h-6 w-6 rounded-full bg-background border border-muted-foreground/30'>
+                  <History className='h-3 w-3 text-muted-foreground' />
+                </div>
+                <div className='space-y-1 pl-4'>
+                  <p className='text-sm font-medium leading-none'>
+                    {item.event}
+                  </p>
+                  <p className='text-xs text-muted-foreground'>
+                    {new Date(item.date).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
