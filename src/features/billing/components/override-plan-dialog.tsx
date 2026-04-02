@@ -95,7 +95,7 @@ export function OverridePlanDialog({
           <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-900">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Thao tác này thay đổi plan trực tiếp, không qua Stripe. Quota sẽ được cập nhật theo plan mới.
+              This action changes the plan directly, bypassing Stripe. Quotas will be updated based on the new plan.
             </AlertDescription>
           </Alert>
 
