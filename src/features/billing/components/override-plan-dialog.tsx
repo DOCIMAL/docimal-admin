@@ -33,8 +33,8 @@ import { useOverridePlan, type SubscriptionPlan } from '@/api/billing.api'
 
 const formSchema = z.object({
   plan: z.enum(['free', 'starter', 'professional', 'enterprise'], {
-    errorMap: () => ({ message: 'Please select a plan' }),
-  } as any),
+    message: 'Please select a plan',
+  }),
 })
 
 type FormValues = z.infer<typeof formSchema>

@@ -23,8 +23,12 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { useAdminSubscriptions } from '@/api/billing.api'
-import type { AdminSubscription, SubscriptionPlan, SubscriptionStatus } from '@/api/billing.api'
+import {
+  useAdminSubscriptions,
+  type AdminSubscription,
+  type SubscriptionPlan,
+  type SubscriptionStatus,
+} from '@/api/billing.api'
 import { subscriptionsColumns as columns } from './subscriptions-columns'
 import { useSubscriptions } from './subscriptions-provider'
 

@@ -1,0 +1,46 @@
+
+> docimal-admin@2.2.1 lint D:\VSCode\Project\Docimal\docimal-admin
+> eslint .
+
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\invoices\components\invoices-columns.tsx
+  36:7   warning  Fast refresh only works when a file only exports components. Move your component(s) to a separate file  react-refresh/only-export-components
+  47:14  error    'error' is defined but never used. Allowed unused caught errors must match /^_/u                        @typescript-eslint/no-unused-vars
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\invoices\components\invoices-provider.tsx
+  23:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\invoices\components\invoices-table.tsx
+  82:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\invoices\components\invoices-table.tsx:82:17
+  80 |   const pageCount = apiData?.meta?.totalPages ?? 1
+  81 |
+> 82 |   const table = useReactTable({
+     |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  83 |     data: tableData,
+  84 |     columns,
+  85 |     pageCount,  react-hooks/incompatible-library
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\subscriptions\components\subscriptions-provider.tsx
+  31:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\subscriptions\components\subscriptions-table.tsx
+  87:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+D:\VSCode\Project\Docimal\docimal-admin\src\features\billing\subscriptions\components\subscriptions-table.tsx:87:17
+  85 |   const pageCount = apiData?.meta?.totalPages ?? 1
+  86 |
+> 87 |   const table = useReactTable({
+     |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  88 |     data: tableData,
+  89 |     columns,
+  90 |     pageCount,  react-hooks/incompatible-library
+
+Γ£û 6 problems (1 error, 5 warnings)
+
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

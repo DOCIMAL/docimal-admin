@@ -1,8 +1,9 @@
 import { createContext, useContext, useRef, type ReactNode } from 'react'
 import type { Table } from '@tanstack/react-table'
+import type { AdminInvoice } from '@/api/billing.api'
 
 interface InvoicesContextType {
-  tableRef: React.MutableRefObject<Table<any> | null>
+  tableRef: React.MutableRefObject<Table<AdminInvoice> | null>
 }
 
 const InvoicesContext = createContext<InvoicesContextType | undefined>(
@@ -10,7 +11,7 @@ const InvoicesContext = createContext<InvoicesContextType | undefined>(
 )
 
 export function InvoicesProvider({ children }: { children: ReactNode }) {
-  const tableRef = useRef<Table<any> | null>(null)
+  const tableRef = useRef<Table<AdminInvoice> | null>(null)
 
   return (
     <InvoicesContext.Provider value={{ tableRef }}>

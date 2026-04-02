@@ -30,7 +30,7 @@ export function SubscriptionsStats() {
       canceled: listData.data.filter((s) => s.status === 'canceled').length,
       pastDue: listData.data.filter((s) => s.status === 'past_due').length,
     }
-  }, [listData?.data])
+  }, [listData])
 
   if (isLoading) {
     return (

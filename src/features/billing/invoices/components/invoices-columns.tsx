@@ -5,6 +5,7 @@ import { apiClient } from '@/lib/api-client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTableColumnHeader } from '@/components/data-table'
+import { toast } from 'sonner'
 import type { AdminInvoice, InvoiceStatus } from '@/api/billing.api'
 
 // Status badge colors
@@ -43,8 +44,8 @@ const InvoiceDownloadButton = ({ stripeInvoiceId }: { stripeInvoiceId: string })
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
       // Note: We don't revoke immediately so the new tab can load the blob.
-    } catch (error) {
-      console.error('Failed to open invoice PDF:', error);
+    } catch (_error) {
+      toast.error('Failed to open invoice PDF')
     }
   };
 

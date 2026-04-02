@@ -14,8 +14,11 @@ import {
 import { cn } from '@/lib/utils'
 import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { useAdminInvoices } from '@/api/billing.api'
-import type { AdminInvoice, InvoiceStatus } from '@/api/billing.api'
+import {
+  useAdminInvoices,
+  type AdminInvoice,
+  type InvoiceStatus,
+} from '@/api/billing.api'
 import { invoicesColumns as columns } from './invoices-columns'
 import { useInvoices } from './invoices-provider'
 import {

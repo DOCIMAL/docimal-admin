@@ -55,7 +55,7 @@ export function Analytics() {
                   />
                   <Tooltip 
                     contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    formatter={(value: any) => [`$${value || 0}`, 'MRR']}
+                    formatter={(value: number | string | undefined) => [`$${value || 0}`, 'MRR']}
                   />
                   <Line 
                     type='monotone' 
