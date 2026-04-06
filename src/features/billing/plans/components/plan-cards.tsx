@@ -45,7 +45,9 @@ export function PlanCards() {
     )
   }
 
-  const sortedPlans = [...plans].sort((a, b) => getPlanOrder(a) - getPlanOrder(b))
+  const sortedPlans = [...plans].sort(
+    (a, b) => getPlanOrder(a) - getPlanOrder(b)
+  )
 
   return (
     <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
