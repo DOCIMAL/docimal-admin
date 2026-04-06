@@ -60,7 +60,7 @@ export function PlanCard({ plan }: PlanCardProps) {
         </div>
       )}
 
-      <CardHeader className={`space-y-1 ${popular ? 'pt-8' : 'pt-5'} pb-0`}>
+      <CardHeader className={`space-y-1 ${popular ? 'pt-7' : 'pt-4'} pb-0`}>
         {/* Plan name */}
         <h3
           className={`text-lg font-semibold capitalize ${
@@ -82,7 +82,7 @@ export function PlanCard({ plan }: PlanCardProps) {
         )}
       </CardHeader>
 
-      <CardContent className='flex flex-1 flex-col gap-5 px-6 pt-4 pb-6'>
+      <CardContent className='flex flex-1 flex-col gap-4 px-5 pt-3 pb-5'>
         {/* Price */}
         <div>
           <div className='flex items-baseline gap-1'>
@@ -95,7 +95,7 @@ export function PlanCard({ plan }: PlanCardProps) {
             ) : (
               <>
                 <span
-                  className={`text-4xl font-bold tabular-nums ${
+                  className={`text-3xl font-bold tabular-nums ${
                     popular ? 'text-white' : ''
                   }`}
                 >
@@ -113,7 +113,7 @@ export function PlanCard({ plan }: PlanCardProps) {
           </div>
 
           {/* Badge for interval */}
-          <div className='mt-2'>
+          <div className='mt-1.5'>
             <Badge
               variant='outline'
               className={`text-[10px] font-medium tracking-wide uppercase ${
@@ -139,7 +139,7 @@ export function PlanCard({ plan }: PlanCardProps) {
 
         {/* Stats row */}
         <div
-          className={`grid grid-cols-2 gap-3 rounded-xl p-3 ${
+          className={`grid grid-cols-2 gap-2 rounded-xl p-2.5 ${
             popular ? 'bg-zinc-800/60' : 'bg-muted/50'
           }`}
         >
@@ -153,7 +153,7 @@ export function PlanCard({ plan }: PlanCardProps) {
               Tenants
             </div>
             <p
-              className={`text-xl font-bold tabular-nums ${
+              className={`text-lg font-bold tabular-nums ${
                 popular ? 'text-white' : ''
               }`}
             >
@@ -170,7 +170,7 @@ export function PlanCard({ plan }: PlanCardProps) {
               MRR
             </div>
             <p
-              className={`text-xl font-bold tabular-nums ${
+              className={`text-lg font-bold tabular-nums ${
                 popular ? 'text-white' : ''
               }`}
             >
@@ -183,14 +183,14 @@ export function PlanCard({ plan }: PlanCardProps) {
         {features.length > 1 && (
           <div className='flex-1'>
             <p
-              className={`mb-2 text-[10px] font-medium tracking-widest uppercase ${
+              className={`mb-1.5 text-[10px] font-medium tracking-widest uppercase ${
                 popular ? 'text-zinc-500' : 'text-muted-foreground'
               }`}
             >
               What&apos;s included
             </p>
-            <ul className='space-y-1.5'>
-              {features.slice(1, 5).map((f, i) => (
+            <ul className='space-y-1'>
+              {features.slice(1, 4).map((f, i) => (
                 <li key={i} className='flex items-center gap-2 text-xs'>
                   <Check
                     className={`h-3.5 w-3.5 shrink-0 ${
@@ -217,22 +217,21 @@ export function PlanCard({ plan }: PlanCardProps) {
 export function PlanCardSkeleton() {
   return (
     <Card className='overflow-hidden rounded-2xl border'>
-      <CardHeader className='pt-5 pb-2'>
+      <CardHeader className='pt-4 pb-2'>
         <Skeleton className='h-5 w-24' />
         <Skeleton className='mt-1 h-3 w-36' />
       </CardHeader>
-      <CardContent className='space-y-4 px-6 pb-6'>
-        <Skeleton className='h-10 w-28' />
-        <div className='rounded-xl bg-muted/50 p-3'>
-          <div className='grid grid-cols-2 gap-3'>
-            <Skeleton className='h-12' />
-            <Skeleton className='h-12' />
+      <CardContent className='space-y-3 px-5 pb-5'>
+        <Skeleton className='h-8 w-24' />
+        <div className='rounded-xl bg-muted/50 p-2.5'>
+          <div className='grid grid-cols-2 gap-2'>
+            <Skeleton className='h-10' />
+            <Skeleton className='h-10' />
           </div>
         </div>
         <div className='space-y-2'>
           <Skeleton className='h-3 w-full' />
           <Skeleton className='h-3 w-4/5' />
-          <Skeleton className='h-3 w-3/5' />
         </div>
       </CardContent>
     </Card>
