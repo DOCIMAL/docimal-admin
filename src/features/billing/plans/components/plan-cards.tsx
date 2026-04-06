@@ -1,7 +1,6 @@
 import { AlertCircle } from 'lucide-react'
-import { useAdminPlans } from '@/api/billing.api'
+import { useAdminPlans, type AdminPlan } from '@/api/billing.api'
 import { PlanCard, PlanCardSkeleton } from './plan-card'
-import type { AdminPlan } from '@/api/billing.api'
 
 function getPlanOrder(plan: AdminPlan): number {
   const key = plan.name.toLowerCase()
