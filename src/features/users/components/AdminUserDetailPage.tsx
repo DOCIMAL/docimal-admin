@@ -40,6 +40,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { NotificationPopover } from '@/features/notifications/components/notification-popover'
 import {
   useAdminUserDetail,
   useReactivateUser,
@@ -119,6 +120,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
           <Search />
           <div className='ms-auto flex items-center space-x-4'>
             <ThemeSwitch />
+            <NotificationPopover />
             <ProfileDropdown />
           </div>
         </Header>
@@ -179,6 +181,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
           <ThemeSwitch />
+          <NotificationPopover />
           <ProfileDropdown />
         </div>
       </Header>

@@ -7,6 +7,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { NotificationPopover } from '@/features/notifications/components/notification-popover'
 import { SidebarNav } from './components/sidebar-nav'
 
 const sidebarNavItems = [
@@ -46,6 +47,7 @@ export function Settings() {
         <div className='ms-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <ConfigDrawer />
+          <NotificationPopover />
           <ProfileDropdown />
         </div>
       </Header>

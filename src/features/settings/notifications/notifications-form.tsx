@@ -1,10 +1,9 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -12,107 +11,140 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { notificationsApi } from '@/api/notifications.api'
 
-const notificationsFormSchema = z.object({
-  type: z.enum(['all', 'mentions', 'none'], {
-    error: (iss) =>
-      iss.input === undefined
-        ? 'Please select a notification type.'
-        : undefined,
-  }),
-  mobile: z.boolean().default(false).optional(),
-  communication_emails: z.boolean().default(false).optional(),
-  social_emails: z.boolean().default(false).optional(),
-  marketing_emails: z.boolean().default(false).optional(),
-  security_emails: z.boolean(),
-})
+// Common IANA timezones for the selector
+const COMMON_TIMEZONES = [
+  'UTC',
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'Europe/London',
+  'Europe/Berlin',
+  'Europe/Paris',
+  'Asia/Dubai',
+  'Asia/Kolkata',
+  'Asia/Bangkok',
+  'Asia/Ho_Chi_Minh',
+  'Asia/Shanghai',
+  'Asia/Tokyo',
+  'Asia/Seoul',
+  'Australia/Sydney',
+  'Pacific/Auckland',
+]
 
-type NotificationsFormValues = z.infer<typeof notificationsFormSchema>
+const formSchema = z
+  .object({
+    emailEnabled: z.boolean(),
+    pushEnabled: z.boolean(),
+    inAppEnabled: z.boolean(),
+    quietHoursStart: z.string().optional(),
+    quietHoursEnd: z.string().optional(),
+    timezone: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      const hasStart = !!data.quietHoursStart
+      const hasEnd = !!data.quietHoursEnd
+      // Both must be set together, or both empty
+      return hasStart === hasEnd
+    },
+    {
+      message: 'Both start and end time are required for quiet hours.',
+      path: ['quietHoursEnd'],
+    }
+  )
 
-// This can come from your database or API.
-const defaultValues: Partial<NotificationsFormValues> = {
-  communication_emails: false,
-  marketing_emails: false,
-  social_emails: true,
-  security_emails: true,
-}
+type FormValues = z.infer<typeof formSchema>
+
+const QUERY_KEY = ['notification-preferences'] as const
 
 export function NotificationsForm() {
-  const form = useForm<NotificationsFormValues>({
-    resolver: zodResolver(notificationsFormSchema),
-    defaultValues,
+  const queryClient = useQueryClient()
+
+  const { data: prefs, isLoading } = useQuery({
+    queryKey: QUERY_KEY,
+    queryFn: () => notificationsApi.getPreferences(),
   })
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      emailEnabled: true,
+      pushEnabled: true,
+      inAppEnabled: true,
+      quietHoursStart: '',
+      quietHoursEnd: '',
+      timezone: 'UTC',
+    },
+    // `values` syncs the form when `prefs` loads from the server
+    values: prefs
+      ? {
+          emailEnabled: prefs.emailEnabled ?? true,
+          pushEnabled: prefs.pushEnabled ?? true,
+          inAppEnabled: prefs.inAppEnabled ?? true,
+          quietHoursStart: prefs.quietHoursStart ?? '',
+          quietHoursEnd: prefs.quietHoursEnd ?? '',
+          timezone: prefs.timezone ?? 'UTC',
+        }
+      : undefined,
+  })
+
+  const updatePrefs = useMutation({
+    mutationFn: (data: FormValues) =>
+      notificationsApi.updatePreferences({
+        ...data,
+        // Send undefined instead of empty string so BE can clear quiet hours
+        quietHoursStart: data.quietHoursStart || undefined,
+        quietHoursEnd: data.quietHoursEnd || undefined,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+      toast.success('Notification preferences updated')
+    },
+    onError: () => {
+      toast.error('Failed to update preferences. Please try again.')
+    },
+  })
+
+  const isSaving = updatePrefs.isPending
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => showSubmittedData(data))}
+        onSubmit={form.handleSubmit((data) => updatePrefs.mutate(data))}
         className='space-y-8'
       >
-        <FormField
-          control={form.control}
-          name='type'
-          render={({ field }) => (
-            <FormItem className='relative space-y-3'>
-              <FormLabel>Notify me about...</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className='flex flex-col gap-2'
-                >
-                  <FormItem className='flex items-center'>
-                    <FormControl>
-                      <RadioGroupItem value='all' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>
-                      All new messages
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className='flex items-center'>
-                    <FormControl>
-                      <RadioGroupItem value='mentions' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>
-                      Direct messages and mentions
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className='flex items-center'>
-                    <FormControl>
-                      <RadioGroupItem value='none' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>Nothing</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className='relative'>
-          <h3 className='mb-4 text-lg font-medium'>Email Notifications</h3>
+        {/* Channels Section */}
+        <div>
+          <h3 className='mb-4 text-lg font-medium'>Notification Channels</h3>
           <div className='space-y-4'>
             <FormField
               control={form.control}
-              name='communication_emails'
+              name='emailEnabled'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
-                    <FormLabel className='text-base'>
-                      Communication emails
-                    </FormLabel>
+                    <FormLabel className='text-base'>Email notifications</FormLabel>
                     <FormDescription>
-                      Receive emails about your account activity.
+                      Receive notifications and alerts via email.
                     </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={isSaving || isLoading}
                     />
                   </FormControl>
                 </FormItem>
@@ -120,21 +152,20 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name='marketing_emails'
+              name='pushEnabled'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
-                    <FormLabel className='text-base'>
-                      Marketing emails
-                    </FormLabel>
+                    <FormLabel className='text-base'>Push notifications</FormLabel>
                     <FormDescription>
-                      Receive emails about new products, features, and more.
+                      Receive real-time push notifications on your browser or device.
                     </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={isSaving || isLoading}
                     />
                   </FormControl>
                 </FormItem>
@@ -142,41 +173,20 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name='social_emails'
+              name='inAppEnabled'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
-                    <FormLabel className='text-base'>Social emails</FormLabel>
+                    <FormLabel className='text-base'>In-app notifications</FormLabel>
                     <FormDescription>
-                      Receive emails for friend requests, follows, and more.
+                      Show notifications in the Docimal Admin interface.
                     </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='security_emails'
-              render={({ field }) => (
-                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                  <div className='space-y-0.5'>
-                    <FormLabel className='text-base'>Security emails</FormLabel>
-                    <FormDescription>
-                      Receive emails about your account activity and security.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled
-                      aria-readonly
+                      disabled={isSaving || isLoading}
                     />
                   </FormControl>
                 </FormItem>
@@ -184,36 +194,98 @@ export function NotificationsForm() {
             />
           </div>
         </div>
+
+        {/* Quiet Hours Section */}
+        <div>
+          <h3 className='mb-1 text-lg font-medium'>Quiet Hours</h3>
+          <p className='mb-4 text-sm text-muted-foreground'>
+            Suppress push notifications during a specific time window.
+          </p>
+          <div className='flex flex-wrap gap-6'>
+            <FormField
+              control={form.control}
+              name='quietHoursStart'
+              render={({ field }) => (
+                <FormItem className='flex flex-col gap-1.5'>
+                  <FormLabel>From</FormLabel>
+                  <FormControl>
+                    <input
+                      type='time'
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      disabled={isSaving || isLoading}
+                      className='h-9 w-36 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring disabled:opacity-50'
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='quietHoursEnd'
+              render={({ field }) => (
+                <FormItem className='flex flex-col gap-1.5'>
+                  <FormLabel>To</FormLabel>
+                  <FormControl>
+                    <input
+                      type='time'
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      disabled={isSaving || isLoading}
+                      className='h-9 w-36 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring disabled:opacity-50'
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Timezone Section */}
         <FormField
           control={form.control}
-          name='mobile'
-          render={({ field }) => (
-            <FormItem className='relative flex flex-row items-start'>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className='space-y-1 leading-none'>
-                <FormLabel>
-                  Use different settings for my mobile devices
-                </FormLabel>
-                <FormDescription>
-                  You can manage your mobile notifications in the{' '}
-                  <Link
-                    to='/settings'
-                    className='underline decoration-dashed underline-offset-4 hover:decoration-solid'
+          name='timezone'
+          render={({ field }) => {
+            // Ensure the stored value is always rendered even if not in the preset list
+            const currentTz = field.value ?? 'UTC'
+            const tzOptions = COMMON_TIMEZONES.includes(currentTz)
+              ? COMMON_TIMEZONES
+              : [currentTz, ...COMMON_TIMEZONES]
+
+            return (
+              <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                <div className='space-y-0.5'>
+                  <FormLabel className='text-base'>Timezone</FormLabel>
+                  <FormDescription>
+                    Used to calculate your quiet hours window correctly.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Select
+                    value={currentTz}
+                    onValueChange={field.onChange}
+                    disabled={isSaving || isLoading}
                   >
-                    mobile settings
-                  </Link>{' '}
-                  page.
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
+                    <SelectTrigger className='w-48'>
+                      <SelectValue placeholder='Select timezone' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tzOptions.map((tz) => (
+                        <SelectItem key={tz} value={tz}>
+                          {tz}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )
+          }}
         />
-        <Button type='submit'>Update notifications</Button>
+
+        <Button type='submit' disabled={isSaving || isLoading}>
+          {isSaving ? 'Saving...' : 'Update notifications'}
+        </Button>
       </form>
     </Form>
   )

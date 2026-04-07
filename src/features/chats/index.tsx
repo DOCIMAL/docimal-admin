@@ -25,6 +25,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { NotificationPopover } from '@/features/notifications/components/notification-popover'
 import { NewChat } from './components/new-chat'
 import { type ChatUser, type Convo } from './data/chat-types'
 // Fake Data
@@ -71,6 +72,7 @@ export function Chats() {
         <div className='ms-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <ConfigDrawer />
+          <NotificationPopover />
           <ProfileDropdown />
         </div>
       </Header>
