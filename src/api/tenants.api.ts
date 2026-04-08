@@ -16,7 +16,7 @@ import type {
 // Types
 // ---------------------------------------------------------------------------
 
-export type TenantStatus = 'active' | 'inactive' | 'suspended' | 'trial'
+export type TenantStatus = 'active' | 'expired' | 'suspended' | 'trial'
 export type TenantPlan = 'free' | 'starter' | 'pro' | 'enterprise'
 
 export interface Tenant {
@@ -32,6 +32,45 @@ export interface Tenant {
   subscriptionEndsAt?: string
   createdAt: string
   updatedAt: string
+}
+
+export interface TenantStats {
+  total: number
+  statuses: {
+    active: number
+    trial: number
+    suspended: number
+    expired: number
+  }
+  plans: {
+    free: number
+    starter: number
+    professional: number
+    enterprise: number
+  }
+}
+
+export interface TenantMember {
+  id: string
+  email: string
+  name: string
+  role: string
+  status: string
+  joinedAt: string
+}
+
+export interface TenantWorkspace {
+  id: string
+  name: string
+  description?: string
+  status: string
+  createdAt: string
+  avatar?: string
+}
+
+export interface TenantSubscriptionInfo {
+  subscription: any // Match backend DTO
+  invoices: any[]
 }
 
 export interface CreateTenantBody {
@@ -60,6 +99,8 @@ export interface ListTenantsParams extends ListParams {
 const BASE = '/admin/tenants'
 
 export const tenantsApi = {
+  getStats: () => apiClient.get<TenantStats>(`${BASE}/stats`).then((r) => r.data),
+
   list: (params?: ListTenantsParams) =>
     apiClient
       .get<PaginatedResponse<Tenant>>(BASE, { params })
@@ -81,11 +122,25 @@ export const tenantsApi = {
 
   activate: (id: string) =>
     apiClient
-      .post<MessageResponse>(`${BASE}/${id}/activate`)
+      .post<MessageResponse>((`${BASE}/${id}/activate`))
+      .then((r) => r.data),
+
+  extendTrial: (id: string, days: number) =>
+    apiClient
+      .post<MessageResponse>(`${BASE}/${id}/extend-trial`, { days })
       .then((r) => r.data),
 
   delete: (id: string) =>
     apiClient.delete<MessageResponse>(`${BASE}/${id}`).then((r) => r.data),
+
+  getMembers: (id: string) =>
+    apiClient.get<TenantMember[]>(`${BASE}/${id}/members`).then((r) => r.data),
+
+  getWorkspaces: (id: string) =>
+    apiClient.get<TenantWorkspace[]>(`${BASE}/${id}/workspaces`).then((r) => r.data),
+
+  getSubscription: (id: string) =>
+    apiClient.get<TenantSubscriptionInfo>(`${BASE}/${id}/subscription`).then((r) => r.data),
 }
 
 // ---------------------------------------------------------------------------
@@ -99,11 +154,19 @@ export const tenantKeys = {
     [...tenantKeys.lists(), params] as const,
   details: () => [...tenantKeys.all, 'detail'] as const,
   detail: (id: string) => [...tenantKeys.details(), id] as const,
+  stats: () => [...tenantKeys.all, 'stats'] as const,
 }
 
 // ---------------------------------------------------------------------------
 // Hooks
 // ---------------------------------------------------------------------------
+
+export function useTenantStats() {
+  return useQuery({
+    queryKey: tenantKeys.stats(),
+    queryFn: () => tenantsApi.getStats(),
+  })
+}
 
 export function useTenants(params?: ListTenantsParams) {
   return useQuery({
@@ -168,6 +231,18 @@ export function useActivateTenant() {
   })
 }
 
+export function useExtendTrialTenant() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, days }: { id: string; days: number }) => tenantsApi.extendTrial(id, days),
+    onSuccess: (_, { id, days }) => {
+      qc.invalidateQueries({ queryKey: tenantKeys.lists() })
+      qc.invalidateQueries({ queryKey: tenantKeys.detail(id) })
+      toast.success(`Tenant trial extended by ${days} days`)
+    },
+  })
+}
+
 export function useDeleteTenant() {
   const qc = useQueryClient()
   return useMutation({
@@ -176,5 +251,29 @@ export function useDeleteTenant() {
       qc.invalidateQueries({ queryKey: tenantKeys.lists() })
       toast.success('Tenant deleted')
     },
+  })
+}
+
+export function useTenantMembers(id: string) {
+  return useQuery({
+    queryKey: [...tenantKeys.detail(id), 'members'],
+    queryFn: () => tenantsApi.getMembers(id),
+    enabled: !!id,
+  })
+}
+
+export function useTenantWorkspaces(id: string) {
+  return useQuery({
+    queryKey: [...tenantKeys.detail(id), 'workspaces'],
+    queryFn: () => tenantsApi.getWorkspaces(id),
+    enabled: !!id,
+  })
+}
+
+export function useTenantSubscription(id: string) {
+  return useQuery({
+    queryKey: [...tenantKeys.detail(id), 'subscription'],
+    queryFn: () => tenantsApi.getSubscription(id),
+    enabled: !!id,
   })
 }

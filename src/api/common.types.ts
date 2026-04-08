@@ -3,11 +3,15 @@
  */
 
 export interface PaginatedResponse<T> {
-  data: T[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
+  items: T[]
+  meta: {
+    total: number
+    page: number
+    pageSize: number
+    totalPages: number
+    hasNextPage?: boolean
+    hasPreviousPage?: boolean
+  }
 }
 
 export interface MessageResponse {
