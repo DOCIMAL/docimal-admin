@@ -22,6 +22,7 @@ import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as authOtpRouteImport } from './routes/(auth)/otp'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
+import { Route as AuthenticatedWorkspacesIndexRouteImport } from './routes/_authenticated/workspaces/index'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedTenantsIndexRouteImport } from './routes/_authenticated/tenants/index'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
@@ -35,6 +36,7 @@ import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedChatbotsIndexRouteImport } from './routes/_authenticated/chatbots/index'
 import { Route as AuthenticatedAuditLogsIndexRouteImport } from './routes/_authenticated/audit-logs/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
+import { Route as AuthenticatedWorkspacesWorkspaceIdRouteImport } from './routes/_authenticated/workspaces/$workspaceId'
 import { Route as AuthenticatedUsersUserIdRouteImport } from './routes/_authenticated/users/$userId'
 import { Route as AuthenticatedTenantsTenantIdRouteImport } from './routes/_authenticated/tenants/$tenantId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
@@ -108,6 +110,12 @@ const AuthenticatedSettingsRouteRoute =
   AuthenticatedSettingsRouteRouteImport.update({
     id: '/settings',
     path: '/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedWorkspacesIndexRoute =
+  AuthenticatedWorkspacesIndexRouteImport.update({
+    id: '/workspaces/',
+    path: '/workspaces/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
@@ -184,6 +192,12 @@ const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
   path: '/apps/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWorkspacesWorkspaceIdRoute =
+  AuthenticatedWorkspacesWorkspaceIdRouteImport.update({
+    id: '/workspaces/$workspaceId',
+    path: '/workspaces/$workspaceId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedUsersUserIdRoute =
   AuthenticatedUsersUserIdRouteImport.update({
     id: '/users/$userId',
@@ -267,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/chatbots': typeof AuthenticatedChatbotsIndexRoute
@@ -280,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/tenants': typeof AuthenticatedTenantsIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/workspaces': typeof AuthenticatedWorkspacesIndexRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof authForgotPasswordRoute
@@ -302,6 +318,7 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/chatbots': typeof AuthenticatedChatbotsIndexRoute
@@ -315,6 +332,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/tenants': typeof AuthenticatedTenantsIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/workspaces': typeof AuthenticatedWorkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -341,6 +359,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/_authenticated/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/_authenticated/chatbots/': typeof AuthenticatedChatbotsIndexRoute
@@ -354,6 +373,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/tenants/': typeof AuthenticatedTenantsIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/workspaces/': typeof AuthenticatedWorkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -379,6 +399,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/tenants/$tenantId'
     | '/users/$userId'
+    | '/workspaces/$workspaceId'
     | '/apps'
     | '/audit-logs'
     | '/chatbots'
@@ -392,6 +413,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/tenants'
     | '/users'
+    | '/workspaces'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -414,6 +436,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/tenants/$tenantId'
     | '/users/$userId'
+    | '/workspaces/$workspaceId'
     | '/apps'
     | '/audit-logs'
     | '/chatbots'
@@ -427,6 +450,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/tenants'
     | '/users'
+    | '/workspaces'
   id:
     | '__root__'
     | '/(auth)'
@@ -452,6 +476,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/notifications'
     | '/_authenticated/tenants/$tenantId'
     | '/_authenticated/users/$userId'
+    | '/_authenticated/workspaces/$workspaceId'
     | '/_authenticated/apps/'
     | '/_authenticated/audit-logs/'
     | '/_authenticated/chatbots/'
@@ -465,6 +490,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/'
     | '/_authenticated/tenants/'
     | '/_authenticated/users/'
+    | '/_authenticated/workspaces/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -570,6 +596,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/workspaces/': {
+      id: '/_authenticated/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof AuthenticatedWorkspacesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/users/': {
       id: '/_authenticated/users/'
       path: '/users'
@@ -659,6 +692,13 @@ declare module '@tanstack/react-router' {
       path: '/apps'
       fullPath: '/apps'
       preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/workspaces/$workspaceId': {
+      id: '/_authenticated/workspaces/$workspaceId'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof AuthenticatedWorkspacesWorkspaceIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/users/$userId': {
@@ -784,6 +824,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedTenantsTenantIdRoute: typeof AuthenticatedTenantsTenantIdRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
+  AuthenticatedWorkspacesWorkspaceIdRoute: typeof AuthenticatedWorkspacesWorkspaceIdRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedAuditLogsIndexRoute: typeof AuthenticatedAuditLogsIndexRoute
   AuthenticatedChatbotsIndexRoute: typeof AuthenticatedChatbotsIndexRoute
@@ -796,6 +837,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedTenantsIndexRoute: typeof AuthenticatedTenantsIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedWorkspacesIndexRoute: typeof AuthenticatedWorkspacesIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -808,6 +850,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedTenantsTenantIdRoute: AuthenticatedTenantsTenantIdRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
+  AuthenticatedWorkspacesWorkspaceIdRoute:
+    AuthenticatedWorkspacesWorkspaceIdRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedAuditLogsIndexRoute: AuthenticatedAuditLogsIndexRoute,
   AuthenticatedChatbotsIndexRoute: AuthenticatedChatbotsIndexRoute,
@@ -820,6 +864,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedTenantsIndexRoute: AuthenticatedTenantsIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedWorkspacesIndexRoute: AuthenticatedWorkspacesIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
