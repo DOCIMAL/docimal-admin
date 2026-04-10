@@ -1,17 +1,22 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { format } from 'date-fns'
 import { 
+  useAdminWorkspaceDetail, 
+  useAdminUpdateWorkspaceMemberRole, 
+  useAdminRemoveWorkspaceMember,
+  useAdminWorkspaceRoles 
+} from '@/api/workspaces.api'
+import { 
+  MoreHorizontal, 
+  UserMinus, 
+  UserCog,
   ArrowLeft, 
   Building2, 
   Bot, 
-  FileText, 
   Settings2, 
-  GitBranch, 
-  Database,
   Calendar,
   ExternalLink
 } from 'lucide-react'
-import { format } from 'date-fns'
-import { useAdminWorkspaceDetail } from '@/api/workspaces.api'
 import { Main } from '@/components/layout/main'
 import { Button } from '@/components/ui/button'
 import { 
@@ -32,6 +37,14 @@ import {
   TableRow 
 } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu'
 
 export const Route = createFileRoute('/_authenticated/workspaces/$workspaceId')({
   component: AdminWorkspaceDetailPage,
@@ -40,6 +53,9 @@ export const Route = createFileRoute('/_authenticated/workspaces/$workspaceId')(
 function AdminWorkspaceDetailPage() {
   const { workspaceId } = Route.useParams()
   const { data: workspace, isLoading } = useAdminWorkspaceDetail(workspaceId)
+  const { mutate: updateRole } = useAdminUpdateWorkspaceMemberRole(workspaceId)
+  const { mutate: removeMember } = useAdminRemoveWorkspaceMember(workspaceId)
+  const { data: roles } = useAdminWorkspaceRoles(workspaceId)
 
   if (isLoading) {
     return (
@@ -172,6 +188,7 @@ function AdminWorkspaceDetailPage() {
                     <TableHead>User</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Joined At</TableHead>
+                    <TableHead className='w-[50px]'></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -185,6 +202,44 @@ function AdminWorkspaceDetailPage() {
                       </TableCell>
                       <TableCell className="capitalize">{member.role}</TableCell>
                       <TableCell>{format(new Date(member.joinedAt), 'MMM dd, yyyy')}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            
+                            {roles?.map((role) => (
+                              <DropdownMenuItem 
+                                key={role.id}
+                                onClick={() => updateRole({ userId: member.id, roleId: role.id })}
+                                disabled={member.role === role.name}
+                              >
+                                <UserCog className="mr-2 h-4 w-4" />
+                                Change to {role.name}
+                              </DropdownMenuItem>
+                            ))}
+                            
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to remove ${member.name} from this workspace?`)) {
+                                  removeMember(member.id)
+                                }
+                              }}
+                            >
+                              <UserMinus className="mr-2 h-4 w-4" />
+                              Remove from Workspace
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

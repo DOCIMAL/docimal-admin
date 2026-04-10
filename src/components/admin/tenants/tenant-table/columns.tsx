@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal, ShieldAlert, ArrowRight, PauseCircle, PlayCircle } from 'lucide-react'
+import { MoreHorizontal, ShieldAlert, ArrowRight, PauseCircle, PlayCircle, ArrowUpDown } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { format } from 'date-fns'
 
@@ -19,11 +19,23 @@ import { Tenant } from '@/api/tenants.api'
 export const getColumns = (
   onSuspend: (tenant: Tenant) => void,
   onActivate: (tenant: Tenant) => void,
-  onExtend: (tenant: Tenant) => void
+  onExtend: (tenant: Tenant) => void,
+  onSort?: (column: string) => void
 ): ColumnDef<Tenant>[] => [
   {
     accessorKey: 'name',
-    header: 'Tenant Name',
+    header: () => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => onSort?.('name')}
+          className="-ml-4 h-8 data-[state=open]:bg-accent"
+        >
+          Tenant Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: 'slug',
@@ -31,7 +43,18 @@ export const getColumns = (
   },
   {
     accessorKey: 'plan',
-    header: 'Plan',
+    header: () => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => onSort?.('plan')}
+          className="-ml-4 h-8"
+        >
+          Plan
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const plan = row.getValue('plan') as string
       return (
@@ -43,7 +66,18 @@ export const getColumns = (
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: () => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => onSort?.('status')}
+          className="-ml-4 h-8"
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const status = row.getValue('status') as string
       let variant: 'default' | 'destructive' | 'secondary' | 'outline' = 'outline'
@@ -60,7 +94,18 @@ export const getColumns = (
   },
   {
     accessorKey: 'userCount',
-    header: 'Members',
+    header: () => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => onSort?.('userCount')}
+          className="-ml-4 h-8"
+        >
+          Members
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const count = row.getValue('userCount') as number
       return <div className="font-medium">{count}</div>
@@ -68,13 +113,25 @@ export const getColumns = (
   },
   {
     accessorKey: 'createdAt',
-    header: 'Created At',
+    header: () => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => onSort?.('createdAt')}
+          className="-ml-4 h-8"
+        >
+          Created At
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const dateStr = row.getValue('createdAt') as string
       if (!dateStr) return '-'
       return <span>{format(new Date(dateStr), 'MMM dd, yyyy')}</span>
     },
   },
+
   {
     id: 'actions',
     cell: ({ row }) => {

@@ -15,13 +15,13 @@ import {
 } from '@/components/ui/table'
 import { getColumns } from './columns'
 import { Tenant } from '@/api/tenants.api'
-
 interface TenantDataTableProps {
   data: Tenant[]
   isLoading?: boolean
   onSuspend: (tenant: Tenant) => void
   onActivate: (tenant: Tenant) => void
   onExtend: (tenant: Tenant) => void
+  onSort?: (column: string) => void
 }
 
 export function TenantDataTable({
@@ -29,13 +29,15 @@ export function TenantDataTable({
   isLoading,
   onSuspend,
   onActivate,
-  onExtend
+  onExtend,
+  onSort
 }: TenantDataTableProps) {
   const table = useReactTable({
     data,
-    columns: getColumns(onSuspend, onActivate, onExtend),
+    columns: getColumns(onSuspend, onActivate, onExtend, onSort),
     getCoreRowModel: getCoreRowModel(),
   })
+
 
   return (
     <div className='rounded-md border'>

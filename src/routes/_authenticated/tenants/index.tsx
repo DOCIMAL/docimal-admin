@@ -44,6 +44,16 @@ function TenantsListPage() {
     }))
   }
 
+  const handleSort = (column: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      sortBy: column,
+      sortOrder: prev.sortBy === column && prev.sortOrder === 'asc' ? 'desc' : 'asc',
+      page: 1,
+    }))
+  }
+
+
   const handlePageChange = (newPage: number) => {
     setFilters((prev) => ({ ...prev, page: newPage }))
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -100,6 +110,7 @@ function TenantsListPage() {
             onSuspend={(t) => setTenantToSuspend(t)}
             onActivate={handleActivate}
             onExtend={handleExtend}
+            onSort={handleSort}
           />
 
           {/* Pagination */}

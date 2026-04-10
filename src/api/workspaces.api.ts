@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
 
 
@@ -112,6 +113,15 @@ export const workspacesAdminApi = {
 
   findOne: (id: string) =>
     apiClient.get<WorkspaceAdminDetail>(`${BASE}/${id}`).then((r) => r.data),
+
+  updateMemberRole: (workspaceId: string, userId: string, roleId: string) =>
+    apiClient.patch(`${BASE}/${workspaceId}/members/${userId}/role`, { roleId }).then((r) => r.data),
+
+  removeMember: (workspaceId: string, userId: string) =>
+    apiClient.delete(`${BASE}/${workspaceId}/members/${userId}`).then((r) => r.data),
+
+  getRoles: (workspaceId: string) =>
+    apiClient.get<any[]>(`${BASE}/${workspaceId}/roles`).then((r) => r.data),
 }
 
 export function useAdminWorkspaces(params: any) {
@@ -133,5 +143,36 @@ export function useAdminWorkspaceDetail(id: string) {
     queryKey: workspaceAdminKeys.detail(id),
     queryFn: () => workspacesAdminApi.findOne(id),
     enabled: !!id,
+  })
+}
+
+export function useAdminWorkspaceRoles(workspaceId: string) {
+  return useQuery({
+    queryKey: [...workspaceAdminKeys.detail(workspaceId), 'roles'],
+    queryFn: () => workspacesAdminApi.getRoles(workspaceId),
+    enabled: !!workspaceId,
+  })
+}
+
+export function useAdminUpdateWorkspaceMemberRole(workspaceId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ userId, roleId }: { userId: string; roleId: string }) =>
+      workspacesAdminApi.updateMemberRole(workspaceId, userId, roleId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: workspaceAdminKeys.detail(workspaceId) })
+      toast.success('Member role updated')
+    },
+  })
+}
+
+export function useAdminRemoveWorkspaceMember(workspaceId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (userId: string) => workspacesAdminApi.removeMember(workspaceId, userId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: workspaceAdminKeys.detail(workspaceId) })
+      toast.success('Member removed from workspace')
+    },
   })
 }

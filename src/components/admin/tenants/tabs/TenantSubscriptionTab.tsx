@@ -31,6 +31,8 @@ export function TenantSubscriptionTab() {
 
   const subscription = billingInfo?.subscription
   const invoices = billingInfo?.invoices || []
+  const paymentMethods = billingInfo?.paymentMethods || []
+
 
   return (
     <div className="space-y-6">
@@ -90,6 +92,55 @@ export function TenantSubscriptionTab() {
           )}
         </CardContent>
       </Card>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Methods</CardTitle>
+            <CardDescription>Registered cards for automated billing.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {paymentMethods.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">No payment methods found.</p>
+            ) : (
+              <div className="space-y-3">
+                {paymentMethods.map((pm: any) => (
+                  <div key={pm.id} className="flex items-center justify-between border rounded-lg p-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+                        <CreditCard className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="font-medium capitalize">{pm.card.brand} •••• {pm.card.last4}</div>
+                        <div className="text-xs text-muted-foreground">Expires {pm.card.expMonth}/{pm.card.expYear}</div>
+                      </div>
+                    </div>
+                    {pm.isDefault && (
+                      <Badge>Default</Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {subscription?.nextPlan && (
+          <Card className="border-orange-200 bg-orange-50/20">
+            <CardHeader>
+              <CardTitle className="text-orange-900">Pending Change</CardTitle>
+              <CardDescription className="text-orange-800">Scheduled plan update</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-orange-900">
+                This tenant will be automatically moved to the <strong>{subscription.nextPlan.name}</strong> plan 
+                at the end of the current billing cycle.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
 
       <Card>
         <CardHeader>

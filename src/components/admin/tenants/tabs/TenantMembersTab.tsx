@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
-import { MoreHorizontal, UserMinus } from 'lucide-react'
-import { TenantMember, useTenantMembers } from '@/api/tenants.api'
+import { MoreHorizontal, UserMinus, ShieldAlert, UserCog } from 'lucide-react'
+import { TenantMember, useTenantMembers, useUpdateMemberRole, useSuspendMember, useActivateMember, useRemoveMember } from '@/api/tenants.api'
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   Table, 
@@ -26,6 +27,11 @@ import { useParams } from '@tanstack/react-router'
 export function TenantMembersTab() {
   const { tenantId } = useParams({ from: '/_authenticated/tenants/$tenantId' })
   const { data: members, isLoading } = useTenantMembers(tenantId)
+  const { mutate: updateRole } = useUpdateMemberRole(tenantId)
+  const { mutate: suspendMember } = useSuspendMember(tenantId)
+  const { mutate: activateMember } = useActivateMember(tenantId)
+  const { mutate: removeMember } = useRemoveMember(tenantId)
+
 
   if (isLoading) {
     return (
@@ -101,11 +107,37 @@ export function TenantMembersTab() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
+                        
+                        <DropdownMenuItem onClick={() => updateRole({ userId: member.id, role: member.role === 'TENANT_ADMIN' ? 'TENANT_VIEWER' : 'TENANT_ADMIN' })}>
+                          <UserCog className="mr-2 h-4 w-4" />
+                          Change Role 
+                          <span className="ml-1 text-[10px] text-muted-foreground">
+                            (to {member.role === 'TENANT_ADMIN' ? 'Viewer' : 'Admin'})
+                          </span>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem 
+                          onClick={() => member.status === 'suspended' ? activateMember(member.id) : suspendMember(member.id)}
+                        >
+                          <ShieldAlert className="mr-2 h-4 w-4" />
+                          {member.status === 'suspended' ? 'Activate Member' : 'Suspend Member'}
+                        </DropdownMenuItem>
+                        
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => {
+                            if (confirm(`Are you sure you want to remove ${member.name} from this organization?`)) {
+                              removeMember(member.id)
+                            }
+                          }}
+                        >
                           <UserMinus className="mr-2 h-4 w-4" />
                           Remove from Tenant
                         </DropdownMenuItem>
                       </DropdownMenuContent>
+
                     </DropdownMenu>
                   </TableCell>
                 </TableRow>

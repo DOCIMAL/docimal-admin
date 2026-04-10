@@ -61,6 +61,8 @@ export function TenantWorkspacesTab() {
             <TableRow>
               <TableHead>Workspace</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Members</TableHead>
+              <TableHead>Chatbot</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
@@ -68,7 +70,7 @@ export function TenantWorkspacesTab() {
           <TableBody>
             {!workspaces || workspaces.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                   No workspaces found for this tenant.
                 </TableCell>
               </TableRow>
@@ -95,6 +97,14 @@ export function TenantWorkspacesTab() {
                   <TableCell>
                     <Badge variant={ws.status === 'active' ? 'default' : 'secondary'} className="capitalize">
                       {ws.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium">{ws.memberCount} Members</div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="capitalize">
+                      {ws.chatbotStatus}
                     </Badge>
                   </TableCell>
                   <TableCell>{format(new Date(ws.createdAt), 'MMM dd, yyyy')}</TableCell>
