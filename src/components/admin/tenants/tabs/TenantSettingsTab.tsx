@@ -1,10 +1,8 @@
-import { useState } from 'react'
-import { Check, Upload, Trash2, Globe, Building, Mail, ShieldCheck } from 'lucide-react'
-import { Tenant, useUpdateTenant, useUploadBranding } from '@/api/tenants.api'
+import { Globe, Building, Mail, ShieldCheck } from 'lucide-react'
+import { Tenant } from '@/api/tenants.api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 interface TenantSettingsTabProps {
@@ -12,26 +10,6 @@ interface TenantSettingsTabProps {
 }
 
 export function TenantSettingsTab({ tenant }: TenantSettingsTabProps) {
-  const [name, setName] = useState(tenant.name)
-  const [email, setEmail] = useState(tenant.contactEmail || '')
-  
-  const { mutate: updateTenant, isPending } = useUpdateTenant(tenant.id)
-  const { mutate: uploadBranding, isPending: isUploading } = useUploadBranding(tenant.id)
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'favicon') => {
-    const file = e.target.files?.[0]
-    if (file) {
-      uploadBranding({ file, type })
-    }
-  }
-
-
-  const handleSave = () => {
-    updateTenant({
-      name,
-      contactEmail: email,
-    })
-  }
 
   return (
     <div className="space-y-6">
@@ -49,7 +27,7 @@ export function TenantSettingsTab({ tenant }: TenantSettingsTabProps) {
               </Label>
               <Input 
                 id="org-name" 
-                value={name} 
+                value={tenant.name} 
                 readOnly 
                 placeholder="e.g. Acme Corp"
               />
@@ -80,7 +58,7 @@ export function TenantSettingsTab({ tenant }: TenantSettingsTabProps) {
             <Input 
               id="contact-email" 
               type="email" 
-              value={email} 
+              value={tenant.contactEmail || ''}
               readOnly 
               placeholder="billing@organization.com"
             />

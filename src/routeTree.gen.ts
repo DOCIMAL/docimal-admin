@@ -44,6 +44,7 @@ import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedChatbotsWorkspaceIdRouteImport } from './routes/_authenticated/chatbots/$workspaceId'
 import { Route as AuthenticatedBillingSubscriptionsRouteImport } from './routes/_authenticated/billing/subscriptions'
 import { Route as AuthenticatedBillingPlansRouteImport } from './routes/_authenticated/billing/plans'
 import { Route as AuthenticatedBillingInvoicesRouteImport } from './routes/_authenticated/billing/invoices'
@@ -240,6 +241,12 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedChatbotsWorkspaceIdRoute =
+  AuthenticatedChatbotsWorkspaceIdRouteImport.update({
+    id: '/chatbots/$workspaceId',
+    path: '/chatbots/$workspaceId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedBillingSubscriptionsRoute =
   AuthenticatedBillingSubscriptionsRouteImport.update({
     id: '/billing/subscriptions',
@@ -274,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/billing/invoices': typeof AuthenticatedBillingInvoicesRoute
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
+  '/chatbots/$workspaceId': typeof AuthenticatedChatbotsWorkspaceIdRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -311,6 +319,7 @@ export interface FileRoutesByTo {
   '/billing/invoices': typeof AuthenticatedBillingInvoicesRoute
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
+  '/chatbots/$workspaceId': typeof AuthenticatedChatbotsWorkspaceIdRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -352,6 +361,7 @@ export interface FileRoutesById {
   '/_authenticated/billing/invoices': typeof AuthenticatedBillingInvoicesRoute
   '/_authenticated/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/_authenticated/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
+  '/_authenticated/chatbots/$workspaceId': typeof AuthenticatedChatbotsWorkspaceIdRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/billing/invoices'
     | '/billing/plans'
     | '/billing/subscriptions'
+    | '/chatbots/$workspaceId'
     | '/errors/$error'
     | '/settings/account'
     | '/settings/appearance'
@@ -429,6 +440,7 @@ export interface FileRouteTypes {
     | '/billing/invoices'
     | '/billing/plans'
     | '/billing/subscriptions'
+    | '/chatbots/$workspaceId'
     | '/errors/$error'
     | '/settings/account'
     | '/settings/appearance'
@@ -469,6 +481,7 @@ export interface FileRouteTypes {
     | '/_authenticated/billing/invoices'
     | '/_authenticated/billing/plans'
     | '/_authenticated/billing/subscriptions'
+    | '/_authenticated/chatbots/$workspaceId'
     | '/_authenticated/errors/$error'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
@@ -750,6 +763,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/chatbots/$workspaceId': {
+      id: '/_authenticated/chatbots/$workspaceId'
+      path: '/chatbots/$workspaceId'
+      fullPath: '/chatbots/$workspaceId'
+      preLoaderRoute: typeof AuthenticatedChatbotsWorkspaceIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/billing/subscriptions': {
       id: '/_authenticated/billing/subscriptions'
       path: '/billing/subscriptions'
@@ -821,6 +841,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBillingInvoicesRoute: typeof AuthenticatedBillingInvoicesRoute
   AuthenticatedBillingPlansRoute: typeof AuthenticatedBillingPlansRoute
   AuthenticatedBillingSubscriptionsRoute: typeof AuthenticatedBillingSubscriptionsRoute
+  AuthenticatedChatbotsWorkspaceIdRoute: typeof AuthenticatedChatbotsWorkspaceIdRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedTenantsTenantIdRoute: typeof AuthenticatedTenantsTenantIdRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
@@ -847,6 +868,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBillingPlansRoute: AuthenticatedBillingPlansRoute,
   AuthenticatedBillingSubscriptionsRoute:
     AuthenticatedBillingSubscriptionsRoute,
+  AuthenticatedChatbotsWorkspaceIdRoute: AuthenticatedChatbotsWorkspaceIdRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedTenantsTenantIdRoute: AuthenticatedTenantsTenantIdRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,

@@ -5,6 +5,8 @@ const USER_API_BASE =
   import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:3001/api/v1'
 const AUDIT_API_BASE =
   import.meta.env.VITE_AUDIT_SERVICE_URL || 'http://localhost:3010/api/v1'
+const AGENT_API_BASE =
+  import.meta.env.VITE_AGENT_SERVICE_URL || 'http://localhost:3003/api/v1'
 
 export const apiClient = axios.create({
   baseURL: USER_API_BASE,
@@ -13,6 +15,11 @@ export const apiClient = axios.create({
 
 export const auditClient = axios.create({
   baseURL: AUDIT_API_BASE,
+  headers: { 'Content-Type': 'application/json' },
+})
+
+export const agentClient = axios.create({
+  baseURL: AGENT_API_BASE,
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -27,6 +34,7 @@ const requestInterceptor = (config: any) => {
 
 apiClient.interceptors.request.use(requestInterceptor)
 auditClient.interceptors.request.use(requestInterceptor)
+agentClient.interceptors.request.use(requestInterceptor)
 
 // Response interceptor: auto-refresh on 401
 const responseInterceptorSuccess = (response: any) => response
@@ -63,6 +71,10 @@ apiClient.interceptors.response.use(
   responseInterceptorError
 )
 auditClient.interceptors.response.use(
+  responseInterceptorSuccess,
+  responseInterceptorError
+)
+agentClient.interceptors.response.use(
   responseInterceptorSuccess,
   responseInterceptorError
 )
