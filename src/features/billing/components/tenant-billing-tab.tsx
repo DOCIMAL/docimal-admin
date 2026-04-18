@@ -33,7 +33,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { toast } from 'sonner'
 
 // Local formatters
 function formatCurrency(amount: number, currency: string = 'USD'): string {
