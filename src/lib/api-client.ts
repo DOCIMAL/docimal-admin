@@ -1,15 +1,12 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
 
-export const API_BASE =
+const API_BASE =
   import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:3001/api/v1'
 
 export const apiClient = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
-  paramsSerializer: {
-    indexes: null, // This removes the [0] or [] suffix from arrays
-  },
 })
 
 // Request interceptor: attach admin token to every request

@@ -31,4 +31,4 @@ dist-ssr
 # Docker
 image.tar
 
-*.md
+*.md.tanstack/tmp/
