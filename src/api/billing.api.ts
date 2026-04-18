@@ -138,6 +138,35 @@ export interface OverridePlanBody {
   plan: SubscriptionPlan
 }
 
+export interface ResetQuotaBody {
+  confirm: boolean
+}
+
+export interface ResetQuotaResponse {
+  success: boolean
+  message: string
+  tenantId?: string
+  plan?: string
+  settings?: {
+    maxUsers: number
+    maxWorkspaces: number
+    maxDocuments: number
+    maxStorageBytes: number
+    maxMessagesPerMonth: number
+    features: Record<string, boolean>
+  }
+  totalTenants?: number
+  successCount?: number
+  failedCount?: number
+  results?: Array<{
+    tenantId: string
+    plan: string
+    oldMaxUsers?: number
+    newMaxUsers: number
+    success: boolean
+  }>
+}
+
 // ---------------------------------------------------------------------------
 // API functions
 // ---------------------------------------------------------------------------
@@ -198,6 +227,18 @@ export const billingApi = {
     apiClient
       .post<MessageResponse>(`${BASE}/tenants/${tenantId}/override-plan`, {
         plan,
+      })
+      .then((r) => r.data),
+
+  resetTenantQuota: (tenantId: string) =>
+    apiClient
+      .post<ResetQuotaResponse>(`${BASE}/tenants/${tenantId}/reset-quota`)
+      .then((r) => r.data),
+
+  resetAllQuotas: () =>
+    apiClient
+      .post<ResetQuotaResponse>(`${BASE}/tenants/reset-all-quotas`, {
+        confirm: true,
       })
       .then((r) => r.data),
 }
@@ -317,6 +358,35 @@ export function useOverridePlan() {
     },
     onError: () => {
       toast.error('Failed to override plan')
+    },
+  })
+}
+
+export function useResetTenantQuota() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (tenantId: string) =>
+      billingApi.resetTenantQuota(tenantId),
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: billingKeys.all })
+      toast.success(data.message)
+    },
+    onError: () => {
+      toast.error('Failed to reset tenant quota')
+    },
+  })
+}
+
+export function useResetAllQuotas() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => billingApi.resetAllQuotas(),
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: billingKeys.all })
+      toast.success(data.message)
+    },
+    onError: () => {
+      toast.error('Failed to reset all quotas')
     },
   })
 }

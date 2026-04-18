@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Download, History } from 'lucide-react'
-import { useAdminSubscriptions, useAdminInvoices } from '@/api/billing.api'
+import { Download, History, RotateCcw } from 'lucide-react'
+import { useAdminSubscriptions, useAdminInvoices, useResetTenantQuota } from '@/api/billing.api'
 import type { Tenant } from '@/api/tenants.api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -22,6 +22,18 @@ import {
 } from '@/components/ui/table'
 import { ExtendTrialDialog } from './extend-trial-dialog'
 import { OverridePlanDialog } from './override-plan-dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
 
 // Local formatters
 function formatCurrency(amount: number, currency: string = 'USD'): string {
@@ -67,6 +79,7 @@ interface TenantBillingTabProps {
 export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
   const [showOverridePlan, setShowOverridePlan] = useState(false)
   const [showExtendTrial, setShowExtendTrial] = useState(false)
+  const [showResetQuota, setShowResetQuota] = useState(false)
 
   const { data: subData, isLoading: isLoadingSub } = useAdminSubscriptions({
     tenantId,
@@ -77,6 +90,16 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
     tenantId,
     limit: 5,
   })
+
+  const resetTenantQuota = useResetTenantQuota()
+
+  const handleResetQuota = () => {
+    resetTenantQuota.mutate(tenantId, {
+      onSuccess: () => {
+        setShowResetQuota(false)
+      },
+    })
+  }
 
   const currentSub = subData?.data?.[0]
   const invoices = invData?.data || []
@@ -186,6 +209,39 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
                     Extend Trial
                   </Button>
                 )}
+                <AlertDialog open={showResetQuota} onOpenChange={setShowResetQuota}>
+                  <AlertDialogTrigger asChild>
+                    <Button variant='outline' className='gap-2'>
+                      <RotateCcw className='h-4 w-4' />
+                      Reset Quota
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Reset Tenant Quota?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will reset the quota settings for {tenant.name} to
+                        the current PLAN_QUOTAS defaults. This action cannot be
+                        undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel disabled={resetTenantQuota.isPending}>
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleResetQuota}
+                        disabled={resetTenantQuota.isPending}
+                        className='gap-2'
+                      >
+                        {resetTenantQuota.isPending && (
+                          <span className='h-4 w-4 animate-spin'>↻</span>
+                        )}
+                        Reset Quota
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
 
               {showOverridePlan && (

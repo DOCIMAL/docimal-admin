@@ -7,6 +7,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { PlanCards } from './components/plan-cards'
 import { PlanDistributionChart } from './components/plan-distribution-chart'
 import { PlanSyncButton } from './components/plan-sync-button'
+import { ResetAllQuotasButton } from './components/reset-all-quotas-button'
 
 export function Plans() {
   return (
@@ -31,7 +32,10 @@ export function Plans() {
               Manage subscription plans, monitor revenue and tenant allocation.
             </p>
           </div>
-          <PlanSyncButton />
+          <div className='flex items-center gap-3'>
+            <ResetAllQuotasButton />
+            <PlanSyncButton />
+          </div>
         </div>
 
         {/* Plan cards grid */}
