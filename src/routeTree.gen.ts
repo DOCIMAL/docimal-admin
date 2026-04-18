@@ -41,6 +41,8 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
+import { Route as AuthenticatedNotificationsBroadcastHistoryRouteImport } from './routes/_authenticated/notifications/broadcast-history'
+import { Route as AuthenticatedNotificationsBroadcastRouteImport } from './routes/_authenticated/notifications/broadcast'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 import { Route as AuthenticatedBillingSubscriptionsRouteImport } from './routes/_authenticated/billing/subscriptions'
 import { Route as AuthenticatedBillingPlansRouteImport } from './routes/_authenticated/billing/plans'
@@ -222,6 +224,18 @@ const AuthenticatedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedNotificationsBroadcastHistoryRoute =
+  AuthenticatedNotificationsBroadcastHistoryRouteImport.update({
+    id: '/notifications/broadcast-history',
+    path: '/notifications/broadcast-history',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedNotificationsBroadcastRoute =
+  AuthenticatedNotificationsBroadcastRouteImport.update({
+    id: '/notifications/broadcast',
+    path: '/notifications/broadcast',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
     id: '/errors/$error',
@@ -260,7 +274,6 @@ const AuthenticatedAdminUsersUserIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -271,31 +284,34 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/': typeof AuthenticatedIndexRoute
   '/billing/invoices': typeof AuthenticatedBillingInvoicesRoute
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/notifications/broadcast': typeof AuthenticatedNotificationsBroadcastRoute
+  '/notifications/broadcast-history': typeof AuthenticatedNotificationsBroadcastHistoryRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
-  '/apps/': typeof AuthenticatedAppsIndexRoute
-  '/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
-  '/chatbots/': typeof AuthenticatedChatbotsIndexRoute
-  '/chats/': typeof AuthenticatedChatsIndexRoute
-  '/documents/': typeof AuthenticatedDocumentsIndexRoute
-  '/health/': typeof AuthenticatedHealthIndexRoute
-  '/help-center/': typeof AuthenticatedHelpCenterIndexRoute
-  '/integrations/': typeof AuthenticatedIntegrationsIndexRoute
-  '/notifications/': typeof AuthenticatedNotificationsIndexRoute
+  '/apps': typeof AuthenticatedAppsIndexRoute
+  '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
+  '/chatbots': typeof AuthenticatedChatbotsIndexRoute
+  '/chats': typeof AuthenticatedChatsIndexRoute
+  '/documents': typeof AuthenticatedDocumentsIndexRoute
+  '/health': typeof AuthenticatedHealthIndexRoute
+  '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/integrations': typeof AuthenticatedIntegrationsIndexRoute
+  '/notifications': typeof AuthenticatedNotificationsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/tasks/': typeof AuthenticatedTasksIndexRoute
-  '/tenants/': typeof AuthenticatedTenantsIndexRoute
-  '/users/': typeof AuthenticatedUsersIndexRoute
+  '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/tenants': typeof AuthenticatedTenantsIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
   '/admin/users/$userId': typeof AuthenticatedAdminUsersUserIdRoute
-  '/admin/users/': typeof AuthenticatedAdminUsersIndexRoute
+  '/admin/users': typeof AuthenticatedAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof authForgotPasswordRoute
@@ -312,6 +328,8 @@ export interface FileRoutesByTo {
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/notifications/broadcast': typeof AuthenticatedNotificationsBroadcastRoute
+  '/notifications/broadcast-history': typeof AuthenticatedNotificationsBroadcastHistoryRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -353,6 +371,8 @@ export interface FileRoutesById {
   '/_authenticated/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/_authenticated/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/_authenticated/notifications/broadcast': typeof AuthenticatedNotificationsBroadcastRoute
+  '/_authenticated/notifications/broadcast-history': typeof AuthenticatedNotificationsBroadcastHistoryRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -378,7 +398,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/settings'
     | '/forgot-password'
     | '/otp'
@@ -389,31 +408,34 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/'
     | '/billing/invoices'
     | '/billing/plans'
     | '/billing/subscriptions'
     | '/errors/$error'
+    | '/notifications/broadcast'
+    | '/notifications/broadcast-history'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
     | '/tenants/$tenantId'
     | '/users/$userId'
-    | '/apps/'
-    | '/audit-logs/'
-    | '/chatbots/'
-    | '/chats/'
-    | '/documents/'
-    | '/health/'
-    | '/help-center/'
-    | '/integrations/'
-    | '/notifications/'
+    | '/apps'
+    | '/audit-logs'
+    | '/chatbots'
+    | '/chats'
+    | '/documents'
+    | '/health'
+    | '/help-center'
+    | '/integrations'
+    | '/notifications'
     | '/settings/'
-    | '/tasks/'
-    | '/tenants/'
-    | '/users/'
+    | '/tasks'
+    | '/tenants'
+    | '/users'
     | '/admin/users/$userId'
-    | '/admin/users/'
+    | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -430,6 +452,8 @@ export interface FileRouteTypes {
     | '/billing/plans'
     | '/billing/subscriptions'
     | '/errors/$error'
+    | '/notifications/broadcast'
+    | '/notifications/broadcast-history'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -470,6 +494,8 @@ export interface FileRouteTypes {
     | '/_authenticated/billing/plans'
     | '/_authenticated/billing/subscriptions'
     | '/_authenticated/errors/$error'
+    | '/_authenticated/notifications/broadcast'
+    | '/_authenticated/notifications/broadcast-history'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
@@ -508,7 +534,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: '/'
+      fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -599,21 +625,21 @@ declare module '@tanstack/react-router' {
     '/_authenticated/users/': {
       id: '/_authenticated/users/'
       path: '/users'
-      fullPath: '/users/'
+      fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/tenants/': {
       id: '/_authenticated/tenants/'
       path: '/tenants'
-      fullPath: '/tenants/'
+      fullPath: '/tenants'
       preLoaderRoute: typeof AuthenticatedTenantsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/tasks/': {
       id: '/_authenticated/tasks/'
       path: '/tasks'
-      fullPath: '/tasks/'
+      fullPath: '/tasks'
       preLoaderRoute: typeof AuthenticatedTasksIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -627,63 +653,63 @@ declare module '@tanstack/react-router' {
     '/_authenticated/notifications/': {
       id: '/_authenticated/notifications/'
       path: '/notifications'
-      fullPath: '/notifications/'
+      fullPath: '/notifications'
       preLoaderRoute: typeof AuthenticatedNotificationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/integrations/': {
       id: '/_authenticated/integrations/'
       path: '/integrations'
-      fullPath: '/integrations/'
+      fullPath: '/integrations'
       preLoaderRoute: typeof AuthenticatedIntegrationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
-      fullPath: '/help-center/'
+      fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/health/': {
       id: '/_authenticated/health/'
       path: '/health'
-      fullPath: '/health/'
+      fullPath: '/health'
       preLoaderRoute: typeof AuthenticatedHealthIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/documents/': {
       id: '/_authenticated/documents/'
       path: '/documents'
-      fullPath: '/documents/'
+      fullPath: '/documents'
       preLoaderRoute: typeof AuthenticatedDocumentsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chats/': {
       id: '/_authenticated/chats/'
       path: '/chats'
-      fullPath: '/chats/'
+      fullPath: '/chats'
       preLoaderRoute: typeof AuthenticatedChatsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chatbots/': {
       id: '/_authenticated/chatbots/'
       path: '/chatbots'
-      fullPath: '/chatbots/'
+      fullPath: '/chatbots'
       preLoaderRoute: typeof AuthenticatedChatbotsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/audit-logs/': {
       id: '/_authenticated/audit-logs/'
       path: '/audit-logs'
-      fullPath: '/audit-logs/'
+      fullPath: '/audit-logs'
       preLoaderRoute: typeof AuthenticatedAuditLogsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/apps/': {
       id: '/_authenticated/apps/'
       path: '/apps'
-      fullPath: '/apps/'
+      fullPath: '/apps'
       preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -729,6 +755,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/notifications/broadcast-history': {
+      id: '/_authenticated/notifications/broadcast-history'
+      path: '/notifications/broadcast-history'
+      fullPath: '/notifications/broadcast-history'
+      preLoaderRoute: typeof AuthenticatedNotificationsBroadcastHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications/broadcast': {
+      id: '/_authenticated/notifications/broadcast'
+      path: '/notifications/broadcast'
+      fullPath: '/notifications/broadcast'
+      preLoaderRoute: typeof AuthenticatedNotificationsBroadcastRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/errors/$error': {
       id: '/_authenticated/errors/$error'
       path: '/errors/$error'
@@ -760,7 +800,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated/admin/users/': {
       id: '/_authenticated/admin/users/'
       path: '/admin/users'
-      fullPath: '/admin/users/'
+      fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -822,6 +862,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBillingPlansRoute: typeof AuthenticatedBillingPlansRoute
   AuthenticatedBillingSubscriptionsRoute: typeof AuthenticatedBillingSubscriptionsRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
+  AuthenticatedNotificationsBroadcastRoute: typeof AuthenticatedNotificationsBroadcastRoute
+  AuthenticatedNotificationsBroadcastHistoryRoute: typeof AuthenticatedNotificationsBroadcastHistoryRoute
   AuthenticatedTenantsTenantIdRoute: typeof AuthenticatedTenantsTenantIdRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
@@ -848,6 +890,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBillingSubscriptionsRoute:
     AuthenticatedBillingSubscriptionsRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
+  AuthenticatedNotificationsBroadcastRoute:
+    AuthenticatedNotificationsBroadcastRoute,
+  AuthenticatedNotificationsBroadcastHistoryRoute:
+    AuthenticatedNotificationsBroadcastHistoryRoute,
   AuthenticatedTenantsTenantIdRoute: AuthenticatedTenantsTenantIdRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
