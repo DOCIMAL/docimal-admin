@@ -97,9 +97,16 @@ export function useTableUrlState(
           collected.push({ id: cfg.columnId, value })
         }
       } else {
-        // default to array type
-        const value = (deserialize(raw) as unknown[]) ?? []
-        if (Array.isArray(value) && value.length > 0) {
+        // Handle array type from URL (could be single string or actual array)
+        const rawValue = deserialize(raw)
+        const value = Array.isArray(rawValue)
+          ? rawValue
+          : rawValue !== undefined &&
+              rawValue !== null &&
+              String(rawValue).trim() !== ''
+            ? [rawValue]
+            : []
+        if (value.length > 0) {
           collected.push({ id: cfg.columnId, value })
         }
       }
@@ -174,9 +181,14 @@ export function useTableUrlState(
         patch[cfg.searchKey] =
           value.trim() !== '' ? serialize(value) : undefined
       } else {
-        const value = Array.isArray(found?.value)
-          ? (found!.value as unknown[])
-          : []
+        const rawValue = found?.value
+        const value = Array.isArray(rawValue)
+          ? rawValue
+          : rawValue !== undefined &&
+              rawValue !== null &&
+              String(rawValue).trim() !== ''
+            ? [rawValue]
+            : []
         patch[cfg.searchKey] = value.length > 0 ? serialize(value) : undefined
       }
     }

@@ -6,6 +6,8 @@ import {
   Bot,
   FileText,
 } from 'lucide-react'
+import { usePlanDistribution, useBillingOverview } from '@/api/billing.api'
+import { useUsers } from '@/api/users.api'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
@@ -28,6 +31,23 @@ import { Overview } from './components/overview'
 import { RecentActivity } from './components/recent-activity'
 
 export function Dashboard() {
+  const { data: usersData, isLoading: isLoadingUsers } = useUsers({ limit: 1 })
+  const { data: activeUsersData, isLoading: isLoadingActiveUsers } = useUsers({
+    status: 'active',
+    limit: 1,
+  })
+  const { data: overview, isLoading: isLoadingOverview } = useBillingOverview()
+  const { data: distributionData, isLoading: isLoadingTenants } =
+    usePlanDistribution()
+
+  const totalTenants = distributionData
+    ? distributionData.reduce((sum, d) => sum + d.tenantCount, 0)
+    : 0
+
+  const formatPercentage = (val?: number) => {
+    if (val === undefined) return '0%'
+    return `${val > 0 ? '+' : ''}${val.toFixed(1)}%`
+  }
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -77,9 +97,13 @@ export function Dashboard() {
                   <Building2 className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>152</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +12 this month
+                  {isLoadingTenants ? (
+                    <Skeleton className='h-8 w-16' />
+                  ) : (
+                    <div className='text-2xl font-bold'>{totalTenants}</div>
+                  )}
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Platform-wide tenants
                   </p>
                 </CardContent>
               </Card>
@@ -91,23 +115,35 @@ export function Dashboard() {
                   <Users className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>1,284</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +86 this month
+                  {isLoadingUsers ? (
+                    <Skeleton className='h-8 w-16' />
+                  ) : (
+                    <div className='text-2xl font-bold'>
+                      {usersData?.meta.total || 0}
+                    </div>
+                  )}
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Registered users
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Active Users (30d)
+                    Active Users
                   </CardTitle>
                   <UserCheck className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>943</div>
-                  <p className='text-xs text-muted-foreground'>
-                    73.4% of total
+                  {isLoadingActiveUsers ? (
+                    <Skeleton className='h-8 w-16' />
+                  ) : (
+                    <div className='text-2xl font-bold'>
+                      {activeUsersData?.meta.total || 0}
+                    </div>
+                  )}
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Users with active status
                   </p>
                 </CardContent>
               </Card>
@@ -117,9 +153,23 @@ export function Dashboard() {
                   <DollarSign className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>$15,820</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +8.2% from last month
+                  {isLoadingOverview ? (
+                    <Skeleton className='h-8 w-24' />
+                  ) : (
+                    <div className='text-2xl font-bold'>
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        maximumFractionDigits: 0,
+                      }).format(overview?.mrr || 0)}
+                    </div>
+                  )}
+                  <p
+                    className={`mt-1 text-xs ${overview && overview.revenueGrowthPercent > 0 ? 'text-green-500' : overview && overview.revenueGrowthPercent < 0 ? 'text-red-500' : 'text-muted-foreground'}`}
+                  >
+                    {overview
+                      ? `${formatPercentage(overview.revenueGrowthPercent)} from last month`
+                      : 'Calculating...'}
                   </p>
                 </CardContent>
               </Card>
@@ -131,8 +181,12 @@ export function Dashboard() {
                   <Bot className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>487</div>
-                  <p className='text-xs text-muted-foreground'>312 published</p>
+                  <div className='text-2xl font-bold text-muted-foreground'>
+                    N/A
+                  </div>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Data pipeline pending
+                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -143,9 +197,11 @@ export function Dashboard() {
                   <FileText className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>5,230</div>
-                  <p className='text-xs text-muted-foreground'>
-                    12.5 GB storage
+                  <div className='text-2xl font-bold text-muted-foreground'>
+                    N/A
+                  </div>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Data pipeline pending
                   </p>
                 </CardContent>
               </Card>
