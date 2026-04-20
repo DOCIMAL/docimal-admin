@@ -35,6 +35,7 @@ import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedChatbotsIndexRouteImport } from './routes/_authenticated/chatbots/index'
 import { Route as AuthenticatedAuditLogsIndexRouteImport } from './routes/_authenticated/audit-logs/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
+import { Route as AuthenticatedAiModelsIndexRouteImport } from './routes/_authenticated/ai-models/index'
 import { Route as AuthenticatedUsersUserIdRouteImport } from './routes/_authenticated/users/$userId'
 import { Route as AuthenticatedTenantsTenantIdRouteImport } from './routes/_authenticated/tenants/$tenantId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
@@ -188,6 +189,12 @@ const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
   path: '/apps/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAiModelsIndexRoute =
+  AuthenticatedAiModelsIndexRouteImport.update({
+    id: '/ai-models/',
+    path: '/ai-models/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedUsersUserIdRoute =
   AuthenticatedUsersUserIdRouteImport.update({
     id: '/users/$userId',
@@ -274,7 +281,6 @@ const AuthenticatedAdminUsersUserIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -285,6 +291,7 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/': typeof AuthenticatedIndexRoute
   '/billing/invoices': typeof AuthenticatedBillingInvoicesRoute
   '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/billing/subscriptions': typeof AuthenticatedBillingSubscriptionsRoute
@@ -297,21 +304,22 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
-  '/apps/': typeof AuthenticatedAppsIndexRoute
-  '/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
-  '/chatbots/': typeof AuthenticatedChatbotsIndexRoute
-  '/chats/': typeof AuthenticatedChatsIndexRoute
-  '/documents/': typeof AuthenticatedDocumentsIndexRoute
-  '/health/': typeof AuthenticatedHealthIndexRoute
-  '/help-center/': typeof AuthenticatedHelpCenterIndexRoute
-  '/integrations/': typeof AuthenticatedIntegrationsIndexRoute
-  '/notifications/': typeof AuthenticatedNotificationsIndexRoute
+  '/ai-models': typeof AuthenticatedAiModelsIndexRoute
+  '/apps': typeof AuthenticatedAppsIndexRoute
+  '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
+  '/chatbots': typeof AuthenticatedChatbotsIndexRoute
+  '/chats': typeof AuthenticatedChatsIndexRoute
+  '/documents': typeof AuthenticatedDocumentsIndexRoute
+  '/health': typeof AuthenticatedHealthIndexRoute
+  '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/integrations': typeof AuthenticatedIntegrationsIndexRoute
+  '/notifications': typeof AuthenticatedNotificationsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/tasks/': typeof AuthenticatedTasksIndexRoute
-  '/tenants/': typeof AuthenticatedTenantsIndexRoute
-  '/users/': typeof AuthenticatedUsersIndexRoute
+  '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/tenants': typeof AuthenticatedTenantsIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
   '/admin/users/$userId': typeof AuthenticatedAdminUsersUserIdRoute
-  '/admin/users/': typeof AuthenticatedAdminUsersIndexRoute
+  '/admin/users': typeof AuthenticatedAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof authForgotPasswordRoute
@@ -336,6 +344,7 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/ai-models': typeof AuthenticatedAiModelsIndexRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/chatbots': typeof AuthenticatedChatbotsIndexRoute
@@ -379,6 +388,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/_authenticated/ai-models/': typeof AuthenticatedAiModelsIndexRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/_authenticated/chatbots/': typeof AuthenticatedChatbotsIndexRoute
@@ -398,7 +408,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/settings'
     | '/forgot-password'
     | '/otp'
@@ -409,6 +418,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/'
     | '/billing/invoices'
     | '/billing/plans'
     | '/billing/subscriptions'
@@ -421,21 +431,22 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/tenants/$tenantId'
     | '/users/$userId'
-    | '/apps/'
-    | '/audit-logs/'
-    | '/chatbots/'
-    | '/chats/'
-    | '/documents/'
-    | '/health/'
-    | '/help-center/'
-    | '/integrations/'
-    | '/notifications/'
+    | '/ai-models'
+    | '/apps'
+    | '/audit-logs'
+    | '/chatbots'
+    | '/chats'
+    | '/documents'
+    | '/health'
+    | '/help-center'
+    | '/integrations'
+    | '/notifications'
     | '/settings/'
-    | '/tasks/'
-    | '/tenants/'
-    | '/users/'
+    | '/tasks'
+    | '/tenants'
+    | '/users'
     | '/admin/users/$userId'
-    | '/admin/users/'
+    | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -460,6 +471,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/tenants/$tenantId'
     | '/users/$userId'
+    | '/ai-models'
     | '/apps'
     | '/audit-logs'
     | '/chatbots'
@@ -502,6 +514,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/notifications'
     | '/_authenticated/tenants/$tenantId'
     | '/_authenticated/users/$userId'
+    | '/_authenticated/ai-models/'
     | '/_authenticated/apps/'
     | '/_authenticated/audit-logs/'
     | '/_authenticated/chatbots/'
@@ -534,7 +547,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: '/'
+      fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -625,21 +638,21 @@ declare module '@tanstack/react-router' {
     '/_authenticated/users/': {
       id: '/_authenticated/users/'
       path: '/users'
-      fullPath: '/users/'
+      fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/tenants/': {
       id: '/_authenticated/tenants/'
       path: '/tenants'
-      fullPath: '/tenants/'
+      fullPath: '/tenants'
       preLoaderRoute: typeof AuthenticatedTenantsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/tasks/': {
       id: '/_authenticated/tasks/'
       path: '/tasks'
-      fullPath: '/tasks/'
+      fullPath: '/tasks'
       preLoaderRoute: typeof AuthenticatedTasksIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -653,64 +666,71 @@ declare module '@tanstack/react-router' {
     '/_authenticated/notifications/': {
       id: '/_authenticated/notifications/'
       path: '/notifications'
-      fullPath: '/notifications/'
+      fullPath: '/notifications'
       preLoaderRoute: typeof AuthenticatedNotificationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/integrations/': {
       id: '/_authenticated/integrations/'
       path: '/integrations'
-      fullPath: '/integrations/'
+      fullPath: '/integrations'
       preLoaderRoute: typeof AuthenticatedIntegrationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
-      fullPath: '/help-center/'
+      fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/health/': {
       id: '/_authenticated/health/'
       path: '/health'
-      fullPath: '/health/'
+      fullPath: '/health'
       preLoaderRoute: typeof AuthenticatedHealthIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/documents/': {
       id: '/_authenticated/documents/'
       path: '/documents'
-      fullPath: '/documents/'
+      fullPath: '/documents'
       preLoaderRoute: typeof AuthenticatedDocumentsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chats/': {
       id: '/_authenticated/chats/'
       path: '/chats'
-      fullPath: '/chats/'
+      fullPath: '/chats'
       preLoaderRoute: typeof AuthenticatedChatsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chatbots/': {
       id: '/_authenticated/chatbots/'
       path: '/chatbots'
-      fullPath: '/chatbots/'
+      fullPath: '/chatbots'
       preLoaderRoute: typeof AuthenticatedChatbotsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/audit-logs/': {
       id: '/_authenticated/audit-logs/'
       path: '/audit-logs'
-      fullPath: '/audit-logs/'
+      fullPath: '/audit-logs'
       preLoaderRoute: typeof AuthenticatedAuditLogsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/apps/': {
       id: '/_authenticated/apps/'
       path: '/apps'
-      fullPath: '/apps/'
+      fullPath: '/apps'
       preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ai-models/': {
+      id: '/_authenticated/ai-models/'
+      path: '/ai-models'
+      fullPath: '/ai-models'
+      preLoaderRoute: typeof AuthenticatedAiModelsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/users/$userId': {
@@ -800,7 +820,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated/admin/users/': {
       id: '/_authenticated/admin/users/'
       path: '/admin/users'
-      fullPath: '/admin/users/'
+      fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -866,6 +886,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNotificationsBroadcastHistoryRoute: typeof AuthenticatedNotificationsBroadcastHistoryRoute
   AuthenticatedTenantsTenantIdRoute: typeof AuthenticatedTenantsTenantIdRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
+  AuthenticatedAiModelsIndexRoute: typeof AuthenticatedAiModelsIndexRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedAuditLogsIndexRoute: typeof AuthenticatedAuditLogsIndexRoute
   AuthenticatedChatbotsIndexRoute: typeof AuthenticatedChatbotsIndexRoute
@@ -896,6 +917,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedNotificationsBroadcastHistoryRoute,
   AuthenticatedTenantsTenantIdRoute: AuthenticatedTenantsTenantIdRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
+  AuthenticatedAiModelsIndexRoute: AuthenticatedAiModelsIndexRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedAuditLogsIndexRoute: AuthenticatedAuditLogsIndexRoute,
   AuthenticatedChatbotsIndexRoute: AuthenticatedChatbotsIndexRoute,
