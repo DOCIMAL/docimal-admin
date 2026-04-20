@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableColumnHeader } from '@/components/data-table'
-import { type AiModel, tierColors, providerColors } from '../data/schema'
+import { type AiModel, tierColors } from '../data/schema'
 import { useToggleAiModel, useSetDefaultAiModel } from '../api/useAiModels'
 import { useAiModels as useAiModelsContext } from './ai-models-provider'
 import { ProviderIcon } from '@lobehub/icons'

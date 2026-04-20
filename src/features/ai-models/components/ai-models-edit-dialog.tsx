@@ -29,7 +29,6 @@ import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { useUpdateAiModel } from '../api/useAiModels'
 import { useAiModels } from './ai-models-provider'
-import type { AiModel } from '../data/schema'
 
 const editSchema = z.object({
   name: z.string().min(1, 'Name is required'),
