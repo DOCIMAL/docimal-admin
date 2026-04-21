@@ -37,6 +37,7 @@ import { Route as AuthenticatedChatbotsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedAuditLogsIndexRouteImport } from './routes/_authenticated/audit-logs/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
 import { Route as AuthenticatedWorkspacesWorkspaceIdRouteImport } from './routes/_authenticated/workspaces/$workspaceId'
+import { Route as AuthenticatedAiModelsIndexRouteImport } from './routes/_authenticated/ai-models/index'
 import { Route as AuthenticatedUsersUserIdRouteImport } from './routes/_authenticated/users/$userId'
 import { Route as AuthenticatedTenantsTenantIdRouteImport } from './routes/_authenticated/tenants/$tenantId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
@@ -201,6 +202,10 @@ const AuthenticatedWorkspacesWorkspaceIdRoute =
   AuthenticatedWorkspacesWorkspaceIdRouteImport.update({
     id: '/workspaces/$workspaceId',
     path: '/workspaces/$workspaceId',
+const AuthenticatedAiModelsIndexRoute =
+  AuthenticatedAiModelsIndexRouteImport.update({
+    id: '/ai-models/',
+    path: '/ai-models/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedUsersUserIdRoute =
@@ -320,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
+  '/ai-models': typeof AuthenticatedAiModelsIndexRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/chatbots': typeof AuthenticatedChatbotsIndexRoute
@@ -362,6 +368,7 @@ export interface FileRoutesByTo {
   '/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
+  '/ai-models': typeof AuthenticatedAiModelsIndexRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/chatbots': typeof AuthenticatedChatbotsIndexRoute
@@ -408,6 +415,7 @@ export interface FileRoutesById {
   '/_authenticated/tenants/$tenantId': typeof AuthenticatedTenantsTenantIdRoute
   '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/_authenticated/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
+  '/_authenticated/ai-models/': typeof AuthenticatedAiModelsIndexRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/_authenticated/chatbots/': typeof AuthenticatedChatbotsIndexRoute
@@ -453,6 +461,7 @@ export interface FileRouteTypes {
     | '/tenants/$tenantId'
     | '/users/$userId'
     | '/workspaces/$workspaceId'
+    | '/ai-models'
     | '/apps'
     | '/audit-logs'
     | '/chatbots'
@@ -495,6 +504,7 @@ export interface FileRouteTypes {
     | '/tenants/$tenantId'
     | '/users/$userId'
     | '/workspaces/$workspaceId'
+    | '/ai-models'
     | '/apps'
     | '/audit-logs'
     | '/chatbots'
@@ -540,6 +550,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenants/$tenantId'
     | '/_authenticated/users/$userId'
     | '/_authenticated/workspaces/$workspaceId'
+    | '/_authenticated/ai-models/'
     | '/_authenticated/apps/'
     | '/_authenticated/audit-logs/'
     | '/_authenticated/chatbots/'
@@ -764,6 +775,11 @@ declare module '@tanstack/react-router' {
       path: '/workspaces/$workspaceId'
       fullPath: '/workspaces/$workspaceId'
       preLoaderRoute: typeof AuthenticatedWorkspacesWorkspaceIdRouteImport
+    '/_authenticated/ai-models/': {
+      id: '/_authenticated/ai-models/'
+      path: '/ai-models'
+      fullPath: '/ai-models'
+      preLoaderRoute: typeof AuthenticatedAiModelsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/users/$userId': {
@@ -928,6 +944,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTenantsTenantIdRoute: typeof AuthenticatedTenantsTenantIdRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
   AuthenticatedWorkspacesWorkspaceIdRoute: typeof AuthenticatedWorkspacesWorkspaceIdRoute
+  AuthenticatedAiModelsIndexRoute: typeof AuthenticatedAiModelsIndexRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedAuditLogsIndexRoute: typeof AuthenticatedAuditLogsIndexRoute
   AuthenticatedChatbotsIndexRoute: typeof AuthenticatedChatbotsIndexRoute
@@ -962,6 +979,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
   AuthenticatedWorkspacesWorkspaceIdRoute:
     AuthenticatedWorkspacesWorkspaceIdRoute,
+  AuthenticatedAiModelsIndexRoute: AuthenticatedAiModelsIndexRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedAuditLogsIndexRoute: AuthenticatedAuditLogsIndexRoute,
   AuthenticatedChatbotsIndexRoute: AuthenticatedChatbotsIndexRoute,

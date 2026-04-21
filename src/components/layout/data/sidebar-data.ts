@@ -21,6 +21,7 @@ import {
   Building2,
   CreditCard,
   Bot,
+  Cpu,
   Plug,
   FileText,
   ScrollText,
@@ -88,6 +89,7 @@ export const sidebarData: SidebarData = {
       title: 'Platform',
       items: [
         { title: 'Chatbots', url: '/chatbots', icon: Bot },
+        { title: 'AI Models', url: '/ai-models', icon: Cpu },
         { title: 'Integrations', url: '/integrations', icon: Plug },
         { title: 'Documents', url: '/documents', icon: FileText },
       ],
