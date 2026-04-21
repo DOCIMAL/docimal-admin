@@ -20,6 +20,7 @@ import { TenantMembersTab } from '@/components/admin/tenants/tabs/TenantMembersT
 import { TenantWorkspacesTab } from '@/components/admin/tenants/tabs/TenantWorkspacesTab'
 import { TenantSubscriptionTab } from '@/components/admin/tenants/tabs/TenantSubscriptionTab'
 import { TenantSettingsTab } from '@/components/admin/tenants/tabs/TenantSettingsTab'
+import { TenantBillingTab } from '@/features/billing/components/tenant-billing-tab'
 import { SuspendTenantDialog } from '@/components/admin/tenants/dialogs/SuspendTenantDialog'
 import { DeleteTenantDialog } from '@/components/admin/tenants/dialogs/DeleteTenantDialog'
 import { ExtendTrialDialog } from '@/components/admin/tenants/dialogs/ExtendTrialDialog'
@@ -148,6 +149,9 @@ function TenantDetailPage() {
             <TabsTrigger value="workspaces" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
               Workspaces
             </TabsTrigger>
+            <TabsTrigger value="billing" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+              Billing
+            </TabsTrigger>
             <TabsTrigger value="subscription" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
               Subscription
             </TabsTrigger>
@@ -164,6 +168,9 @@ function TenantDetailPage() {
           </TabsContent>
           <TabsContent value="workspaces" className="mt-0 outline-none">
             <TenantWorkspacesTab />
+          </TabsContent>
+          <TabsContent value="billing" className="mt-0 outline-none">
+            <TenantBillingTab tenantId={tenantId} tenant={tenant} />
           </TabsContent>
           <TabsContent value="subscription" className="mt-0 outline-none">
             <TenantSubscriptionTab />

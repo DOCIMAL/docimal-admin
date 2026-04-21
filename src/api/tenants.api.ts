@@ -16,8 +16,8 @@ import type {
 // Types
 // ---------------------------------------------------------------------------
 
-export type TenantStatus = 'active' | 'expired' | 'suspended' | 'trial'
-export type TenantPlan = 'free' | 'starter' | 'pro' | 'enterprise'
+export type TenantStatus = 'active' | 'inactive' | 'expired' | 'suspended' | 'trial'
+export type TenantPlan = 'free' | 'starter' | 'professional' | 'enterprise'
 
 export interface Tenant {
   id: string
@@ -120,7 +120,7 @@ export interface ListTenantsParams extends ListParams {
 // API functions
 // ---------------------------------------------------------------------------
 
-const BASE = '/admin/tenants'
+const BASE = '/tenants'
 
 export const tenantsApi = {
   getStats: () => apiClient.get<TenantStats>(`${BASE}/stats`).then((r) => r.data),
@@ -146,7 +146,7 @@ export const tenantsApi = {
 
   activate: (id: string) =>
     apiClient
-      .post<MessageResponse>(`${BASE}/${id}/activate`)
+      .patch<MessageResponse>(`${BASE}/${id}/activate`)
       .then((r) => r.data),
 
   extendTrial: (id: string, days: number) =>
