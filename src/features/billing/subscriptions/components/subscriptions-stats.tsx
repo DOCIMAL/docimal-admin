@@ -10,15 +10,15 @@ export function SubscriptionsStats() {
 
   // Calculate stats from all subscriptions
   const stats = useMemo(() => {
-    if (!listData?.data) {
+    if (!listData?.items) {
       return { active: 0, trialing: 0, canceled: 0, pastDue: 0 }
     }
 
     return {
-      active: listData.data.filter((s) => s.status === 'active').length,
-      trialing: listData.data.filter((s) => s.status === 'trialing').length,
-      canceled: listData.data.filter((s) => s.status === 'canceled').length,
-      pastDue: listData.data.filter((s) => s.status === 'past_due').length,
+      active: listData.items.filter((s) => s.status === 'active').length,
+      trialing: listData.items.filter((s) => s.status === 'trialing').length,
+      canceled: listData.items.filter((s) => s.status === 'canceled').length,
+      pastDue: listData.items.filter((s) => s.status === 'past_due').length,
     }
   }, [listData])
 

@@ -121,7 +121,7 @@ jobs:
 
       - name: Build Docker image (local runner)
         run: |
-          docker build --platform linux/amd64 -t $IMAGE_NAME:${{ github.sha }} .
+          docker buildx build --platform linux/amd64 --load -t $IMAGE_NAME:${{ github.sha }} .
 
       - name: Save image to tar
         run: |
