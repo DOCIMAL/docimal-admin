@@ -1,5 +1,9 @@
-import axios from 'axios'
+import axios, { type InternalAxiosRequestConfig, type AxiosResponse, type AxiosError } from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
+
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean
+}
 
 const USER_API_BASE =
   import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:3001/api/v1'
@@ -24,7 +28,7 @@ export const agentClient = axios.create({
 })
 
 // Request interceptor: attach admin token to every request
-const requestInterceptor = (config: any) => {
+const requestInterceptor = (config: InternalAxiosRequestConfig) => {
   const { accessToken } = useAuthStore.getState().auth
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`
@@ -37,11 +41,11 @@ auditClient.interceptors.request.use(requestInterceptor)
 agentClient.interceptors.request.use(requestInterceptor)
 
 // Response interceptor: auto-refresh on 401
-const responseInterceptorSuccess = (response: any) => response
-const responseInterceptorError = async (error: any) => {
-  const originalRequest = error.config
-  if (error.response?.status === 401 && !originalRequest._retry) {
-    originalRequest._retry = true
+const responseInterceptorSuccess = (response: AxiosResponse) => response
+const responseInterceptorError = async (error: AxiosError) => {
+  const originalRequest = error.config as RetryableRequestConfig | undefined
+  if (error.response?.status === 401 && !originalRequest?._retry) {
+    if (originalRequest) originalRequest._retry = true
     try {
       const { refreshToken } = useAuthStore.getState().auth
       const { data } = await axios.post(`${USER_API_BASE}/auth/admin/refresh`, {
@@ -50,13 +54,14 @@ const responseInterceptorError = async (error: any) => {
       const { auth } = useAuthStore.getState()
       auth.setAccessToken(data.tokens.accessToken)
       auth.setRefreshToken(data.tokens.refreshToken)
-      originalRequest.headers.Authorization = `Bearer ${data.tokens.accessToken}`
-
-      // Retry with the correct client
-      if (originalRequest.baseURL === AUDIT_API_BASE) {
-        return auditClient(originalRequest)
+      if (originalRequest) {
+        originalRequest.headers.Authorization = `Bearer ${data.tokens.accessToken}`
+        // Retry with the correct client
+        if (originalRequest.baseURL === AUDIT_API_BASE) {
+          return auditClient(originalRequest)
+        }
+        return apiClient(originalRequest)
       }
-      return apiClient(originalRequest)
     } catch {
       useAuthStore.getState().auth.reset()
       window.location.href = '/sign-in'

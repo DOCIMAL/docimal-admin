@@ -93,19 +93,43 @@ export interface WorkspaceAdminDetail extends WorkspaceAdminBase {
   }
 }
 
+export interface WorkspaceAdminFilters {
+  page?: number
+  limit?: number
+  search?: string
+  status?: string
+  tenantId?: string
+}
+
+export interface WorkspaceAdminListResponse {
+  items: WorkspaceAdmin[]
+  meta: {
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+  }
+}
+
+export interface WorkspaceRole {
+  id: string
+  name: string
+  permissions: string[]
+}
+
 export const workspaceAdminKeys = {
   all: ['admin-workspaces'] as const,
   lists: () => [...workspaceAdminKeys.all, 'list'] as const,
-  list: (filters: any) => [...workspaceAdminKeys.lists(), { filters }] as const,
+  list: (filters: WorkspaceAdminFilters) => [...workspaceAdminKeys.lists(), { filters }] as const,
   stats: () => [...workspaceAdminKeys.all, 'stats'] as const,
   details: () => [...workspaceAdminKeys.all, 'detail'] as const,
   detail: (id: string) => [...workspaceAdminKeys.details(), id] as const,
 }
 
 export const workspacesAdminApi = {
-  findAll: (params: any) =>
+  findAll: (params: WorkspaceAdminFilters) =>
     apiClient
-      .get<any>(BASE, { params })
+      .get<WorkspaceAdminListResponse>(BASE, { params })
       .then((r) => r.data),
 
   getStats: () =>
@@ -121,10 +145,10 @@ export const workspacesAdminApi = {
     apiClient.delete(`${BASE}/${workspaceId}/members/${userId}`).then((r) => r.data),
 
   getRoles: (workspaceId: string) =>
-    apiClient.get<any[]>(`${BASE}/${workspaceId}/roles`).then((r) => r.data),
+    apiClient.get<WorkspaceRole[]>(`${BASE}/${workspaceId}/roles`).then((r) => r.data),
 }
 
-export function useAdminWorkspaces(params: any) {
+export function useAdminWorkspaces(params: WorkspaceAdminFilters) {
   return useQuery({
     queryKey: workspaceAdminKeys.list(params),
     queryFn: () => workspacesAdminApi.findAll(params),

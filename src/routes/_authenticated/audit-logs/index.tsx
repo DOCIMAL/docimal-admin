@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { AuditLogFilters, auditApi } from '@/api/audit.api'
+import { type AuditLogFilters, auditApi } from '@/api/audit.api'
 import { useAuditLogs } from '@/hooks/useAuditLogs'
 import { AuditStatsBar } from '@/components/admin/audit-logs/AuditStatsBar'
 import { AuditFilters } from '@/components/admin/audit-logs/AuditFilters'
@@ -65,7 +65,7 @@ function AuditLogsPage() {
       } else {
         toast.success('Audit logs exported successfully.', { id: 'export-audit' })
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to export audit logs. Please try again.', { id: 'export-audit' })
     }
   }

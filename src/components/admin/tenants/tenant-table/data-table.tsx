@@ -14,7 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { getColumns } from './columns'
-import { Tenant } from '@/api/tenants.api'
+import { type Tenant } from '@/api/tenants.api'
 interface TenantDataTableProps {
   data: Tenant[]
   isLoading?: boolean

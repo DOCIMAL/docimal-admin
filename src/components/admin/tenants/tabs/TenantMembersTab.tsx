@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { MoreHorizontal, UserMinus, ShieldAlert, UserCog } from 'lucide-react'
-import { TenantMember, useTenantMembers, useUpdateMemberRole, useSuspendMember, useActivateMember, useRemoveMember } from '@/api/tenants.api'
+import { type TenantMember, useTenantMembers, useUpdateMemberRole, useSuspendMember, useActivateMember, useRemoveMember } from '@/api/tenants.api'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 

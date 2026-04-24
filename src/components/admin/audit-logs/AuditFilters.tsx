@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { Search, X, Calendar as CalendarIcon } from 'lucide-react'
-import { AuditLogFilters } from '@/api/audit.api'
+import { type AuditLogFilters } from '@/api/audit.api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'

@@ -11,7 +11,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
-import { Tenant, useSuspendTenant } from '@/api/tenants.api'
+import { type Tenant, useSuspendTenant } from '@/api/tenants.api'
 
 
 interface SuspendTenantDialogProps {

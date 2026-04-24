@@ -22,6 +22,7 @@ import {
   notificationKeys,
 } from '@/api/useAdminNotifications'
 import { useQueryClient } from '@tanstack/react-query'
+import type { Notification } from '@/api/notifications.api'
 import { NotificationPopover } from './components/notification-popover'
 import { NotificationItem } from './components/notification-item'
 import { Header } from '@/components/layout/header'
@@ -55,7 +56,7 @@ export default function Notifications() {
 
     // 1. Update the list cache for the Popover (which uses limit 10, page 1)
     queryClient.setQueryData(notificationKeys.list({ limit: 10, page: 1 }), (old: unknown) => {
-      const oldData = old as { data: any[]; total?: number }
+      const oldData = old as { data: Notification[]; total?: number }
       const data = oldData?.data || []
       return {
         ...oldData,
@@ -66,7 +67,7 @@ export default function Notifications() {
 
     // 2. Update the current page's list cache (might be different due to filters/pagination)
     queryClient.setQueryData(notificationKeys.list({ ...filter, page, limit }), (old: unknown) => {
-      const oldData = old as { data: any[]; total: number; page: number; limit: number; totalPages: number } | undefined
+      const oldData = old as { data: Notification[]; total: number; page: number; limit: number; totalPages: number } | undefined
       if (!oldData) return { data: [newNotif], total: 1, page: 1, limit: 20, totalPages: 1 }
       return {
         ...oldData,

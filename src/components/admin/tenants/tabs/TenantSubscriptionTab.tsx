@@ -104,15 +104,15 @@ export function TenantSubscriptionTab() {
               <p className="text-sm text-muted-foreground italic">No payment methods found.</p>
             ) : (
               <div className="space-y-3">
-                {paymentMethods.map((pm: any) => (
+                {paymentMethods.map((pm) => (
                   <div key={pm.id} className="flex items-center justify-between border rounded-lg p-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
                         <CreditCard className="h-5 w-5" />
                       </div>
                       <div>
-                        <div className="font-medium capitalize">{pm.card.brand} •••• {pm.card.last4}</div>
-                        <div className="text-xs text-muted-foreground">Expires {pm.card.expMonth}/{pm.card.expYear}</div>
+                        <div className="font-medium capitalize">{pm.card?.brand} •••• {pm.card?.last4}</div>
+                        <div className="text-xs text-muted-foreground">Expires {pm.card?.expMonth}/{pm.card?.expYear}</div>
                       </div>
                     </div>
                     {pm.isDefault && (
@@ -166,24 +166,24 @@ export function TenantSubscriptionTab() {
                   </TableCell>
                 </TableRow>
               ) : (
-                invoices.map((invoice: any) => (
+                invoices.map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-mono text-xs text-muted-foreground uppercase">
-                      {invoice.stripeInvoiceId.replace('in_', '')}
+                      {invoice.stripeInvoiceId?.replace('in_', '') ?? invoice.id}
                     </TableCell>
                     <TableCell className="font-medium">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency.toUpperCase() }).format(invoice.amountPaid)}
+                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: (invoice.currency ?? 'usd').toUpperCase() }).format(invoice.amountPaid ?? 0)}
                     </TableCell>
                     <TableCell>
                       <Badge variant={invoice.status === 'paid' ? 'default' : 'secondary'} className="capitalize">
                         {invoice.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{format(new Date(invoice.createdAt), 'MMM dd, yyyy')}</TableCell>
+                    <TableCell>{invoice.createdAt ? format(new Date(invoice.createdAt), 'MMM dd, yyyy') : '-'}</TableCell>
                     <TableCell className="text-right">
                       {invoice.invoicePdf ? (
                         <Button variant="ghost" size="icon" asChild title="Download PDF">
-                          <a href={invoice.invoicePdf} target="_blank" rel="noreferrer">
+                          <a href={invoice.invoicePdf ?? '#'} target="_blank" rel="noreferrer">
                             <Download className="h-4 w-4" />
                           </a>
                         </Button>

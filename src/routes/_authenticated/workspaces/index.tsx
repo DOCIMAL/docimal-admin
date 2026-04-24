@@ -1,19 +1,20 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useAdminWorkspaces } from '@/api/workspaces.api'
+import { useAdminWorkspaces, type WorkspaceAdminFilters } from '@/api/workspaces.api'
 import { Main } from '@/components/layout/main'
 import { Button } from '@/components/ui/button'
 import { WorkspaceStatsCards } from '@/components/admin/workspaces/WorkspaceStatsCards'
 import { WorkspaceFilters } from '@/components/admin/workspaces/WorkspaceFilters'
 import { WorkspaceListTable } from '@/components/admin/workspaces/WorkspaceListTable'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Route = createFileRoute('/_authenticated/workspaces/' as any)({
   component: AdminWorkspacesPage,
 })
 
 function AdminWorkspacesPage() {
-  const [filters, setFilters] = useState<any>({
+  const [filters, setFilters] = useState<WorkspaceAdminFilters>({
     page: 1,
     limit: 10,
     search: '',
@@ -55,7 +56,7 @@ function AdminWorkspacesPage() {
               <Button
                 variant='outline'
                 size='icon'
-                onClick={() => handlePageChange(filters.page - 1)}
+                onClick={() => handlePageChange((filters.page ?? 1) - 1)}
                 disabled={filters.page === 1}
               >
                 <ChevronLeft className='h-4 w-4' />
@@ -63,7 +64,7 @@ function AdminWorkspacesPage() {
               <Button
                 variant='outline'
                 size='icon'
-                onClick={() => handlePageChange(filters.page + 1)}
+                onClick={() => handlePageChange((filters.page ?? 1) + 1)}
                 disabled={filters.page === totalPages}
               >
                 <ChevronRight className='h-4 w-4' />

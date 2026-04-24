@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Search, X } from 'lucide-react'
+import { Search, X, Calendar as CalendarIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,11 +11,10 @@ import {
 } from '@/components/ui/select'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Calendar as CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { DateRange } from 'react-day-picker'
+import { type DateRange } from 'react-day-picker'
 import { cn } from '@/lib/utils'
-import { ListTenantsParams, TenantStatus, TenantPlan } from '@/api/tenants.api'
+import { type ListTenantsParams, type TenantStatus, type TenantPlan } from '@/api/tenants.api'
 
 
 interface TenantFiltersProps {

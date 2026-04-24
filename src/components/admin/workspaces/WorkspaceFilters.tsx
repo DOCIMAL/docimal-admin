@@ -8,9 +8,11 @@ import {
   SelectValue 
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import type { WorkspaceAdminFilters } from '@/api/workspaces.api'
+
 interface WorkspaceFiltersProps {
-  filters: any
-  setFilters: (filters: any) => void
+  filters: WorkspaceAdminFilters
+  setFilters: (filters: WorkspaceAdminFilters) => void
 }
 
 export const WorkspaceFilters = ({ filters, setFilters }: WorkspaceFiltersProps) => {

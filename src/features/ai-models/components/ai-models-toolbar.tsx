@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Cross2Icon } from '@radix-ui/react-icons'
+import { Cross2Icon, MixerHorizontalIcon, CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons'
 import { type Table } from '@tanstack/react-table'
-import { MixerHorizontalIcon } from '@radix-ui/react-icons'
-import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -94,7 +92,7 @@ function ServerFacetedFilter({ title, selected, options, counts, onSelectionChan
                     key={option.value}
                     onSelect={() => {
                       const next = new Set(selected)
-                      isSelected ? next.delete(option.value) : next.add(option.value)
+                      if (isSelected) { next.delete(option.value) } else { next.add(option.value) }
                       onSelectionChange(next)
                     }}
                   >

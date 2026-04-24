@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 
 import { 
-  ListAdminChatbotParams, 
+  type ListAdminChatbotParams, 
   useAdminChatbots,
   useForceUnpublishChatbot,
-  AdminChatbot
+  type AdminChatbot
 } from '@/api/admin-chatbots.api'
 import { ChatbotStatsCards } from '@/components/admin/chatbots/ChatbotStatsCards'
 import { ChatbotFilters } from '@/components/admin/chatbots/ChatbotFilters'

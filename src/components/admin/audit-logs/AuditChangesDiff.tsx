@@ -1,6 +1,6 @@
 interface AuditChangesDiffProps {
-  before?: any
-  after?: any
+  before?: Record<string, unknown>
+  after?: Record<string, unknown>
 }
 
 export const AuditChangesDiff = ({ before, after }: AuditChangesDiffProps) => {

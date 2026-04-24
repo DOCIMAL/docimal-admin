@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 
-import { ListTenantsParams, useTenants, useActivateTenant, Tenant } from '@/api/tenants.api'
+import { type ListTenantsParams, useTenants, useActivateTenant, type Tenant } from '@/api/tenants.api'
 import { TenantStatsCards } from '@/components/admin/tenants/TenantStatsCards'
 import { TenantFilters } from '@/components/admin/tenants/TenantFilters'
 import { TenantDataTable } from '@/components/admin/tenants/tenant-table/data-table'

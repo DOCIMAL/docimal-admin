@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ListAdminChatbotParams } from '@/api/admin-chatbots.api'
+import { type ListAdminChatbotParams } from '@/api/admin-chatbots.api'
 import { useTenants } from '@/api/tenants.api'
 
 interface ChatbotFiltersProps {

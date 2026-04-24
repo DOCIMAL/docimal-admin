@@ -1,4 +1,4 @@
-import { TenantDetail } from '@/api/tenants.api'
+import { type TenantDetail } from '@/api/tenants.api'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'

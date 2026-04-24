@@ -1,4 +1,4 @@
-import { ColumnDef } from '@tanstack/react-table'
+import { type ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, ShieldAlert, ArrowRight, PauseCircle, PlayCircle, ArrowUpDown } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { format } from 'date-fns'
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { Tenant } from '@/api/tenants.api'
+import { type Tenant } from '@/api/tenants.api'
 
 // We will pass actions in through the meta object of the table so components remain server-independent
 export const getColumns = (

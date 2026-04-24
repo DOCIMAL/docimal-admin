@@ -8,7 +8,7 @@ import {
   Tag,
   Circle,
 } from 'lucide-react'
-import { AuditLog } from '@/api/audit.api'
+import { type AuditLog } from '@/api/audit.api'
 import { Badge } from '@/components/ui/badge'
 import {
   Table,

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { MoreHorizontal, ExternalLink, Eye, Building2 } from 'lucide-react'
-import { WorkspaceAdmin } from '@/api/workspaces.api'
+import { type WorkspaceAdmin } from '@/api/workspaces.api'
 import { 
   Table, 
   TableBody, 
@@ -85,9 +85,9 @@ export const WorkspaceListTable = ({ workspaces, isLoading }: WorkspaceListTable
             workspaces.map((ws) => (
               <TableRow key={ws.id}>
                 <TableCell className='font-medium'>
-                  <Link 
-                    to={'/workspaces/$workspaceId' as any} 
-                    params={{ workspaceId: ws.id } as any}
+                  <Link
+                    to={'/workspaces/$workspaceId' as string & {}}
+                    params={{ workspaceId: ws.id } as Record<string, string>}
                     className='hover:underline'
                   >
                     {ws.name}
@@ -126,7 +126,7 @@ export const WorkspaceListTable = ({ workspaces, isLoading }: WorkspaceListTable
                     <DropdownMenuContent align='end'>
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem asChild>
-                        <Link to={'/workspaces/$workspaceId' as any} params={{ workspaceId: ws.id } as any}>
+                        <Link to={'/workspaces/$workspaceId' as string & {}} params={{ workspaceId: ws.id } as Record<string, string>}>
                           <Eye className='mr-2 h-4 w-4' />
                           View Details
                         </Link>

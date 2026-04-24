@@ -9,7 +9,7 @@ import {
   Legend
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { AdminChatbotDetailStats } from '@/api/admin-chatbots.api'
+import { type AdminChatbotDetailStats } from '@/api/admin-chatbots.api'
 import { format } from 'date-fns'
 
 interface TokenUsageChartProps {

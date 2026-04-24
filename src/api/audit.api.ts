@@ -18,10 +18,10 @@ export interface AuditLog {
     description?: string
     details?: string
     changes?: {
-      before: any
-      after: any
+      before: Record<string, unknown>
+      after: Record<string, unknown>
     }
-    [key: string]: any
+    [key: string]: unknown
   }
   createdAt: string
 }

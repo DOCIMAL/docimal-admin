@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Tenant, useExtendTrialTenant } from '@/api/tenants.api'
+import { type Tenant, useExtendTrialTenant } from '@/api/tenants.api'
 
 interface ExtendTrialDialogProps {
   tenant: Tenant | null

@@ -1,5 +1,5 @@
 import { Globe, Building, Mail, ShieldCheck } from 'lucide-react'
-import { Tenant } from '@/api/tenants.api'
+import { type Tenant } from '@/api/tenants.api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'

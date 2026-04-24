@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { Layout, MoreHorizontal, ExternalLink } from 'lucide-react'
-import { TenantWorkspace, useTenantWorkspaces } from '@/api/tenants.api'
+import { type TenantWorkspace, useTenantWorkspaces } from '@/api/tenants.api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   Table, 

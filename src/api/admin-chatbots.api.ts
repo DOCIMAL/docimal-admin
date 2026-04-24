@@ -143,7 +143,7 @@ export function useForceUnpublishChatbot() {
       qc.invalidateQueries({ queryKey: adminChatbotKeys.detailStats(data.workspaceId) })
       toast.success(`Chatbot "${data.name}" has been unpublished`)
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || 'Failed to unpublish chatbot')
     }
   })

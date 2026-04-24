@@ -1,5 +1,5 @@
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -31,7 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { AdminChatbot } from '@/api/admin-chatbots.api'
+import { type AdminChatbot } from '@/api/admin-chatbots.api'
 import { useNavigate } from '@tanstack/react-router'
 import { Skeleton } from '@/components/ui/skeleton'
 

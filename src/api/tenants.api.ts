@@ -85,10 +85,40 @@ export interface TenantWorkspace {
 }
 
 
+export interface TenantSubscription {
+  plan?: { name?: string }
+  status?: string
+  currentPeriodStart?: string
+  currentPeriodEnd?: string
+  stripeSubscriptionId?: string
+  nextPlan?: { name?: string }
+}
+
+export interface TenantInvoice {
+  id?: string
+  stripeInvoiceId?: string
+  amountPaid?: number
+  currency?: string
+  status?: string
+  createdAt?: string
+  invoicePdf?: string
+}
+
+export interface TenantPaymentMethod {
+  id?: string
+  isDefault?: boolean
+  card?: {
+    brand?: string
+    last4?: string
+    expMonth?: string | number
+    expYear?: string | number
+  }
+}
+
 export interface TenantSubscriptionInfo {
-  subscription: any // Match backend DTO
-  invoices: any[]
-  paymentMethods: any[]
+  subscription: TenantSubscription
+  invoices: TenantInvoice[]
+  paymentMethods: TenantPaymentMethod[]
 }
 
 

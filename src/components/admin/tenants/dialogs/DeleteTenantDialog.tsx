@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Tenant, useDeleteTenant } from '@/api/tenants.api'
+import { type Tenant, useDeleteTenant } from '@/api/tenants.api'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
