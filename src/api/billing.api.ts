@@ -11,6 +11,7 @@ import type {
   MessageResponse,
   ListParams,
 } from './common.types'
+import { tenantKeys } from './tenants.api'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -167,6 +168,18 @@ export interface ResetQuotaResponse {
   }>
 }
 
+export interface TenantQuotaUsage {
+  tenantId: string
+  quotas: {
+    workspaces: { used: number; limit: number }
+    members: { used: number; limit: number }
+    documents: { used: number; limit: number }
+    storage: { usedBytes: number; limitBytes: number }
+    messages: { used: number; limit: number }
+  }
+  features: Record<string, boolean>
+}
+
 // ---------------------------------------------------------------------------
 // API functions
 // ---------------------------------------------------------------------------
@@ -239,6 +252,11 @@ export const billingApi = {
         confirm: true,
       })
       .then((r) => r.data),
+
+  getTenantQuotaUsage: (tenantId: string) =>
+    apiClient
+      .get<TenantQuotaUsage>(`${BASE}/tenants/${tenantId}/quota-usage`)
+      .then((r) => r.data),
 }
 
 // ---------------------------------------------------------------------------
@@ -261,6 +279,8 @@ export const billingKeys = {
   revenueChart: () => [...billingKeys.all, 'revenue-chart'] as const,
   revenueChartByMonths: (months?: number) =>
     [...billingKeys.revenueChart(), months] as const,
+  tenantQuotaUsage: (tenantId: string) =>
+    [...billingKeys.all, 'tenant-quota-usage', tenantId] as const,
 }
 
 // ---------------------------------------------------------------------------
@@ -311,6 +331,14 @@ export function useRevenueChart(months?: number) {
   })
 }
 
+export function useTenantQuotaUsage(tenantId: string) {
+  return useQuery({
+    queryKey: billingKeys.tenantQuotaUsage(tenantId),
+    queryFn: () => billingApi.getTenantQuotaUsage(tenantId),
+    enabled: !!tenantId,
+  })
+}
+
 export function useSyncPlans() {
   const qc = useQueryClient()
   return useMutation({
@@ -330,8 +358,9 @@ export function useExtendTrial() {
   return useMutation({
     mutationFn: ({ tenantId, days }: { tenantId: string; days: number }) =>
       billingApi.extendTrial(tenantId, days),
-    onSuccess: () => {
+    onSuccess: (_, { tenantId }) => {
       qc.invalidateQueries({ queryKey: billingKeys.subscriptionLists() })
+      qc.invalidateQueries({ queryKey: tenantKeys.detail(tenantId) })
       toast.success('Trial extended successfully')
     },
     onError: () => {
@@ -350,8 +379,9 @@ export function useOverridePlan() {
       tenantId: string
       plan: SubscriptionPlan
     }) => billingApi.overridePlan(tenantId, plan),
-    onSuccess: () => {
+    onSuccess: (_, { tenantId }) => {
       qc.invalidateQueries({ queryKey: billingKeys.subscriptionLists() })
+      qc.invalidateQueries({ queryKey: tenantKeys.detail(tenantId) })
       toast.success('Plan overridden successfully')
     },
     onError: () => {

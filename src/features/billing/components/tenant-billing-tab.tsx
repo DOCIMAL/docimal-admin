@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Download, History, RotateCcw } from 'lucide-react'
-import { useAdminSubscriptions, useAdminInvoices, useResetTenantQuota } from '@/api/billing.api'
+import { useAdminSubscriptions, useAdminInvoices, useResetTenantQuota, useTenantQuotaUsage } from '@/api/billing.api'
 import type { Tenant } from '@/api/tenants.api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -51,6 +51,30 @@ function formatDate(dateString: string): string {
   })
 }
 
+function formatStorage(bytes: number): string {
+  if (bytes < 1024 * 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+}
+
+function toProgress(used: number, limit: number): number {
+  if (limit < 0) {
+    return 100
+  }
+
+  if (limit === 0) {
+    return 0
+  }
+
+  return Math.min((used / limit) * 100, 100)
+}
+
+function formatQuotaLimit(limit: number): string {
+  return limit < 0 ? 'Unlimited' : String(limit)
+}
+
 // Reuse standard labels from your column definitions if needed
 const planColors: Record<string, string> = {
   free: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
@@ -89,6 +113,7 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
     tenantId,
     limit: 5,
   })
+  const { data: quotaUsage, isLoading: isLoadingQuota } = useTenantQuotaUsage(tenantId)
 
   const resetTenantQuota = useResetTenantQuota()
 
@@ -105,13 +130,7 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
 
   const isTrial = currentSub?.status === 'trialing'
 
-  // Dummy Quota Usage for now (usually from tenant.settings or quotas api)
-  const quotas = {
-    workspaces: { used: 2, limit: 5 },
-    members: { used: 7, limit: 10 },
-    documents: { used: 342, limit: 500 },
-    storage: { used: 45, limit: 1024, unit: 'MB' }, // 1024MB = 1GB
-  }
+  const quotas = quotaUsage?.quotas
 
   // Dummy Plan History
   const planHistory = [
@@ -292,21 +311,31 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='space-y-6'>
+          {isLoadingQuota ? (
+            <div className='space-y-4'>
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+            </div>
+          ) : !quotas ? (
+            <div className='text-sm text-muted-foreground'>
+              Failed to load tenant quota usage.
+            </div>
+          ) : (
+            <div className='space-y-6'>
             <div className='space-y-2'>
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Workspaces</span>
                 <span className='text-muted-foreground'>
-                  {quotas.workspaces.used} / {quotas.workspaces.limit}
+                  {quotas.workspaces.used} / {formatQuotaLimit(quotas.workspaces.limit)}
                 </span>
               </div>
               <div className='h-2 overflow-hidden rounded-full bg-secondary'>
                 <div
                   className='h-full bg-primary'
                   style={{
-                    width:
-                      (quotas.workspaces.used / quotas.workspaces.limit) * 100 +
-                      '%',
+                    width: `${toProgress(quotas.workspaces.used, quotas.workspaces.limit)}%`,
                   }}
                 />
               </div>
@@ -316,15 +345,14 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Members</span>
                 <span className='text-muted-foreground'>
-                  {quotas.members.used} / {quotas.members.limit}
+                  {quotas.members.used} / {formatQuotaLimit(quotas.members.limit)}
                 </span>
               </div>
               <div className='h-2 overflow-hidden rounded-full bg-secondary'>
                 <div
                   className='h-full bg-blue-500'
                   style={{
-                    width:
-                      (quotas.members.used / quotas.members.limit) * 100 + '%',
+                    width: `${toProgress(quotas.members.used, quotas.members.limit)}%`,
                   }}
                 />
               </div>
@@ -334,16 +362,14 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Documents</span>
                 <span className='text-muted-foreground'>
-                  {quotas.documents.used} / {quotas.documents.limit}
+                  {quotas.documents.used} / {formatQuotaLimit(quotas.documents.limit)}
                 </span>
               </div>
               <div className='h-2 overflow-hidden rounded-full bg-secondary'>
                 <div
                   className='h-full bg-purple-500'
                   style={{
-                    width:
-                      (quotas.documents.used / quotas.documents.limit) * 100 +
-                      '%',
+                    width: `${toProgress(quotas.documents.used, quotas.documents.limit)}%`,
                   }}
                 />
               </div>
@@ -353,23 +379,37 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
               <div className='flex items-center justify-between text-sm'>
                 <span className='font-medium'>Storage</span>
                 <span className='text-muted-foreground'>
-                  {quotas.storage.used} {quotas.storage.unit} /{' '}
-                  {quotas.storage.limit >= 1024
-                    ? quotas.storage.limit / 1024 + ' GB'
-                    : quotas.storage.limit + ' MB'}
+                  {formatStorage(quotas.storage.usedBytes)} / {quotas.storage.limitBytes < 0 ? 'Unlimited' : formatStorage(quotas.storage.limitBytes)}
                 </span>
               </div>
               <div className='h-2 overflow-hidden rounded-full bg-secondary'>
                 <div
                   className='h-full bg-amber-500'
                   style={{
-                    width:
-                      (quotas.storage.used / quotas.storage.limit) * 100 + '%',
+                    width: `${toProgress(quotas.storage.usedBytes, quotas.storage.limitBytes)}%`,
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='font-medium'>Messages (This Month)</span>
+                <span className='text-muted-foreground'>
+                  {quotas.messages.used} / {formatQuotaLimit(quotas.messages.limit)}
+                </span>
+              </div>
+              <div className='h-2 overflow-hidden rounded-full bg-secondary'>
+                <div
+                  className='h-full bg-emerald-500'
+                  style={{
+                    width: `${toProgress(quotas.messages.used, quotas.messages.limit)}%`,
                   }}
                 />
               </div>
             </div>
           </div>
+          )}
         </CardContent>
       </Card>
 

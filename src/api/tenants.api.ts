@@ -150,7 +150,8 @@ export interface ListTenantsParams extends ListParams {
 // API functions
 // ---------------------------------------------------------------------------
 
-const BASE = '/tenants'
+const BASE = '/admin/tenants'
+const TENANT_BASE = '/tenants'
 
 export const tenantsApi = {
   getStats: () => apiClient.get<TenantStats>(`${BASE}/stats`).then((r) => r.data),
@@ -179,7 +180,7 @@ export const tenantsApi = {
 
   activate: (id: string) =>
     apiClient
-      .patch<MessageResponse>(`${BASE}/${id}/activate`)
+      .post<MessageResponse>(`${BASE}/${id}/activate`)
       .then((r) => r.data),
 
   extendTrial: (id: string, days: number) =>
@@ -212,7 +213,7 @@ export const tenantsApi = {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('type', type)
-    return apiClient.post<{ url: string; type: string }>(`${BASE}/${id}/branding/upload`, formData, {
+    return apiClient.post<{ url: string; type: string }>(`${TENANT_BASE}/${id}/branding/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }).then((r) => r.data)
   },

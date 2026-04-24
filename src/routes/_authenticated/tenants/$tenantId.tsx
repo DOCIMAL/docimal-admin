@@ -42,18 +42,28 @@ function TenantDetailPage() {
 
   if (isLoading) {
     return (
-      <Main>
-        <div className="flex h-64 items-center justify-center">Loading tenant details...</div>
+      <Main className='flex items-center justify-center h-[50vh]'>
+        <div className='flex flex-col items-center gap-2'>
+          <div className='h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent'></div>
+          <p className='text-muted-foreground font-medium'>Loading tenant details...</p>
+        </div>
       </Main>
     )
   }
 
   if (!tenant) {
     return (
-      <Main>
-        <div className="flex flex-col items-center justify-center space-y-4 pt-12">
-          <div className="text-xl font-medium">Tenant not found</div>
-          <Button onClick={() => navigate({ to: '/tenants' })}>Go back to list</Button>
+      <Main className='flex items-center justify-center h-[50vh]'>
+        <div className='text-center'>
+          <ShieldAlert className='h-12 w-12 text-destructive mx-auto mb-4' />
+          <h2 className='text-2xl font-bold'>Tenant Not Found</h2>
+          <p className='text-muted-foreground mt-2'>
+            The requested tenant could not be found or is no longer accessible.
+          </p>
+          <Button variant='outline' className='mt-6' onClick={() => navigate({ to: '/tenants' })}>
+            <ArrowLeft className='mr-2 h-4 w-4' />
+            Back to Tenants
+          </Button>
         </div>
       </Main>
     )
@@ -74,14 +84,14 @@ function TenantDetailPage() {
         </div>
       </Header>
 
-      <Main className="max-w-5xl">
+      <Main>
         <div className='mb-6'>
-          <Link to="/tenants" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4 w-fit">
-            <ArrowLeft className="mr-1 h-4 w-4" />
+          <Link to='/tenants' className='inline-flex items-center -ml-2 mb-4 h-8 rounded-md px-2 text-sm font-medium text-muted-foreground hover:text-foreground'>
+            <ArrowLeft className='mr-2 h-4 w-4' />
             Back to Tenants
           </Link>
           
-          <div className='flex flex-col md:flex-row md:items-start justify-between gap-4'>
+          <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
             <div>
               <div className="flex items-center gap-3">
                 <h1 className='text-3xl font-bold tracking-tight'>{tenant.name}</h1>
@@ -138,44 +148,44 @@ function TenantDetailPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="mb-4 bg-transparent border-b rounded-none w-full justify-start h-auto p-0">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+        <Tabs defaultValue='overview' className='space-y-6'>
+          <TabsList className='bg-muted/50 p-1 border'>
+            <TabsTrigger value='overview' className='data-[state=active]:bg-background'>
               Overview
             </TabsTrigger>
-            <TabsTrigger value="members" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+            <TabsTrigger value='members' className='data-[state=active]:bg-background'>
               Members
             </TabsTrigger>
-            <TabsTrigger value="workspaces" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+            <TabsTrigger value='workspaces' className='data-[state=active]:bg-background'>
               Workspaces
             </TabsTrigger>
-            <TabsTrigger value="billing" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+            <TabsTrigger value='billing' className='data-[state=active]:bg-background'>
               Billing
             </TabsTrigger>
-            <TabsTrigger value="subscription" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+            <TabsTrigger value='subscription' className='data-[state=active]:bg-background'>
               Subscription
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2">
+            <TabsTrigger value='settings' className='data-[state=active]:bg-background'>
               Settings
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="overview" className="mt-0 outline-none">
+          <TabsContent value='overview' className='outline-none'>
             <TenantOverviewTab tenant={tenant} />
           </TabsContent>
-          <TabsContent value="members" className="mt-0 outline-none">
+          <TabsContent value='members' className='outline-none'>
             <TenantMembersTab />
           </TabsContent>
-          <TabsContent value="workspaces" className="mt-0 outline-none">
+          <TabsContent value='workspaces' className='outline-none'>
             <TenantWorkspacesTab />
           </TabsContent>
-          <TabsContent value="billing" className="mt-0 outline-none">
+          <TabsContent value='billing' className='outline-none'>
             <TenantBillingTab tenantId={tenantId} tenant={tenant} />
           </TabsContent>
-          <TabsContent value="subscription" className="mt-0 outline-none">
+          <TabsContent value='subscription' className='outline-none'>
             <TenantSubscriptionTab />
           </TabsContent>
-          <TabsContent value="settings" className="mt-0 outline-none">
+          <TabsContent value='settings' className='outline-none'>
             <TenantSettingsTab tenant={tenant} />
           </TabsContent>
         </Tabs>
