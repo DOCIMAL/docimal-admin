@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 import { type ListTenantsParams, useTenants, useActivateTenant, type Tenant } from '@/api/tenants.api'
 import { TenantStatsCards } from '@/components/admin/tenants/TenantStatsCards'
@@ -17,6 +17,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ConfigDrawer } from '@/components/config-drawer'
+import { ServerPagination } from '@/components/admin/shared/ServerPagination'
 import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_authenticated/tenants/')({
@@ -115,23 +116,16 @@ function TenantsListPage() {
 
           {/* Pagination */}
           {data && data.meta && data.meta.total > 0 && (
-            <div className='flex items-center justify-between py-2 px-1'>
-               <div className='text-xs text-muted-foreground'>
-                  Showing <span className='text-foreground font-medium'>{(currentPage - 1) * (filters.limit || 10) + 1}</span> to <span className='text-foreground font-medium'>{Math.min(currentPage * (filters.limit || 10), data.meta.total)}</span> of <span className='text-foreground font-medium'>{data.meta.total.toLocaleString()}</span> tenants
-              </div>
-              
-              <div className='flex items-center gap-2'>
-                <Button variant='outline' size='icon' onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1 || isLoading} className='w-8 h-8'>
-                  <ChevronLeft className='w-4 h-4' />
-                </Button>
-                <div className='flex items-center gap-1 mx-2'>
-                  <span className='text-sm text-foreground'>{currentPage}</span>
-                </div>
-                <Button variant='outline' size='icon' onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages || isLoading} className='w-8 h-8'>
-                  <ChevronRight className='w-4 h-4' />
-                </Button>
-              </div>
-            </div>
+            <ServerPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={filters.limit || 10}
+              totalItems={data.meta.total}
+              itemLabel='tenants'
+              isLoading={isLoading}
+              onPageChange={handlePageChange}
+              onPageSizeChange={(pageSize) => setFilters((prev) => ({ ...prev, limit: pageSize, page: 1 }))}
+            />
           )}
         </div>
       </Main>

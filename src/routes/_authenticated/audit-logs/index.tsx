@@ -7,8 +7,6 @@ import { AuditFilters } from '@/components/admin/audit-logs/AuditFilters'
 import { AuditLogTable } from '@/components/admin/audit-logs/AuditLogTable'
 import { Button } from '@/components/ui/button'
 import { 
-  ChevronLeft, 
-  ChevronRight, 
   Download,
   RefreshCw
 } from 'lucide-react'
@@ -20,6 +18,7 @@ import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ServerPagination } from '@/components/admin/shared/ServerPagination'
 
 export const Route = createFileRoute('/_authenticated/audit-logs/')({
   component: AuditLogsPage,
@@ -122,62 +121,16 @@ function AuditLogsPage() {
           
           {/* Pagination */}
           {data && data.total > 0 && (
-            <div className='flex items-center justify-between py-2 px-1'>
-              <div className='text-xs text-muted-foreground'>
-                  Showing <span className='text-foreground font-medium'>{(currentPage - 1) * (filters.limit || 50) + 1}</span> to <span className='text-foreground font-medium'>{Math.min(currentPage * (filters.limit || 50), data.total)}</span> of <span className='text-foreground font-medium'>{data.total.toLocaleString()}</span> logs
-              </div>
-              
-              <div className='flex items-center gap-2'>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage <= 1 || isLoading}
-                  className='w-8 h-8'
-                >
-                  <ChevronLeft className='w-4 h-4' />
-                </Button>
-                
-                <div className='flex items-center gap-1 mx-2'>
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum = i + 1
-                    if (totalPages > 5) {
-                      if (currentPage > 3) {
-                          pageNum = currentPage - 3 + i
-                      }
-                      if (pageNum > totalPages) {
-                          pageNum = totalPages - (4 - i)
-                      }
-                    }
-                    
-                    if (pageNum <= 0) return null
-                    if (pageNum > totalPages) return null
-
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={currentPage === pageNum ? 'default' : 'outline'}
-                        size='sm'
-                        onClick={() => handlePageChange(pageNum)}
-                        className='w-8 h-8 p-0 text-xs'
-                      >
-                        {pageNum}
-                      </Button>
-                    )
-                  })}
-                </div>
-
-                <Button
-                  variant='outline'
-                  size='icon'
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage >= totalPages || isLoading}
-                  className='w-8 h-8'
-                >
-                  <ChevronRight className='w-4 h-4' />
-                </Button>
-              </div>
-            </div>
+            <ServerPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={filters.limit || 50}
+              totalItems={data.total}
+              itemLabel='logs'
+              isLoading={isLoading}
+              onPageChange={handlePageChange}
+              onPageSizeChange={(pageSize) => setFilters((prev) => ({ ...prev, limit: pageSize, page: 1 }))}
+            />
           )}
         </div>
       </Main>

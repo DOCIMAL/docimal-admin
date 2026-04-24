@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAdminWorkspaces, type WorkspaceAdminFilters } from '@/api/workspaces.api'
 import { Main } from '@/components/layout/main'
-import { Button } from '@/components/ui/button'
 import { WorkspaceStatsCards } from '@/components/admin/workspaces/WorkspaceStatsCards'
 import { WorkspaceFilters } from '@/components/admin/workspaces/WorkspaceFilters'
 import { WorkspaceListTable } from '@/components/admin/workspaces/WorkspaceListTable'
+import { ServerPagination } from '@/components/admin/shared/ServerPagination'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Route = createFileRoute('/_authenticated/workspaces/' as any)({
@@ -47,29 +46,17 @@ function AdminWorkspacesPage() {
         
         <WorkspaceListTable workspaces={workspaces} isLoading={isLoading} />
 
-        {!isLoading && totalPages > 1 && (
-          <div className='flex items-center justify-between mt-6'>
-            <div className='text-sm text-muted-foreground'>
-              Page {filters.page} of {totalPages}
-            </div>
-            <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                size='icon'
-                onClick={() => handlePageChange((filters.page ?? 1) - 1)}
-                disabled={filters.page === 1}
-              >
-                <ChevronLeft className='h-4 w-4' />
-              </Button>
-              <Button
-                variant='outline'
-                size='icon'
-                onClick={() => handlePageChange((filters.page ?? 1) + 1)}
-                disabled={filters.page === totalPages}
-              >
-                <ChevronRight className='h-4 w-4' />
-              </Button>
-            </div>
+        {!isLoading && response && response.meta.total > 0 && (
+          <div className='mt-6'>
+            <ServerPagination
+              currentPage={filters.page || 1}
+              totalPages={totalPages}
+              pageSize={filters.limit || 10}
+              totalItems={response.meta.total}
+              itemLabel='workspaces'
+              onPageChange={handlePageChange}
+              onPageSizeChange={(pageSize) => setFilters((prev) => ({ ...prev, limit: pageSize, page: 1 }))}
+            />
           </div>
         )}
       </div>
