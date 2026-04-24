@@ -21,7 +21,7 @@ export function RecentActivity() {
     )
   }
 
-  const invoices = response?.data || []
+  const invoices = response?.items || []
 
   if (invoices.length === 0) {
     return (

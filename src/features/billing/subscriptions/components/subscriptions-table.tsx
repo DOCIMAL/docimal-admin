@@ -96,7 +96,7 @@ export function SubscriptionsTable({ search, navigate }: DataTableProps) {
 
   const { data: apiData, isLoading } = useAdminSubscriptions(apiFilters)
 
-  const tableData: AdminSubscription[] = (apiData?.data ??
+  const tableData: AdminSubscription[] = (apiData?.items ??
     []) as AdminSubscription[]
   const pageCount = apiData?.meta?.totalPages ?? 1
 

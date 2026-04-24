@@ -81,7 +81,7 @@ export function InvoicesTable({ search, navigate }: DataTableProps) {
 
   const { data: apiData, isLoading } = useAdminInvoices(apiFilters)
 
-  const tableData: AdminInvoice[] = (apiData?.data ?? []) as AdminInvoice[]
+  const tableData: AdminInvoice[] = (apiData?.items ?? []) as AdminInvoice[]
   const pageCount = apiData?.meta?.totalPages ?? 1
 
   const table = useReactTable({

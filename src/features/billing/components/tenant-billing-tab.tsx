@@ -100,8 +100,8 @@ export function TenantBillingTab({ tenantId, tenant }: TenantBillingTabProps) {
     })
   }
 
-  const currentSub = subData?.data?.[0]
-  const invoices = invData?.data || []
+  const currentSub = subData?.items?.[0]
+  const invoices = invData?.items || []
 
   const isTrial = currentSub?.status === 'trialing'
 

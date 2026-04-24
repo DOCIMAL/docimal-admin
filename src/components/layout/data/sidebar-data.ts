@@ -65,6 +65,11 @@ export const sidebarData: SidebarData = {
           icon: Building2,
         },
         {
+          title: 'Workspaces',
+          url: '/workspaces',
+          icon: LayoutDashboard,
+        },
+        {
           title: 'Users',
           url: '/users',
           icon: Users,

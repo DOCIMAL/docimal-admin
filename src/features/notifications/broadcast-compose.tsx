@@ -36,14 +36,14 @@ export default function BroadcastComposePage() {
   })
 
   const filteredTenants = useMemo(() => {
-    const tenants = tenantsData?.data ?? []
+    const tenants = tenantsData?.items ?? []
     if (!tenantSearch.trim()) return tenants
     const q = tenantSearch.toLowerCase()
     return tenants.filter(
       (t: Tenant) =>
         t.name.toLowerCase().includes(q) || t.slug.toLowerCase().includes(q),
     )
-  }, [tenantsData?.data, tenantSearch])
+  }, [tenantsData?.items, tenantSearch])
 
   const audienceMismatch =
     audienceType === 'selected_tenants' && selectedTenantIds.length === 0
@@ -87,11 +87,11 @@ export default function BroadcastComposePage() {
   }
 
   const selectedTenantNames = useMemo(() => {
-    const allTenants = tenantsData?.data ?? []
+    const allTenants = tenantsData?.items ?? []
     return selectedTenantIds
       .map((id) => allTenants.find((t: Tenant) => t.id === id)?.name)
       .filter(Boolean) as string[]
-  }, [tenantsData?.data, selectedTenantIds])
+  }, [tenantsData?.items, selectedTenantIds])
 
   return (
     <>
