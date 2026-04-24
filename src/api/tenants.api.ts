@@ -155,10 +155,13 @@ const BASE = '/tenants'
 export const tenantsApi = {
   getStats: () => apiClient.get<TenantStats>(`${BASE}/stats`).then((r) => r.data),
 
-  list: (params?: ListTenantsParams) =>
-    apiClient
-      .get<PaginatedResponse<Tenant>>(BASE, { params })
-      .then((r) => r.data),
+  list: (params?: ListTenantsParams) => {
+    const { limit, ...rest } = params ?? {}
+    const query = { ...rest, ...(limit !== undefined ? { pageSize: limit } : {}) }
+    return apiClient
+      .get<PaginatedResponse<Tenant>>(BASE, { params: query })
+      .then((r) => r.data)
+  },
 
   getById: (id: string) =>
     apiClient.get<TenantDetail>(`${BASE}/${id}`).then((r) => r.data),

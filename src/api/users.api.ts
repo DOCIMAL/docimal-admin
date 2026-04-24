@@ -60,10 +60,13 @@ export interface ListUsersParams extends ListParams {
 const BASE = '/admin/users'
 
 export const usersApi = {
-  list: (params?: ListUsersParams) =>
-    apiClient
-      .get<PaginatedResponse<AdminUser>>(BASE, { params })
-      .then((r) => r.data),
+  list: (params?: ListUsersParams) => {
+    const { limit, ...rest } = params ?? {}
+    const query = { ...rest, ...(limit !== undefined ? { pageSize: limit } : {}) }
+    return apiClient
+      .get<PaginatedResponse<AdminUser>>(BASE, { params: query })
+      .then((r) => r.data)
+  },
 
   getById: (id: string) =>
     apiClient.get<AdminUser>(`${BASE}/${id}`).then((r) => r.data),

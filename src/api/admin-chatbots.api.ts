@@ -67,10 +67,13 @@ export const adminChatbotsApi = {
   getStats: () => 
     agentClient.get<AdminChatbotStats>(`${BASE}/stats`).then((r) => r.data),
 
-  list: (params?: ListAdminChatbotParams) =>
-    agentClient
-      .get<PaginatedResponse<AdminChatbot>>(BASE, { params })
-      .then((r) => r.data),
+  list: (params?: ListAdminChatbotParams) => {
+    const { limit, ...rest } = params ?? {}
+    const query = { ...rest, ...(limit !== undefined ? { pageSize: limit } : {}) }
+    return agentClient
+      .get<PaginatedResponse<AdminChatbot>>(BASE, { params: query })
+      .then((r) => r.data)
+  },
 
   getById: (workspaceId: string) =>
     agentClient.get<AdminChatbot>(`${BASE}/${workspaceId}`).then((r) => r.data),

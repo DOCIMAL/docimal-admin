@@ -127,10 +127,13 @@ export const workspaceAdminKeys = {
 }
 
 export const workspacesAdminApi = {
-  findAll: (params: WorkspaceAdminFilters) =>
-    apiClient
-      .get<WorkspaceAdminListResponse>(BASE, { params })
-      .then((r) => r.data),
+  findAll: (params: WorkspaceAdminFilters) => {
+    const { limit, ...rest } = params
+    const query = { ...rest, ...(limit !== undefined ? { pageSize: limit } : {}) }
+    return apiClient
+      .get<WorkspaceAdminListResponse>(BASE, { params: query })
+      .then((r) => r.data)
+  },
 
   getStats: () =>
     apiClient.get<WorkspaceAdminStats>(`${BASE}/stats`).then((r) => r.data),
