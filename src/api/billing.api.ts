@@ -181,17 +181,15 @@ export const billingApi = {
 
   listSubscriptions: (params?: ListSubscriptionsParams) =>
     apiClient
-      .get<PaginatedResponse<AdminSubscription>>(`${BASE}/subscriptions`, {
+      .get<{ data: AdminSubscription[]; meta: PaginatedResponse<AdminSubscription>['meta'] }>(`${BASE}/subscriptions`, {
         params,
       })
-      .then((r) => r.data),
+      .then((r) => ({ items: r.data.data, meta: r.data.meta })),
 
   listInvoices: (params?: ListInvoicesParams) =>
     apiClient
-      .get<
-        PaginatedResponse<AdminInvoice> & { summary: InvoiceSummary }
-      >(`${BASE}/invoices`, { params })
-      .then((r) => r.data),
+      .get<{ data: AdminInvoice[]; meta: PaginatedResponse<AdminInvoice>['meta']; summary: InvoiceSummary }>(`${BASE}/invoices`, { params })
+      .then((r) => ({ items: r.data.data, meta: r.data.meta, summary: r.data.summary })),
 
   listPlans: () =>
     apiClient
