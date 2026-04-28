@@ -81,6 +81,7 @@ export const sidebarData: SidebarData = {
             { title: 'Subscriptions', url: '/billing/subscriptions' },
             { title: 'Invoices', url: '/billing/invoices' },
             { title: 'Plans', url: '/billing/plans' },
+            { title: 'Quota Management', url: '/quota' },
           ],
         },
       ],

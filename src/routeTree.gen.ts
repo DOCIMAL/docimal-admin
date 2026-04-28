@@ -27,6 +27,7 @@ import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedTenantsIndexRouteImport } from './routes/_authenticated/tenants/index'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedQuotaIndexRouteImport } from './routes/_authenticated/quota/index'
 import { Route as AuthenticatedNotificationsIndexRouteImport } from './routes/_authenticated/notifications/index'
 import { Route as AuthenticatedIntegrationsIndexRouteImport } from './routes/_authenticated/integrations/index'
 import { Route as AuthenticatedHelpCenterIndexRouteImport } from './routes/_authenticated/help-center/index'
@@ -146,6 +147,11 @@ const AuthenticatedSettingsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedQuotaIndexRoute = AuthenticatedQuotaIndexRouteImport.update({
+  id: '/quota/',
+  path: '/quota/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNotificationsIndexRoute =
   AuthenticatedNotificationsIndexRouteImport.update({
     id: '/notifications/',
@@ -337,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/help-center/': typeof AuthenticatedHelpCenterIndexRoute
   '/integrations/': typeof AuthenticatedIntegrationsIndexRoute
   '/notifications/': typeof AuthenticatedNotificationsIndexRoute
+  '/quota/': typeof AuthenticatedQuotaIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks/': typeof AuthenticatedTasksIndexRoute
   '/tenants/': typeof AuthenticatedTenantsIndexRoute
@@ -380,6 +387,7 @@ export interface FileRoutesByTo {
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/integrations': typeof AuthenticatedIntegrationsIndexRoute
   '/notifications': typeof AuthenticatedNotificationsIndexRoute
+  '/quota': typeof AuthenticatedQuotaIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/tenants': typeof AuthenticatedTenantsIndexRoute
@@ -427,6 +435,7 @@ export interface FileRoutesById {
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
   '/_authenticated/integrations/': typeof AuthenticatedIntegrationsIndexRoute
   '/_authenticated/notifications/': typeof AuthenticatedNotificationsIndexRoute
+  '/_authenticated/quota/': typeof AuthenticatedQuotaIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/tenants/': typeof AuthenticatedTenantsIndexRoute
@@ -473,6 +482,7 @@ export interface FileRouteTypes {
     | '/help-center/'
     | '/integrations/'
     | '/notifications/'
+    | '/quota/'
     | '/settings/'
     | '/tasks/'
     | '/tenants/'
@@ -516,6 +526,7 @@ export interface FileRouteTypes {
     | '/help-center'
     | '/integrations'
     | '/notifications'
+    | '/quota'
     | '/settings'
     | '/tasks'
     | '/tenants'
@@ -562,6 +573,7 @@ export interface FileRouteTypes {
     | '/_authenticated/help-center/'
     | '/_authenticated/integrations/'
     | '/_authenticated/notifications/'
+    | '/_authenticated/quota/'
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/tenants/'
@@ -708,6 +720,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/'
       preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/quota/': {
+      id: '/_authenticated/quota/'
+      path: '/quota'
+      fullPath: '/quota/'
+      preLoaderRoute: typeof AuthenticatedQuotaIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/notifications/': {
       id: '/_authenticated/notifications/'
@@ -958,6 +977,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
   AuthenticatedIntegrationsIndexRoute: typeof AuthenticatedIntegrationsIndexRoute
   AuthenticatedNotificationsIndexRoute: typeof AuthenticatedNotificationsIndexRoute
+  AuthenticatedQuotaIndexRoute: typeof AuthenticatedQuotaIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedTenantsIndexRoute: typeof AuthenticatedTenantsIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
@@ -993,6 +1013,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
   AuthenticatedIntegrationsIndexRoute: AuthenticatedIntegrationsIndexRoute,
   AuthenticatedNotificationsIndexRoute: AuthenticatedNotificationsIndexRoute,
+  AuthenticatedQuotaIndexRoute: AuthenticatedQuotaIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedTenantsIndexRoute: AuthenticatedTenantsIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
